@@ -1,6 +1,6 @@
 Space Cookies Programming Guidelines
 =======
-Space Cookies code for FRC 2018 season, POWER UP
+Space Cookies code for FRC 2018 season, POWER UP <br/>
 See [wiki](https://github.com/spacecookies1868/frc2018/wiki) for details on coding conventions.
 
 Committing Guidlines
