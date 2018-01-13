@@ -1,0 +1,3 @@
+cd /home/lvuser
+put robot.ini
+bye

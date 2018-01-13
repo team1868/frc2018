@@ -1,11 +1,12 @@
 #include <Profiler.h>
 
-Profiler::Profiler() {
-	// TODO Auto-generated constructor stub
-
+Profiler::Profiler(RobotModel* robot, std::string header) {
+	robot_ = robot;
+	header_ = header;
+	timeStart_ = robot->GetTime();  //need robotmodel done
 }
 
 Profiler::~Profiler() {
-	// TODO Auto-generated destructor stub
+	printf("%s Profiler time end: %f\n", header_.c_str(), robot_->GetTime()-timeStart_); //same as above
 }
 

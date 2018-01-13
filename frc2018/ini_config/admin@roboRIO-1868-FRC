@@ -1,0 +1,15 @@
+[PIVOT PID]
+pFac = 0.03
+iFac = 0.0
+dFac = 0.1
+minDrivePivotOutput = 0.0 
+
+#0.05 was too much
+[DRIVESTRAIGHT PID]
+rPFac = 0.004
+rIFac = 0.0
+rDFac = 0.001
+
+dPFac = 0.2
+dIFac = 0.0
+dDFac = 0.0

@@ -1,4 +1,4 @@
-#include <Auto/PIDInputSource.h>
+#include <Auto/PIDSource/PIDInputSource.h>
 
 PIDInputSource::PIDInputSource() {
 	// TODO Auto-generated constructor stub
