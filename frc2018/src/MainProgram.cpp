@@ -12,13 +12,34 @@
 #include <LiveWindow/LiveWindow.h>
 #include <SmartDashboard/SendableChooser.h>
 #include <SmartDashboard/SmartDashboard.h>
+#include "RobotModel.h"
+#include "DriverStation/ControlBoard.h"
+#include "Controllers/DriveController.h"
+#include "Controllers/SuperstructureController.h"
+#include "Auto/AutoController.h"
+#include "Logger.h"
 
-class Robot : public frc::IterativeRobot {
+class MainProgram : public frc::IterativeRobot {
+
+	RobotModel *robot_;
+	ControlBoard *humanControl_;
+	DriveController *driveController_;
+	SuperstructureController *superstructureController_;
+	AutoController *autoController_;
+
 public:
 	void RobotInit() {
 		m_chooser.AddDefault(kAutoNameDefault, kAutoNameDefault);
 		m_chooser.AddObject(kAutoNameCustom, kAutoNameCustom);
 		frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+		robot_ = new RobotModel();
+		humanControl_ = new ControlBoard();
+
+		driveController_ = new DriveController();
+		superstructureController_ = new SuperstructureController();
+		autoController_ = new AutoController();
+
 	}
 
 	/*
@@ -58,7 +79,9 @@ public:
 
 	void TeleopInit() {}
 
-	void TeleopPeriodic() {}
+	void TeleopPeriodic() {
+		Logger::LogState(robot_, humanControl_);
+	}
 
 	void TestPeriodic() {}
 
@@ -68,6 +91,8 @@ private:
 	const std::string kAutoNameDefault = "Default";
 	const std::string kAutoNameCustom = "My Auto";
 	std::string m_autoSelected;
+
+
 };
 
-START_ROBOT_CLASS(Robot)
+START_ROBOT_CLASS(MainProgram)
