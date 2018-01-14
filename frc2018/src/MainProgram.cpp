@@ -26,20 +26,22 @@ class MainProgram : public frc::IterativeRobot {
 	DriveController *driveController_;
 	SuperstructureController *superstructureController_;
 	AutoController *autoController_;
+	Timer *timer_;
+
+	double currTimeSec_;
+	double lastTimeSec_;
+	double deltaTimeSec_;
 
 public:
 	void RobotInit() {
-		m_chooser.AddDefault(kAutoNameDefault, kAutoNameDefault);
-		m_chooser.AddObject(kAutoNameCustom, kAutoNameCustom);
-		frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-
 		robot_ = new RobotModel();
 		humanControl_ = new ControlBoard();
-
-		driveController_ = new DriveController();
+		driveController_ = new DriveController(robot_, humanControl_);
 		superstructureController_ = new SuperstructureController();
 		autoController_ = new AutoController();
+		timer_ = new Timer();
 
+		ResetTimerVariables();
 	}
 
 	/*
@@ -57,42 +59,41 @@ public:
 	 * well.
 	 */
 	void AutonomousInit() override {
-		m_autoSelected = m_chooser.GetSelected();
-		// m_autoSelected = SmartDashboard::GetString(
-		// 		"Auto Selector", kAutoNameDefault);
-		std::cout << "Auto selected: " << m_autoSelected << std::endl;
-
-		if (m_autoSelected == kAutoNameCustom) {
-			// Custom Auto goes here
-		} else {
-			// Default Auto goes here
-		}
 	}
 
 	void AutonomousPeriodic() {
-		if (m_autoSelected == kAutoNameCustom) {
-			// Custom Auto goes here
-		} else {
-			// Default Auto goes here
-		}
 	}
 
-	void TeleopInit() {}
+	void TeleopInit() {
+		ResetTimerVariables();
+		ResetControllers();
+	}
 
 	void TeleopPeriodic() {
+		UpdateTimerVariables();
+		humanControl_->ReadControls();
+		driveController_->Update(currTimeSec_, deltaTimeSec_);
 		Logger::LogState(robot_, humanControl_);
 	}
 
 	void TestPeriodic() {}
 
 private:
-	frc::LiveWindow& m_lw = *LiveWindow::GetInstance();
-	frc::SendableChooser<std::string> m_chooser;
-	const std::string kAutoNameDefault = "Default";
-	const std::string kAutoNameCustom = "My Auto";
-	std::string m_autoSelected;
+	void ResetTimerVariables() {
+		currTimeSec_ = 0.0;
+		lastTimeSec_ = 0.0;
+		deltaTimeSec_ = 0.0;
+	}
 
+	void UpdateTimerVariables() {
+		lastTimeSec_ = currTimeSec_;
+		currTimeSec_ = robot_->GetTime();
+		deltaTimeSec_ = currTimeSec_ - lastTimeSec_;
+	}
 
+	void ResetControllers() {
+		driveController_->Reset();
+	}
 };
 
 START_ROBOT_CLASS(MainProgram)

@@ -1,5 +1,7 @@
 #include <DriverStation/ControlBoard.h>
 
+#include "WPILib.h"
+
 ControlBoard::ControlBoard() {
 	leftJoyX_ = 0.0;
 	leftJoyY_ = 0.0;
@@ -67,6 +69,10 @@ double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
 
 bool ControlBoard::GetReverseDriveDesired() {
 	return reverseDriveDesired_;
+}
+
+bool ControlBoard::GetHighGearDesired() {
+	return highGearDesired_;
 }
 
 bool ControlBoard::GetArcadeDriveDesired() {
