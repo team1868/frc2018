@@ -69,6 +69,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 //			nextState_ = kAlignWithCube;
 //		} else
 // Checks quickturn or arcade drive
+		SmartDashboard::PutBoolean("Quick turn desired", humanControl_->GetQuickTurnDesired());
 		if (humanControl_->GetQuickTurnDesired()) {
 			QuickTurn(rightJoyX, 0.0);
 			nextState_ = kTeleopDrive;
@@ -93,7 +94,7 @@ void DriveController::ArcadeDrive(double myX, double myY, double thrustSensitivi
 
 	double thrustValue = myY * GetDriveDirection();
 	double rotateValue = myX;
-//	double rotateValue = myX * GetDriveDirection(); // What reverse drive should actually be, test this when possible
+//	double rotateValue = myX * GetDriveDirection(); // TODO fix if you want chloemode
 	double leftOutput = 0.0;
 	double rightOutput = 0.0;
 

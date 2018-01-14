@@ -23,11 +23,17 @@ RobotModel::RobotModel() {
 	rightDriveEncoder_ = new Encoder(RIGHT_DRIVE_ENCODER_A_PWM_PORT, RIGHT_DRIVE_ENCODER_B_PWM_PORT, true);		// TODO check if true or false
 	rightDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
-	// Initializing Talons
+	// Initializing Drive Talons
+	isLeftInverted_ = false;
 	leftMaster_ = new WPI_TalonSRX(LEFT_DRIVE_MASTER_ID);
 	rightMaster_ = new WPI_TalonSRX(RIGHT_DRIVE_MASTER_ID);
 	leftSlave_ = new WPI_TalonSRX(LEFT_DRIVE_SLAVE_ID);
 	rightSlave_ = new WPI_TalonSRX(RIGHT_DRIVE_SLAVE_ID);
+
+	rightMaster_->SetInverted(!isLeftInverted_);
+	rightSlave_->SetInverted(!isLeftInverted_);
+	leftMaster_->SetInverted(isLeftInverted_);
+	leftSlave_->SetInverted(isLeftInverted_);
 
 	leftMaster_->Set(ControlMode::PercentOutput, 0.0);
 	rightMaster_->Set(ControlMode::PercentOutput, 0.0);

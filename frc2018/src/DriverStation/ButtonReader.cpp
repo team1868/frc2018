@@ -1,4 +1,5 @@
 #include <DriverStation/ButtonReader.h>
+#include "WPILib.h"
 
 //Class ButtonReader
 //Constructs a joystick and sets the port of the button on the joystick, and reads the state of the button

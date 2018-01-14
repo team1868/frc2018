@@ -93,6 +93,7 @@ private:
 	DoubleSolenoid *gearShiftSolenoid_;
 	Encoder *leftDriveEncoder_, *rightDriveEncoder_;
 	PowerDistributionPanel* pdp_;
+	bool isLeftInverted_;
 };
 
 

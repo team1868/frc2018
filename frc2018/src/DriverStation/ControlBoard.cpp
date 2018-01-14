@@ -27,6 +27,8 @@ ControlBoard::ControlBoard() {
 }
 
 void ControlBoard::ReadControls() {
+	ReadAllButtons();
+
 	//Reading joystick values
 	leftJoyX_ = leftJoy_->GetX();
 	leftJoyY_ = leftJoy_->GetY();
@@ -81,6 +83,13 @@ bool ControlBoard::GetArcadeDriveDesired() {
 
 bool ControlBoard::GetQuickTurnDesired() {
 	return quickTurnDesired_;
+}
+
+void ControlBoard::ReadAllButtons() {
+	driveDirectionButton_->ReadValue();
+	gearShiftButton_->ReadValue();
+	arcadeDriveButton_->ReadValue();
+	quickTurnButton_->ReadValue();
 }
 
 ControlBoard::~ControlBoard() {

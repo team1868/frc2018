@@ -31,6 +31,8 @@ public:
 
 	virtual ~ControlBoard();
 private:
+	void ReadAllButtons();
+
 	// Joystick values
 	double leftJoyX_, leftJoyY_, leftJoyZ_, rightJoyX_, rightJoyY_, rightJoyZ_;
 
@@ -45,7 +47,6 @@ private:
 
 	// Buttons for drive
 	ButtonReader *driveDirectionButton_, *gearShiftButton_, *arcadeDriveButton_, *quickTurnButton_;
-
 };
 
 #endif /* SRC_DRIVERSTATION_CONTROLBOARD_H_ */
