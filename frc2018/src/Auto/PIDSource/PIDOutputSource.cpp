@@ -1,11 +1,34 @@
 #include <Auto/PIDSource/PIDOutputSource.h>
 
-PIDOutputSource::PIDOutputSource() {
-	// TODO Auto-generated constructor stub
+AnglePIDOutput::AnglePIDOutput() {
+	pidOutput_ = 0.0;
+}
+
+void AnglePIDOutput::PIDWrite(double output) {
+	pidOutput_ = output;
+}
+
+double AnglePIDOutput::GetPIDOutput() {
+	return pidOutput_;
+}
+
+AnglePIDOutput::~AnglePIDOutput() {
 
 }
 
-PIDOutputSource::~PIDOutputSource() {
-	// TODO Auto-generated destructor stub
+
+DistancePIDOutput::DistancePIDOutput() {
+	pidOutput_ = 0.0;
 }
 
+void DistancePIDOutput::PIDWrite(double output) {
+	pidOutput_ = output;
+}
+
+double DistancePIDOutput::GetPIDOutput() {
+	return pidOutput_;
+}
+
+DistancePIDOutput::~DistancePIDOutput() {
+
+}
