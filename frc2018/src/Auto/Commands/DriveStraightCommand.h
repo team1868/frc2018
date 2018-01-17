@@ -16,7 +16,7 @@ public:
 	 * @param talonEncoderSource distance input for distance PID Loop
 	 * @param anglePIDOutput output for the angle PID Loop
 	 * @param robot robot model
-	 *
+	 * @param distance in feet
 	 */
 	DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
 			AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,

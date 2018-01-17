@@ -116,8 +116,4 @@ private:
 	double pivotCommandStartTime_;
 };
 
-
-
-
-
 #endif /* SRC_AUTO_COMMANDS_PIVOTCOMMAND_H_ */

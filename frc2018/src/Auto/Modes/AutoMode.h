@@ -6,7 +6,7 @@
 class AutoMode {
 public:
 	AutoMode() {
-		currentCommand = NULL;
+		currentCommand_ = NULL;
 	};
 
 	virtual ~AutoMode() {};
@@ -22,17 +22,17 @@ public:
 	 * @param deltaTimeSec a double how often to update
 	 */
 	void Update(double currTimeSec, double deltaTimeSec) {
-		if (currentCommand != NULL) {
-			if (currentCommand->IsDone()) {
+		if (currentCommand_ != NULL) {
+			if (currentCommand_->IsDone()) {
 //				DO_PERIODIC(1, printf("Command complete at: %f \n", currTimeSec));
-				currentCommand = currentCommand->GetNextCommand();
-				if (currentCommand != NULL) {
+				currentCommand_ = currentCommand_->GetNextCommand();
+				if (currentCommand_ != NULL) {
 //					DO_PERIODIC(1, printf("Command start at: %f \n", currTimeSec));
-					currentCommand->Init();
+					currentCommand_->Init();
 					printf("Initializing current commmand\n");
 				}
 			} else {
-				currentCommand->Update(currTimeSec, deltaTimeSec);
+				currentCommand_->Update(currTimeSec, deltaTimeSec);
 			}
 		} else {
 			printf("Done with auto mode update\n");
@@ -46,11 +46,11 @@ public:
 	 * @return true if there is no current command or current command is NULL
 	 */
 	bool IsDone() {
-		return (currentCommand == NULL);
+		return (currentCommand_ == NULL);
 	}
 
 protected:
-	AutoCommand *currentCommand;
+	AutoCommand *currentCommand_;
 };
 
 #endif /* SRC_AUTO_MODES_AUTOMODE_H_ */

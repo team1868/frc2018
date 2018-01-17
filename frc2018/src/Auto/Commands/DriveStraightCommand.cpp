@@ -70,10 +70,6 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Left Motor Output", leftMotorOutput_);
 	SmartDashboard::PutNumber("Right Motor Output", rightMotorOutput_);
 
-	SmartDashboard::PutBoolean("Is Distance Met", distancePID_->OnTarget());
-	SmartDashboard::PutBoolean("Is Angle Met", anglePID_->OnTarget());
-	SmartDashboard::PutBoolean("Is Done", (anglePID_->OnTarget()) && (distancePID_->OnTarget()));
-
 	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
 	if((anglePID_->OnTarget() && (distancePID_->OnTarget())) || (diffDriveTime_ > 10.0)) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
 		if(diffDriveTime_ > 10.0) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
@@ -97,13 +93,11 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		leftMotorOutput_ = dOutput - rOutput;
 
 		double maxOutput = fmax(fabs(rightMotorOutput_), fabs(leftMotorOutput_));
-		SmartDashboard::PutNumber("Max output", maxOutput);
 
 		SmartDashboard::PutNumber("Angle Error", anglePID_->GetError());
 		SmartDashboard::PutNumber("DesiredAngle", initialAngle_);
 		SmartDashboard::PutNumber("Encoder Error Feet", distancePID_->GetError());
 		SmartDashboard::PutNumber("Desired Total Feet", desiredTotalAvgDistance_);
-		SmartDashboard::PutNumber("Desired Difference Feet", desiredDistance_);
 	}
 
 	robot_->SetDriveValues(RobotModel::kLeftWheels, leftMotorOutput_);

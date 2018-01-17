@@ -17,6 +17,9 @@
 #include "Controllers/DriveController.h"
 #include "Controllers/SuperstructureController.h"
 #include "Auto/AutoController.h"
+#include "Auto/PIDSource/PIDInputSource.h"
+#include "Auto/PIDSource/PIDOutputSource.h"
+#include "Auto/Modes/TestMode.h"
 #include "Logger.h"
 
 class MainProgram : public frc::IterativeRobot {
@@ -26,7 +29,11 @@ class MainProgram : public frc::IterativeRobot {
 	DriveController *driveController_;
 	SuperstructureController *superstructureController_;
 	AutoController *autoController_;
+	AutoMode *autoMode_;
 	Timer *timer_;
+
+	NavXPIDSource *navXSource_;
+	TalonEncoderPIDSource *talonEncoderSource_;
 
 	double currTimeSec_;
 	double lastTimeSec_;
@@ -40,6 +47,12 @@ public:
 		superstructureController_ = new SuperstructureController();
 		autoController_ = new AutoController();
 		timer_ = new Timer();
+
+		robot_->ZeroNavXYaw();
+		robot_->RefreshIni();
+
+		navXSource_ = new NavXPIDSource(robot_);
+		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 
 		ResetTimerVariables();
 	}
@@ -59,9 +72,13 @@ public:
 	 * well.
 	 */
 	void AutonomousInit() override {
+		autoMode_ = new TestMode(robot_, navXSource_, talonEncoderSource_); // TODO change this
+		autoController_->SetAutonomousMode(autoMode_);
+		autoController_->Init();
 	}
 
 	void AutonomousPeriodic() {
+		autoController_->Update(currTimeSec_, deltaTimeSec_);
 	}
 
 	void TeleopInit() {
@@ -78,6 +95,7 @@ public:
 
 	void TestPeriodic() {}
 
+	void DisabledPeriodic() {};
 private:
 	void ResetTimerVariables() {
 		currTimeSec_ = 0.0;

@@ -1,7 +1,7 @@
+#include <WPILib.h>
 #include <RobotModel.h>
-#include <math.h>
 
-const double WHEEL_DIAMETER = 3.5 / 12.0; 			// TODO CHANGE
+const double WHEEL_DIAMETER = 6.0 / 12.0; 			// TODO CHANGE
 const double ENCODER_COUNT_PER_ROTATION = 256.0;
 const int EDGES_PER_ENCODER_COUNT = 4;
 
@@ -17,10 +17,10 @@ RobotModel::RobotModel() {
 	pdp_ = new PowerDistributionPanel();
 
 	// Initializing Encoders
-	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_A_PWM_PORT, LEFT_DRIVE_ENCODER_B_PWM_PORT, false);		// TODO check if true or false
+	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_A_PWM_PORT, LEFT_DRIVE_ENCODER_B_PWM_PORT, true);		// TODO check if true or false
 	leftDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
-	rightDriveEncoder_ = new Encoder(RIGHT_DRIVE_ENCODER_A_PWM_PORT, RIGHT_DRIVE_ENCODER_B_PWM_PORT, true);		// TODO check if true or false
+	rightDriveEncoder_ = new Encoder(RIGHT_DRIVE_ENCODER_A_PWM_PORT, RIGHT_DRIVE_ENCODER_B_PWM_PORT, false);
 	rightDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
 	// Initializing Drive Talons
@@ -110,7 +110,13 @@ void RobotModel::ZeroNavXYaw() {
 
 void RobotModel::RefreshIni() {
 	delete pini_;
-	pini_ = new Ini("/home/lvuser/robot.ini");
+	const char* usbPath = "insert path here"; // TODO fix
+	if(FILE *file = fopen(usbPath, "r")) {
+		fclose(file);
+		pini_ = new Ini(usbPath);
+	} else {
+		pini_ = new Ini("/home/lvuser/robot.ini");
+	}
 }
 
 RobotModel::~RobotModel() {

@@ -1,5 +1,26 @@
 #include "Auto/Commands/PivotCommand.h"
 
+PivotPIDTalonOutput::PivotPIDTalonOutput(RobotModel *robot){
+		robot_ = robot;
+		output_ = 0.0;
+}
+
+void PivotPIDTalonOutput::PIDWrite(double myOutput){
+	output_ = myOutput;
+
+	robot_->SetDriveValues(RobotModel::kLeftWheels, output_);
+	robot_->SetDriveValues(RobotModel::kRightWheels, -output_);
+	SmartDashboard::PutNumber("left output", output_);
+	SmartDashboard::PutNumber("right output", -output_);
+}
+
+double PivotPIDTalonOutput::GetOutput() {
+	return output_;
+}
+
+PivotPIDTalonOutput::~PivotPIDTalonOutput(){
+}
+
 PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavXPIDSource* navXSource) {
 
 	navXSource_ = navXSource;
@@ -40,10 +61,9 @@ void PivotCommand::Init() {
 	pivotPID_->SetSetpoint(initYaw_ + desiredDeltaAngle_);
 	pivotPID_->SetContinuous(false);
 	pivotPID_->SetOutputRange(-0.8, 0.8);     //adjust for 2018
-	pivotPID_->SetAbsoluteTolerance(1.0);	 //adjust for 2018
+	pivotPID_->SetAbsoluteTolerance(1.5);	 //adjust for 2018
 	pivotPID_->Enable();
 
-	SmartDashboard::PutNumber("Initial yaw", initYaw_);
 	printf("Initial NavX Angle: %f\n", initYaw_);
 	printf("Desired NavX Angle: %f\n", initYaw_ + desiredDeltaAngle_);
 
@@ -69,7 +89,7 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 	double timeDiff = robot_->GetTime() - pivotCommandStartTime_;
 	bool timeOut = (timeDiff > 2.5);								//test this value
 
-	SmartDashboard::PutBoolean("Timed out", timeOut);
+//	SmartDashboard::PutBoolean("Timed out", timeOut);
 	SmartDashboard::PutNumber("Pivot time diff", timeDiff);
 
 	if (pivotPID_->OnTarget()) {
@@ -88,7 +108,6 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 				printf("FROM TIME OUT\n");
 			}
 		}
-		SmartDashboard::PutBoolean("Is done", isDone_);
 	}
 
 bool PivotCommand::IsDone() {
@@ -107,28 +126,3 @@ PivotCommand::~PivotCommand() {
 	free(pivotPID_);
 	printf("IS DONE FROM DECONSTRUCTOR\n");
 }
-
-PivotPIDTalonOutput::PivotPIDTalonOutput(RobotModel *robot){
-		robot_ = robot;
-		output_ = 0.0;
-}
-
-void PivotPIDTalonOutput::PIDWrite(double myOutput){
-	output_ = myOutput;
-
-	//robot_->SetDriveValues(RobotModel::kLeftWheels, -output_);
-	//robot_->SetDriveValues(RobotModel::kRightWheels, output_);
-	SmartDashboard::PutNumber("left output", -output_);
-	SmartDashboard::PutNumber("right output", output_);
-}
-
-double PivotPIDTalonOutput::GetOutput() {
-	return output_;
-}
-
-PivotPIDTalonOutput::~PivotPIDTalonOutput(){
-}
-
-
-
-

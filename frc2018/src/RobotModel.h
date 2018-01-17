@@ -1,11 +1,15 @@
 #ifndef SRC_ROBOTMODEL_H_
 #define SRC_ROBOTMODEL_H_
 
-#include "WPILib.h"
+#include <math.h>
+#include <fstream>
+#include <WPILib.h>
 #include <AHRS.h>
 #include <ctre/Phoenix.h>
 #include "Ports2018.h"
  #include "../ext/ini/ini.h"
+
+using namespace std;
 
 class RobotModel {
 public:
