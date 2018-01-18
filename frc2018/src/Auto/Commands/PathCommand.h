@@ -5,7 +5,7 @@
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/MotionProfiling/MotionProfile.h"
 #include "RobotModel.h"
-#include <pathfinder.h>
+#include "../ext/pathfinder/pathfinder.h"
 #include <fstream>
 #include <string>
 #include "Logger.h"
