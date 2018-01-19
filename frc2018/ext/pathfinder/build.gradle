@@ -1,0 +1,76 @@
+apply plugin: 'c'
+
+model {
+    components {
+        pathfinder(NativeLibrarySpec) {
+            if (isArm) {
+                targetPlatform 'arm'
+            } else {
+                targetPlatform 'x86'
+                targetPlatform 'x64'
+            }
+            
+            project.ext.binaries = []
+            project.ext.roborio = []
+            
+            binaries.withType(SharedLibraryBinarySpec) { bin ->
+                if (bin.targetPlatform.operatingSystem.isCurrent()) {
+                    if (project.hasProperty("32") && !bin.targetPlatform.architecture.name.contains("64"))
+                        project.ext.binaries << bin.sharedLibraryFile
+                    else if (!project.hasProperty("32") && bin.targetPlatform.architecture.name.contains("64"))
+                        project.ext.binaries << bin.sharedLibraryFile
+                }
+            }
+            
+            binaries.withType(StaticLibraryBinarySpec) { bin ->
+                if (bin.targetPlatform.operatingSystem.isLinux() && bin.targetPlatform.architecture.name.contains("arm"))
+                    project.ext.roborio << bin.staticLibraryFile
+            }
+            
+            sources {
+                c {
+                    source {
+                        srcDirs = ['src']
+                        includes = ['**/*.c']
+                    }
+                    exportedHeaders {
+                        srcDirs = ['include']
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+task install() {
+    doLast {
+        binaries.each { binary ->
+            println "Installing Binary: " + binary
+            installBinary(binary, file('include'))
+        }
+    }
+}
+
+task makefrc() {
+    doLast {
+        roborio.each { binary ->
+            copy {
+                from binary
+                into file('build/frc/lib')
+            }
+            copy {
+                from file('include')
+                into file('build/frc/include')
+            }
+        }
+    }
+}
+
+task zipfrc(type: Zip) {
+    destinationDir file('build/libs')
+    archiveName 'pathfinder-frc-cpp.zip'
+    from file('build/frc')
+}
+
+makefrc.finalizedBy zipfrc
