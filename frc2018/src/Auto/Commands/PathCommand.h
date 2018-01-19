@@ -5,10 +5,10 @@
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/MotionProfiling/MotionProfile.h"
 #include "RobotModel.h"
-#include "../ext/pathfinder/pathfinder.h"
 #include <fstream>
 #include <string>
 #include "Logger.h"
+#include "../../../ext/pathfinder/pathfinder.h"
 
 class PathCommand : public AutoCommand {
 public:

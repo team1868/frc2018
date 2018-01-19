@@ -5,8 +5,6 @@
 extern "C" {
 #endif
 
-//got rid of all the pathfinder/
-
 #include "mathutil.h"
 #include "structs.h"
 
@@ -14,11 +12,11 @@ extern "C" {
 #include "spline.h"
 #include "trajectory.h"
 
-#include "modifiers/tank.h"
-#include "modifiers/swerve.h"
+#include "tank.h"
+#include "swerve.h"
 
-#include "followers/encoder.h"
-#include "followers/distance.h"
+#include "encoder.h"
+#include "distance.h"
 
 #include "io.h"
 

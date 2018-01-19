@@ -1,12 +1,13 @@
 #include <Auto/Commands/PathCommand.h>
 #include <ctre/Phoenix.h>
+#include "../../../ext/pathfinder/pathfinder.h"
 
 const double WHEELBASE_WIDTH = 21.0/12.0; // in ft siderail insides need to CHANGE, mid of wheel
 const double WHEEL_DIAMETER = 6.0/12.0; // in ft
 const double TIME_STEP = 0.02; // 20 milliseconds, iter robot
 const double MAX_VELOCITY = 17.0; // in m/s CHANGE
-const double MAX_ACCELERATION; // = 4.0??? m/s^2
-const double MAX_JERK; // = 60.0??? m/s^3
+const double MAX_ACCELERATION = 4.0; // = 4.0??? m/s^2
+const double MAX_JERK = 60.0; // = 60.0??? m/s^3
 const int TICKS_PER_REV = 256; // optical encoder
 
 
@@ -273,4 +274,3 @@ bool PathCommand::IsDone() {
 PathCommand::~PathCommand() {
 
 }
-
