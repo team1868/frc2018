@@ -63,6 +63,7 @@ private:
 	double leftMotorOutput_, rightMotorOutput_;
 	double initialDriveTime_, diffDriveTime_;
 	bool isDone_;
+	int numTimesOnTarget_;
 
 };
 

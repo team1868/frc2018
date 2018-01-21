@@ -28,6 +28,9 @@ DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncod
 	anglePID_ = new PIDController(rPFac_, rIFac_, rDFac_, navXSource_, anglePIDOutput_);
 	distancePID_ = new PIDController(dPFac_, dIFac_, dDFac_, talonEncoderSource_, distancePIDOutput_);
 
+	// initializing number of times robot is on target
+	numTimesOnTarget_ = 0;
+
 }
 
 void DriveStraightCommand::Init() {
@@ -59,6 +62,8 @@ void DriveStraightCommand::Init() {
 
 	initialDriveTime_ = robot_->GetTime();
 
+	numTimesOnTarget_ = 0;
+
 	printf("Initial Right Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 	printf("Initial Left Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
 	printf("Initial Average Distance: %f\n", initialAvgDistance_);
@@ -75,16 +80,19 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		if(diffDriveTime_ > 10.0) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
 			printf("DRIVESTRAIGHT TIMED OUT!! :) \n");
 		}
-		printf("Final Left Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
-		printf("Final Right Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
-		printf("Final Average Distance: %f\n", talonEncoderSource_->PIDGet());
-		anglePID_->Reset();
-		distancePID_->Reset();
+		numTimesOnTarget_++;
+		if ((anglePID_->OnTarget() && (distancePID_->OnTarget())) && (numTimesOnTarget_ >= 3)) { // Ensure the robot is on target by recording 3 times
+			printf("Final Left Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
+			printf("Final Right Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
+			printf("Final Average Distance: %f\n", talonEncoderSource_->PIDGet());
+			anglePID_->Reset();
+			distancePID_->Reset();
 
-		leftMotorOutput_ = 0.0;
-		rightMotorOutput_ = 0.0;
+			leftMotorOutput_ = 0.0;
+			rightMotorOutput_ = 0.0;
 
-		isDone_ = true;
+			isDone_ = true;
+		}
 	} else {
 		double dOutput = distancePIDOutput_->GetPIDOutput();
 		double rOutput = anglePIDOutput_->GetPIDOutput();
@@ -95,8 +103,10 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		double maxOutput = fmax(fabs(rightMotorOutput_), fabs(leftMotorOutput_));
 
 		SmartDashboard::PutNumber("Angle Error", anglePID_->GetError());
+		SmartDashboard::PutNumber("Angle Error Graph", anglePID_->GetError());
 		SmartDashboard::PutNumber("DesiredAngle", initialAngle_);
 		SmartDashboard::PutNumber("Encoder Error Feet", distancePID_->GetError());
+		SmartDashboard::PutNumber("Encoder Error Feet Graph", distancePID_->GetError());
 		SmartDashboard::PutNumber("Desired Total Feet", desiredTotalAvgDistance_);
 	}
 
