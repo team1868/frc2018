@@ -44,12 +44,17 @@ static const int OPERATOR_JOY_B_USB_PORT				= 3;
 
 /* -------------------- BUTTON PORTS -------------------- */
 
-//Drive controller button ports
+// Drive controller button ports
 static const int DRIVE_DIRECTION_BUTTON_PORT			= 3;
 static const int HIGH_LOW_GEAR_BUTTON_PORT				= 3;
 static const int ARCADE_DRIVE_BUTTON_PORT				= 6;
 static const int QUICK_TURN_BUTTON_PORT					= 2;
 
-//Superstructure controller button ports
+// Superstructure controller button ports
+
+// Auto mode switch ports
+static const int LEFT_AUTO_SWITCH_PORT					= 1;	// TODO CHECK THIS
+static const int RIGHT_AUTO_SWITCH_PORT					= 2;	// TODO CHECK THIS
+static const int MIDDLE_AUTO_SWITCH_PORT				= 3;	// TODO CHECK THIS
 
 #endif /* SRC_PORTS2018_H_ */

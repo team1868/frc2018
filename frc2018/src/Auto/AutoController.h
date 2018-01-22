@@ -2,6 +2,9 @@
 #define SRC_AUTO_AUTOCONTROLLER_H_
 
 #include "Auto/Modes/AutoMode.h"
+#include "Auto/Modes/BlankMode.h"
+#include "Auto/Modes/CubeInSwitchMode.h"
+#include "Auto/Modes/TestMode.h"
 
 class AutoController {
 public:

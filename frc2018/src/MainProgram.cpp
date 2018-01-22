@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 
+#include <WPILib.h>
 #include <IterativeRobot.h>
 #include <LiveWindow/LiveWindow.h>
 #include <SmartDashboard/SendableChooser.h>
@@ -19,40 +20,55 @@
 #include "Auto/AutoController.h"
 #include "Auto/PIDSource/PIDInputSource.h"
 #include "Auto/PIDSource/PIDOutputSource.h"
-#include "Auto/Modes/TestMode.h"
+
 #include "Logger.h"
 
 class MainProgram : public frc::IterativeRobot {
 
+	// Robot setup
 	RobotModel *robot_;
 	ControlBoard *humanControl_;
 	DriveController *driveController_;
 	SuperstructureController *superstructureController_;
+
+	// Auto setup
 	AutoController *autoController_;
 	AutoMode *autoMode_;
-	Timer *timer_;
+	frc::SendableChooser<AutoMode*> autoChooser_;
 
 	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonEncoderSource_;
 
+	// Time setup
+	Timer *timer_;
 	double currTimeSec_;
 	double lastTimeSec_;
 	double deltaTimeSec_;
 
 public:
 	void RobotInit() {
+		// Initialzing robot
 		robot_ = new RobotModel();
-		humanControl_ = new ControlBoard();
-		driveController_ = new DriveController(robot_, humanControl_);
-		superstructureController_ = new SuperstructureController();
-		autoController_ = new AutoController();
-		timer_ = new Timer();
-
 		robot_->ZeroNavXYaw();
 		robot_->RefreshIni();
 
+		humanControl_ = new ControlBoard();
+		driveController_ = new DriveController(robot_, humanControl_);
+		superstructureController_ = new SuperstructureController();
+
+		// Initializing auto controller
+		autoController_ = new AutoController();
+
+		// Setup to chooser auto mode from SmartDashboard
+//		autoChooser_.AddDefault("Blank Auto", new BlankMode());
+//		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode());
+//		autoChooser_.AddObject("Test Mode", new TestMode(robot_, navXSource_, talonEncoderSource_));
+//		SmartDashboard::PutData("Auto Modes", &autoChooser_);
+
+		// PID sources
 		navXSource_ = new NavXPIDSource(robot_);
 		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
+		timer_ = new Timer();
 
 		ResetTimerVariables();
 	}
@@ -73,6 +89,8 @@ public:
 	 */
 	void AutonomousInit() override {
 		autoMode_ = new TestMode(robot_, navXSource_, talonEncoderSource_); // TODO change this
+
+//		autoMode_ = autoChooser_.GetSelected();
 		autoController_->SetAutonomousMode(autoMode_);
 		autoController_->Init();
 	}

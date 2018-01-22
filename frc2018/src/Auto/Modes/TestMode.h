@@ -33,7 +33,8 @@ private:
 	DistancePIDOutput *distanceOutput_;
 
 	PivotCommand *pivot_;
-	DriveStraightCommand *driveStraight_;
+	DriveStraightCommand *driveStraightFirst_;
+	DriveStraightCommand *driveStraightSecond_;
 
 	AutoCommand *firstCommand_;
 };

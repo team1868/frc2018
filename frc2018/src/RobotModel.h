@@ -7,8 +7,7 @@
 #include <AHRS.h>
 #include <ctre/Phoenix.h>
 #include "Ports2018.h"
-#include "../ext/ini/ini.h"
-#include "../ext/pathfinder/pathfinder.h"
+ #include "../ext/ini/ini.h"
 
 using namespace std;
 

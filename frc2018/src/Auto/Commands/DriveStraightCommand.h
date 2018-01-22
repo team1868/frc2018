@@ -55,7 +55,9 @@ private:
 	RobotModel *robot_;
 
 	double rPFac_, rIFac_, rDFac_;
+	double rMaxOutput_, rTolerance_;
 	double dPFac_, dIFac_, dDFac_;
+	double dMaxOutput_, dTolerance_;
 	double initialAngle_;
 	double initialAvgDistance_;
 	double desiredDistance_;

@@ -47,6 +47,9 @@ private:
 
 	// Buttons for drive
 	ButtonReader *driveDirectionButton_, *gearShiftButton_, *arcadeDriveButton_, *quickTurnButton_;
+
+	// Auto switches
+	ButtonReader *leftAutoSwitch_, *rightAutoSwitch_, *middleAutoSwitch_;
 };
 
 #endif /* SRC_DRIVERSTATION_CONTROLBOARD_H_ */

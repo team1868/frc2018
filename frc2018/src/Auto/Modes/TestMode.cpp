@@ -15,14 +15,16 @@ TestMode::TestMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource
 	angleOutput_ = new AnglePIDOutput();
 	distanceOutput_ = new DistancePIDOutput();
 
-	driveStraight_ = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, 5.0);
-	pivot_ = new PivotCommand(robot_, 90, false, navX_);
-
+	driveStraightFirst_ = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, 8.0);
+	pivot_ = new PivotCommand(robot_, -90, false, navX_);
+	driveStraightSecond_ = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, 3.0);
 	firstCommand_ = NULL;
 }
 
 void TestMode::CreateQueue() {
-	firstCommand_ = driveStraight_; // change to drivestraight when ready to test
+	firstCommand_ = driveStraightFirst_; // change to drivestraight when ready to test
+	driveStraightFirst_->SetNextCommand(pivot_);
+	pivot_->SetNextCommand(driveStraightSecond_);
 }
 
 void TestMode::Init() {
