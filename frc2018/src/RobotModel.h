@@ -13,7 +13,7 @@ using namespace std;
 
 class RobotModel {
 public:
-	enum Wheels {kLeftWheels, kRightWheels, kAllWheels};
+	enum Wheels { kLeftWheels, kRightWheels, kAllWheels };
 
 	/**
 	 * Creates all objects regarding the robot parts. Configures the left and right
@@ -79,13 +79,18 @@ public:
 	 * Zeroes the navX
 	 */
 	void ZeroNavXYaw();
+
 	void RefreshIni();
+	void RefreshIniVals();
 
 	/* ------------------ SUPERSTRUCTURE ------------------  */
 
 	/* ------------------------------------------------------  */
 
 	Ini *pini_;
+	double pivotPFac_, pivotIFac_, pivotDFac_;
+	double driveDPFac_, driveDIFac_, driveDDFac_;
+	double driveRPFac_, driveRIFac_, driveRDFac_;
 
 	WPI_TalonSRX *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	// Fix Later
 
@@ -94,7 +99,7 @@ private:
 	AHRS *navX_;
 
 	Compressor *compressor_;
-	DoubleSolenoid *gearShiftSolenoid_;
+//	DoubleSolenoid *gearShiftSolenoid_;
 	Encoder *leftDriveEncoder_, *rightDriveEncoder_;
 	PowerDistributionPanel* pdp_;
 	bool isLeftInverted_;

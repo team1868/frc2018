@@ -8,6 +8,17 @@ const int EDGES_PER_ENCODER_COUNT = 4;
 RobotModel::RobotModel() {
 	// Initializing ini
 	pini_ = new Ini("home/lvuser/robot.ini");
+	// Initialzing Pivot PID vals
+	pivotPFac_ = 0.0;
+	pivotIFac_ = 0.0;
+	pivotDFac_ = 0.0;
+	// Initializing DriveStraight PID vals
+	driveDPFac_ = 0.0;
+	driveDIFac_ = 0.0;
+	driveDDFac_ = 0.0;
+	driveRPFac_ = 0.0;
+	driveRIFac_ = 0.0;
+	driveRDFac_ = 0.0;
 
 	// Initializing timer
 	timer_= new Timer();
@@ -46,7 +57,7 @@ RobotModel::RobotModel() {
 
 	// Initializing pneumatics
 	compressor_ = new Compressor(PNEUMATICS_CONTROL_MODULE_ID);
-	gearShiftSolenoid_ = new DoubleSolenoid(GEAR_SHIFT_FORWARD_SOLENOID_PORT, GEAR_SHIFT_REVERSE_SOLENOID_PORT);
+//	gearShiftSolenoid_ = new DoubleSolenoid(GEAR_SHIFT_FORWARD_SOLENOID_PORT, GEAR_SHIFT_REVERSE_SOLENOID_PORT);
 }
 
 void RobotModel::ResetTimer() {
@@ -72,20 +83,20 @@ void RobotModel::SetDriveValues(RobotModel::Wheels wheel, double value) {
 }
 
 void RobotModel::SetHighGear() {
-	gearShiftSolenoid_->Set(DoubleSolenoid::kForward); // TODO Check if right
+//	gearShiftSolenoid_->Set(DoubleSolenoid::kForward); // TODO Check if right
 }
 
 void RobotModel::SetLowGear() {
-	gearShiftSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right
+//	gearShiftSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right
 }
 
 double RobotModel::GetDriveEncoderValue(RobotModel::Wheels wheel) { // TODO check if encoders are working
 	switch(wheel) {
-		case(kLeftWheels):
+		case (kLeftWheels):
 				return leftDriveEncoder_->Get();
-		case(kRightWheels):
+		case (kRightWheels):
 				return rightDriveEncoder_->Get();
-		case(kAllWheels):
+		case (kAllWheels):
 				return 0;
 		default:
 			return 0;
@@ -117,6 +128,24 @@ void RobotModel::RefreshIni() {
 	} else {
 		pini_ = new Ini("/home/lvuser/robot.ini");
 	}
+
+	RefreshIniVals();
+}
+
+void RobotModel::RefreshIniVals() {
+	printf("Refreshing ini vals\n");
+	pivotPFac_ = pini_->getf("PIVOT PID", "pFac", 0.0);
+	pivotIFac_ = pini_->getf("PIVOT PID", "iFac", 0.0);
+	pivotDFac_ = pini_->getf("PIVOT PID", "dFac", 0.0);
+
+	driveDPFac_ = pini_->getf("DRIVESTRAIGHT PID", "dPFac", 0.0);
+	driveDIFac_ = pini_->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
+	driveDDFac_ = pini_->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
+	driveRPFac_ = pini_->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
+	driveRIFac_ = pini_->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
+	driveRDFac_ = pini_->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
+
+	printf("Refreshed ini vals succesfully\n");
 }
 
 RobotModel::~RobotModel() {

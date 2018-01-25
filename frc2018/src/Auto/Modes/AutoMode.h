@@ -35,7 +35,7 @@ public:
 				currentCommand_->Update(currTimeSec, deltaTimeSec);
 			}
 		} else {
-			printf("Done with auto mode update\n");
+//			printf("Done with auto mode update\n");
 		}
 	}
 
@@ -47,6 +47,14 @@ public:
 	 */
 	bool IsDone() {
 		return (currentCommand_ == NULL);
+	}
+
+	void Disable(){
+		printf("Disabling\n");
+		if (!IsDone()) {
+			currentCommand_->Reset();
+		}
+		printf("Successfully disabled\n");
 	}
 
 protected:

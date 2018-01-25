@@ -30,6 +30,8 @@ public:
 
 	virtual bool IsDone() = 0;
 
+	virtual void Reset() = 0;
+
 	AutoCommand* GetNextCommand() {
 		return nextCommand;
 	}

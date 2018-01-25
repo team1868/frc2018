@@ -7,7 +7,8 @@ NavXPIDSource::NavXPIDSource(RobotModel *robot) {
 }
 
 double NavXPIDSource::PIDGet() {
-	CalculateAccumulatedYaw();
+//	CalculateAccumulatedYaw();
+	accumulatedYaw_ = robot_->GetNavXYaw();
 	return accumulatedYaw_;
 }
 

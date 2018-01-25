@@ -23,6 +23,8 @@
 
 #include "Logger.h"
 
+using namespace std;
+
 class MainProgram : public frc::IterativeRobot {
 
 	// Robot setup
@@ -47,7 +49,7 @@ class MainProgram : public frc::IterativeRobot {
 
 public:
 	void RobotInit() {
-		// Initialzing robot
+		// Initializing robot
 		robot_ = new RobotModel();
 		robot_->ZeroNavXYaw();
 		robot_->RefreshIni();
@@ -56,19 +58,19 @@ public:
 		driveController_ = new DriveController(robot_, humanControl_);
 		superstructureController_ = new SuperstructureController();
 
-		// Initializing auto controller
-		autoController_ = new AutoController();
-
-		// Setup to chooser auto mode from SmartDashboard
-//		autoChooser_.AddDefault("Blank Auto", new BlankMode());
-//		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode());
-//		autoChooser_.AddObject("Test Mode", new TestMode(robot_, navXSource_, talonEncoderSource_));
-//		SmartDashboard::PutData("Auto Modes", &autoChooser_);
-
 		// PID sources
 		navXSource_ = new NavXPIDSource(robot_);
 		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 		timer_ = new Timer();
+
+		// Initializing auto controller
+		autoController_ = new AutoController();
+
+		// Setup to chooser auto mode from SmartDashboard
+		autoChooser_.AddDefault("Blank Auto", new BlankMode());
+		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode());
+		autoChooser_.AddObject("Test Mode", new TestMode(robot_, navXSource_, talonEncoderSource_));
+		SmartDashboard::PutData("Auto Modes", &autoChooser_);
 
 		ResetTimerVariables();
 	}
@@ -88,9 +90,10 @@ public:
 	 * well.
 	 */
 	void AutonomousInit() override {
-		autoMode_ = new TestMode(robot_, navXSource_, talonEncoderSource_); // TODO change this
+//		autoMode_ = new TestMode(robot_, navXSource_, talonEncoderSource_); // TODO change this
+		robot_->RefreshIniVals();
 
-//		autoMode_ = autoChooser_.GetSelected();
+		autoMode_ = autoChooser_.GetSelected();
 		autoController_->SetAutonomousMode(autoMode_);
 		autoController_->Init();
 	}
@@ -113,7 +116,16 @@ public:
 
 	void TestPeriodic() {}
 
-	void DisabledPeriodic() {};
+	void DisabledInit() {
+		if (autoMode_ != NULL) {
+			autoMode_->Disable();
+		}
+
+		robot_->RefreshIniVals();
+	}
+	void DisabledPeriodic() {
+		SmartDashboard::PutNumber("NavX Yaw: ", robot_->GetNavXYaw());
+	};
 private:
 	void ResetTimerVariables() {
 		currTimeSec_ = 0.0;

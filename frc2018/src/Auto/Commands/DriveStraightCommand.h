@@ -34,11 +34,19 @@ public:
 	void Init();
 
 	void Update(double currTime, double deltaTime);
+
 	/**
 	 * @return isDone_
 	 */
 
 	bool IsDone();
+
+	/**
+	 * Disables the PIDControllers and make the command done.
+	 */
+
+	void Reset();
+
 	/**
 	 * Gets PID values from the ini file
 	 */

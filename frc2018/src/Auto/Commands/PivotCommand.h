@@ -73,11 +73,6 @@ public:
 	void Reset();
 
 	/**
-	 * gets PID values from ini file, sets to 0 if not present
-	 */
-	void GetIniValues();
-
-	/**
 	 * if PivotPID is on target more than three times then timeout
 	 * pivotPID resets, disable, isDone sets to true
 	 */
@@ -88,6 +83,11 @@ public:
 	 */
 	bool IsDone();
 
+	/**
+	 * gets PID values from ini file, sets to 0 if not present
+	 */
+	void GetIniValues();
+
 private:
 	/**
 	 * calculates the angle needed to get to the desired angle
@@ -96,7 +96,7 @@ private:
 	double CalculateDeltaAngle(double desiredAngle);
 
 	double pFac_, iFac_, dFac_;
-	double desiredDeltaAngle_;
+	double desiredAngle_;
 	double initYaw_;
 
 	bool isDone_;
@@ -107,6 +107,9 @@ private:
 	PIDController *pivotPID_;
 	NavXPIDSource * navXSource_;
 	PivotPIDTalonOutput *talonOutput_;
+
+	double maxOutput_;
+	double tolerance_;
 
 	/**
 	 * Minimum output to correct for, less would be considered done
