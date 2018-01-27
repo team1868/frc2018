@@ -70,6 +70,7 @@ public:
 		autoChooser_.AddDefault("Blank Auto", new BlankMode());
 		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode());
 		autoChooser_.AddObject("Test Mode", new TestMode(robot_, navXSource_, talonEncoderSource_));
+		autoChooser_.AddObject("Sequence Mode", new SequenceMode(robot_, navXSource_, talonEncoderSource_));
 		SmartDashboard::PutData("Auto Modes", &autoChooser_);
 
 		ResetTimerVariables();
@@ -96,6 +97,9 @@ public:
 		autoMode_ = autoChooser_.GetSelected();
 		autoController_->SetAutonomousMode(autoMode_);
 		autoController_->Init();
+
+		// TAKE OUT AFTER DONE
+		robot_->ZeroNavXYaw();
 	}
 
 	void AutonomousPeriodic() {
