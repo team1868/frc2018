@@ -80,6 +80,13 @@ public:
 	 */
 	void ZeroNavXYaw();
 
+	void SetIntakeOutput(double output);
+	void SetElevatorOutput(double output);
+	bool GetCubeInIntake();
+	double GetElevatorHeight();
+
+	Victor* GetElevatorMotor();
+
 	void RefreshIni();
 	void RefreshIniVals();
 
@@ -91,6 +98,7 @@ public:
 	double pivotPFac_, pivotIFac_, pivotDFac_;
 	double driveDPFac_, driveDIFac_, driveDDFac_;
 	double driveRPFac_, driveRIFac_, driveRDFac_;
+	double elevatorPFac_, elevatorIFac_, elevatorDFac_;
 
 	WPI_TalonSRX *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	// Fix Later
 
@@ -103,6 +111,10 @@ private:
 	Encoder *leftDriveEncoder_, *rightDriveEncoder_;
 	PowerDistributionPanel* pdp_;
 	bool isLeftInverted_;
+
+	Victor *leftIntakeMotor_, *rightIntakeMotor_, *elevatorMotor_;
+	Encoder *elevatorEncoder_;
+	DigitalInput *intakeSensor_;
 };
 
 

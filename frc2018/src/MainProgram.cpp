@@ -56,7 +56,7 @@ public:
 
 		humanControl_ = new ControlBoard();
 		driveController_ = new DriveController(robot_, humanControl_);
-		superstructureController_ = new SuperstructureController();
+		superstructureController_ = new SuperstructureController(robot_, humanControl_);
 
 		// PID sources
 		navXSource_ = new NavXPIDSource(robot_);

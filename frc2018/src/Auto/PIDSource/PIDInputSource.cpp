@@ -60,3 +60,21 @@ double TalonEncoderPIDSource::PIDGet() {
 TalonEncoderPIDSource::~TalonEncoderPIDSource() {
 
 }
+
+ElevatorEncoderPIDSource::ElevatorEncoderPIDSource(RobotModel* robot) {
+	robot_ = robot;
+	elevatorHeight_ = 0.0;
+}
+
+double ElevatorEncoderPIDSource::PIDGet() {
+	double leftDistance = robot_->GetLeftDistance();
+	double rightDistance = robot_->GetRightDistance();
+
+	elevatorHeight_ = robot_->GetElevatorHeight();
+
+	return elevatorHeight_;
+}
+
+ElevatorEncoderPIDSource::~ElevatorEncoderPIDSource() {
+
+}

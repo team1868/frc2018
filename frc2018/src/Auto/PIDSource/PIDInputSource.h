@@ -66,4 +66,17 @@ private:
 	double averageTalonDistance_;
 };
 
+/*------------------- ELEVATOR ENCODER PID SOURCE!! -------------------*/
+
+class ElevatorEncoderPIDSource : public frc::PIDSource {
+public:
+	ElevatorEncoderPIDSource(RobotModel *robot_);
+	double PIDGet();
+	virtual ~ElevatorEncoderPIDSource();
+
+private:
+	RobotModel *robot_;
+	double elevatorHeight_;
+};
+
 #endif /* SRC_AUTO_PIDINPUTSOURCE_H_ */

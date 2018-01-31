@@ -29,6 +29,17 @@ public:
 	bool GetArcadeDriveDesired();
 	bool GetQuickTurnDesired();
 
+	/**
+	 * Returns desired values for superstructure controls
+	 */
+	bool GetIntakeDesired();
+	void SetIntakeDesired(bool desired)
+	bool GetOuttakeDesired();
+	bool GetElevatorUpDesired();
+	bool GetElevatorDownDesired();
+	bool GetElevatorHeightDesired();
+	double GetElevatorHeightValue();
+
 	virtual ~ControlBoard();
 private:
 	void ReadAllButtons();
@@ -50,6 +61,13 @@ private:
 
 	// Auto switches
 	ButtonReader *leftAutoSwitch_, *rightAutoSwitch_, *middleAutoSwitch_;
+
+	// Buttons for superstructure
+	ButtonReader *intakeButton_, *outtakeButton_, *elevatorUpButton_, *elevatorDownButton_, *elevatorHeightButton_;
+
+	// Variables for superstructure
+	bool intakeDesired_, outtakeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHeightDesired_;
+	double elevatorHeightValue_;
 };
 
 #endif /* SRC_DRIVERSTATION_CONTROLBOARD_H_ */
