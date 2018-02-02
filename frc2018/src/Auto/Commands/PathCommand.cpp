@@ -1,6 +1,8 @@
 #include <Auto/Commands/PathCommand.h>
 #include <ctre/Phoenix.h>
 #include "../../../ext/pathfinder/pathfinder.h"
+#include <fstream>
+#include <string>
 
 const double WHEELBASE_WIDTH = 22.5/12.0; // mid of wheels, tentative
 const double WHEEL_DIAMETER = 6.252/12.0; // in ft
@@ -10,6 +12,25 @@ const double MAX_ACCELERATION = 4.0; // = 4.0??? m/s^2
 const double MAX_JERK = 60.0; // = 60.0??? m/s^3
 const int TICKS_PER_REV = 256; // optical encoder
 
+const string TRAJECTORY_FILE_DIR = "../MotionProfiling";
+
+const string LEFT_RIGHT_SIDE_TO_RIGHT_SWITCH = "left_right_side_to_right_switch.csv";
+const string RIGHT_RIGHT_SIDE_TO_RIGHT_SWITCH = "right_right_side_to_right_switch.csv";
+
+const string LEFT_LEFT_SIDE_TO_LEFT_SWITCH = "left_left_side_to_left_switch.csv";
+const string RIGHT_LEFT_SIDE_TO_LEFT_SWITCH = "right_left_side_to_left_switch.csv";
+
+const string LEFT_LEFT_SIDE_TO_RIGHT_SWITCH = "left_left_side_to_right_switch.csv";
+const string RIGHT_LEFT_SIDE_TO_RIGHT_SWITCH = "right_left_side_to_right_switch.csv";
+
+const string LEFT_RIGHT_SIDE_TO_LEFT_SWITCH = "left_right_side_to_left_switch.csv";
+const string RIGHT_RIGHT_SIDE_TO_LEFT_SWITCH = "right_right_side_to_left_switch.csv";
+
+const string LEFT_LEFT_SWITCH_TO_RIGHT = "left_left_switch_to_right.csv";
+const string RIGHT_LEFT_SWITCH_TO_RIGHT = "right_left_switch_to_right.csv";
+
+const string LEFT_RIGHT_SWITCH_TO_LEFT = "left_right_switch_to_left.csv";
+const string RIGHT_RIGHT_SWITCH_TO_LEFT = "right_right_switch_to_left.csv";
 
 PathCommand::PathCommand(RobotModel *robot, Path path) {
 	robot_ = robot;
@@ -46,45 +67,122 @@ PathCommand::PathCommand(RobotModel *robot, Path path) {
 	initialAngle_ = 0.0;
 }
 
-void PathCommand::Init() {
+void PathCommand::ReadTrajectory() {
+
+	string left_Trajectory_File_Name = NULL;
+	string right_Trajectory_File_Name = NULL;
+
 	switch (path_) {
-	case kLeftSwitchToRight:
+	case kRightSideToRightSwitch:
+		left_Trajectory_File_Name = TRAJECTORY_FILE_DIR + LEFT_RIGHT_SIDE_TO_RIGHT_SWITCH;
+		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_RIGHT_SIDE_TO_RIGHT_SWITCH;
 		break;
-	case kRightSwitchToLeft:
-		break;
-	case kLeftSwitchToLeftScale:
-		break;
-	case kLeftSwitchToRightScale:
-		break;
-	case kRightSwitchToRightScale:
-		break;
-	case kRightSwitchToLeftScale:
+	case kLeftSideToLeftSwitch:
+		left_Trajectory_File_Name = TRAJECTORY_FILE_DIR + LEFT_LEFT_SIDE_TO_LEFT_SWITCH;
+		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_LEFT_SIDE_TO_LEFT_SWITCH;
 		break;
 	default:
 		printf("MOTION PROFILE IS NULL\n");
 		break;
 	}
 
-	Waypoint *points = (Waypoint*)malloc(sizeof(Waypoint) * pointLength_);
-	if (pointLength_ >= 1) {
-		Waypoint p1 = { p1_x_, p1_y_, d2r(p1_r_) };
-		points[0] = p1;
+	ifstream lfin(left_Trajectory_File_Name);
+	ifstream rfin(right_Trajectory_File_Name);
+
+	int lineNum = 0;
+	while (lfin.good()) {
+		string leftvalue;
+		string rightvalue;
+		getline(lfin, leftvalue, ',');
+		getline(rfin, rightvalue, ',');
+		if (lineNum < 8) {
+			lineNum += 1;
+			continue;
+		}
+
+		Segment tempLeft;
+		Segment tempRight;
+
+		int lineModEight = lineNum % 8;
+		double leftVal = std::stod(leftvalue);
+		double rightVal = std::stod(rightvalue);
+		if (lineModEight == 0) { // dt value
+			tempLeft.dt = leftVal;
+			tempRight.dt = rightVal;
+		} else if (lineModEight == 1) { // x val
+			tempLeft.x = leftVal;
+			tempRight.x = rightVal;
+		} else if (lineModEight == 2) { // y val
+			tempLeft.y = leftVal;
+			tempRight.y = rightVal;
+		} else if (lineModEight == 3) { // position
+			tempLeft.position = leftVal;
+			tempRight.position = rightVal;
+		} else if (lineModEight == 4) { // velocity
+			tempLeft.velocity = leftVal;
+			tempRight.velocity = rightVal;
+		} else if (lineModEight == 5) { // acceleration
+			tempLeft.acceleration =  leftVal;
+			tempRight.acceleration = rightVal;
+		} else if (lineModEight == 6) { // jerk
+			tempLeft.jerk = leftVal;
+			tempRight.jerk = rightVal;
+		} else if (lineModEight == 7) { // heading
+			tempLeft.heading = leftVal;
+			tempRight.heading = rightVal;
+
+			leftTrajectory_[lineNum/8 - 1] = tempLeft;
+			rightTrajectory_[lineNum/8 - 1] = tempRight;
+		}
+		lineNum += 1;
+	}
+}
+
+void PathCommand::Init() {
+
+	switch (path_) {
+	case kRightSideToRightSwitch:
+		break;
+	case kLeftSideToLeftSwitch:
+		break;
+//	case kLeftSwitchToRight:
+//		break;
+//	case kRightSwitchToLeft:
+//		break;
+//	case kLeftSwitchToLeftScale:
+//		break;
+//	case kLeftSwitchToRightScale:
+//		break;
+//	case kRightSwitchToRightScale:
+//		break;
+//	case kRightSwitchToLeftScale:
+//		break;
+	default:
+		printf("MOTION PROFILE IS NULL\n");
+		break;
 	}
 
-	if (pointLength_ >= 2) {
-		Waypoint p2 = { p2_x_, p2_y_, d2r(p2_r_) };
-		points[1] = p2;
-	}
-
-	if (pointLength_ >= 3) {
-		Waypoint p3 = { p3_x_, p3_y_, d2r(p3_r_) };
-		points[2] = p3;
-	}
-
-	if (pointLength_ >= 4 ) {
-		Waypoint p4 = { p4_x_, p4_y_, d2r(p4_r_) };
-		points[3] = p4;
-	}
+//  FOR ONBOARD GENERATING
+//	Waypoint *points = (Waypoint*)malloc(sizeof(Waypoint) * pointLength_);
+//	if (pointLength_ >= 1) {
+//		Waypoint p1 = { p1_x_, p1_y_, d2r(p1_r_) };
+//		points[0] = p1;
+//	}
+//
+//	if (pointLength_ >= 2) {
+//		Waypoint p2 = { p2_x_, p2_y_, d2r(p2_r_) };
+//		points[1] = p2;
+//	}
+//
+//	if (pointLength_ >= 3) {
+//		Waypoint p3 = { p3_x_, p3_y_, d2r(p3_r_) };
+//		points[2] = p3;
+//	}
+//
+//	if (pointLength_ >= 4 ) {
+//		Waypoint p4 = { p4_x_, p4_y_, d2r(p4_r_) };
+//		points[3] = p4;
+//	}
 
 	TrajectoryCandidate candidate;
 
@@ -98,19 +196,20 @@ void PathCommand::Init() {
 	// Max Acceleration:    10 m/s/s
 	// Max Jerk:            60 m/s/s/s
 
-	pathfinder_prepare(points, pointLength_, FIT_HERMITE_CUBIC, PATHFINDER_SAMPLES_HIGH, TIME_STEP, MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK, &candidate);
-
-	trajectoryLength_ = candidate.length;
-	printf("trajectory length in init: %i \n", trajectoryLength_);
+//  FOR ONBOARD GENERATING
+//	pathfinder_prepare(points, pointLength_, FIT_HERMITE_CUBIC, PATHFINDER_SAMPLES_HIGH, TIME_STEP, MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK, &candidate);
+//
+//	trajectoryLength_ = candidate.length;
+//	printf("trajectory length in init: %i \n", trajectoryLength_);
 
 	Segment *trajectory = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
 
-	pathfinder_generate(&candidate, trajectory);
+//	pathfinder_generate(&candidate, trajectory);
 
 	leftTrajectory_ = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
 	rightTrajectory_ = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
 
-	pathfinder_modify_tank(trajectory, trajectoryLength_, leftTrajectory_, rightTrajectory_, WHEELBASE_WIDTH);
+//	pathfinder_modify_tank(trajectory, trajectoryLength_, leftTrajectory_, rightTrajectory_, WHEELBASE_WIDTH);
 
 	for (int i = 0; i < trajectoryLength_; i++) {
 		cout << "position: " << trajectory->position << endl;
@@ -159,9 +258,9 @@ void PathCommand::Init() {
 	robot_->rightSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 40);
 	// CHANGE TIMEOUT, LAST PARAM
 
-	FILE *fp_traj = fopen("/home/lvuser/trajectory.csv", "w");
-	pathfinder_serialize_csv(fp_traj, trajectory, trajectoryLength_);
-	fclose(fp_traj);
+//	FILE *fp_traj = fopen("/home/lvuser/trajectory.csv", "w");
+//	pathfinder_serialize_csv(fp_traj, trajectory, trajectoryLength_);
+//	fclose(fp_traj);
 
 	FILE *fp_leftTraj = fopen("/home/lvuser/left_trajectory.csv", "w");
 	pathfinder_serialize_csv(fp_leftTraj, leftTrajectory_, trajectoryLength_);
@@ -263,8 +362,8 @@ bool PathCommand::IsDone() {
 		free(rightEncoderFollower_);
 		free(leftTrajectory_);
 		free(rightTrajectory_);
-		free(trajectory);
-		free(points);
+//		free(trajectory);
+//		free(points);
 
 		return true;
 	} else {

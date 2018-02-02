@@ -12,7 +12,8 @@
 
 class PathCommand : public AutoCommand {
 public:
-	enum Path { kLeftSwitchToRight, kRightSwitchToLeft, kLeftSwitchToLeftScale, kLeftSwitchToRightScale, kRightSwitchToRightScale, kRightSwitchToLeftScale };
+	enum Path { kRightSideToRightSwitch, kLeftSideToLeftSwitch };
+	//, kRightSideToLeftSwitch, kLeftSideToRightSwitch, kLeftSwitchToRight, kRightSwitchToLeft, kLeftSwitchToLeftScale, kLeftSwitchToRightScale, kRightSwitchToRightScale, kRightSwitchToLeftScale
 
 	/**
 	 * Constructor that generates a PathCommand
@@ -44,6 +45,7 @@ public:
 	double rightError;
 
 private:
+	void ReadTrajectory();
 	RobotModel *robot_;
 	Path path_;
 
