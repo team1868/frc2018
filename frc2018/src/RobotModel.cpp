@@ -4,11 +4,12 @@
 const double WHEEL_DIAMETER = 6.0 / 12.0; 			// TODO CHANGE
 const double ENCODER_COUNT_PER_ROTATION = 256.0;
 const int EDGES_PER_ENCODER_COUNT = 4;
+const double ELEVATOR_DISTANCE_PER_PULSE = 1.0; // TODO FIGURE OUT ACTUAL VALUE
 
 RobotModel::RobotModel() {
 	// Initializing ini
 	pini_ = new Ini("home/lvuser/robot.ini");
-	// Initialzing Pivot PID vals
+	// Initializing Pivot PID vals
 	pivotPFac_ = 0.0;
 	pivotIFac_ = 0.0;
 	pivotDFac_ = 0.0;
@@ -19,6 +20,10 @@ RobotModel::RobotModel() {
 	driveRPFac_ = 0.0;
 	driveRIFac_ = 0.0;
 	driveRDFac_ = 0.0;
+	// Initializing Elevator PID vals
+	elevatorPFac_ = 0.0;
+	elevatorIFac_ = 0.0;
+	elevatorDFac_ = 0.0;
 
 	// Initializing timer
 	timer_= new Timer();
@@ -58,6 +63,16 @@ RobotModel::RobotModel() {
 	// Initializing pneumatics
 	compressor_ = new Compressor(PNEUMATICS_CONTROL_MODULE_ID);
 //	gearShiftSolenoid_ = new DoubleSolenoid(GEAR_SHIFT_FORWARD_SOLENOID_PORT, GEAR_SHIFT_REVERSE_SOLENOID_PORT);
+
+	leftIntakeMotor_ = new Victor(LEFT_INTAKE_MOTOR_PWM_PORT);
+	rightIntakeMotor_ = new Victor(RIGHT_INTAKE_MOTOR_PWM_PORT);
+	elevatorMotor_ = new Victor(ELEVATOR_MOTOR_PWM_PORT);
+
+	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_A_PWM_PORT, ELEVATOR_ENCODER_B_PWM_PORT, false);
+	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
+
+	intakeSensor_ = new DigitalInput(INTAKE_SENSOR_PWM_PORT);
+
 }
 
 void RobotModel::ResetTimer() {
@@ -119,6 +134,28 @@ void RobotModel::ZeroNavXYaw() {
 	navX_->ZeroYaw();
 }
 
+void RobotModel::SetIntakeOutput(double output) {
+	leftIntakeMotor_->Set(output);
+	rightIntakeMotor_->Set(output);
+}
+
+void RobotModel::SetElevatorOutput(double output) {
+	elevatorMotor_->Set(output);
+}
+
+double RobotModel::GetElevatorHeight() {
+	return elevatorEncoder_->GetDistance();
+}
+
+bool RobotModel::GetCubeInIntake() {
+	return intakeSensor_->Get();
+}
+
+Victor* RobotModel::GetElevatorMotor() {
+	return elevatorMotor_;
+}
+
+
 void RobotModel::RefreshIni() {
 	delete pini_;
 	const char* usbPath = "insert path here"; // TODO fix
@@ -144,6 +181,10 @@ void RobotModel::RefreshIniVals() {
 	driveRPFac_ = pini_->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
 	driveRIFac_ = pini_->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
 	driveRDFac_ = pini_->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
+
+	elevatorPFac_ = pini_->getf("ELEVATOR PID", "pFac", 0.0);
+	elevatorIFac_ = pini_->getf("ELEVATOR PID", "iFac", 0.0);
+	elevatorDFac_ = pini_->getf("ELEVATOR PID", "dFac", 0.0);
 
 	printf("Refreshed ini vals succesfully\n");
 }

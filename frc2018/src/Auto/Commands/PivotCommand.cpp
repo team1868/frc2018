@@ -69,10 +69,11 @@ void PivotCommand::Init() {
 }
 
 void PivotCommand::Reset() {
-	printf("Resetting pivotcommand\n");
+	printf("Disabling pivotcommand\n");
 	pivotPID_->Reset();
 	pivotPID_->Disable();
 	isDone_ = true;
+	delete(pivotPID_);
 	printf("DONE FROM RESET \n");
 }
 
@@ -131,9 +132,6 @@ double PivotCommand::CalculateDeltaAngle(double desiredAngle) {
 }
 
 PivotCommand::~PivotCommand() {
-	pivotPID_->Reset();
-	pivotPID_->Disable();
-	isDone_ = true;
-	delete(pivotPID_);
+	Reset();
 	printf("IS DONE FROM DECONSTRUCTOR\n");
 }
