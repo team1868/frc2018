@@ -3,6 +3,7 @@
 
 #include "RobotModel.h"
 #include "DriverStation/ControlBoard.h"
+#include "Auto/Commands/ElevatorHeightCommand.h"
 
 
 class SuperstructureController {

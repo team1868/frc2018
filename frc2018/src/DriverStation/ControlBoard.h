@@ -33,7 +33,7 @@ public:
 	 * Returns desired values for superstructure controls
 	 */
 	bool GetIntakeDesired();
-	void SetIntakeDesired(bool desired)
+	void SetIntakeDesired(bool desired);
 	bool GetOuttakeDesired();
 	bool GetElevatorUpDesired();
 	bool GetElevatorDownDesired();
