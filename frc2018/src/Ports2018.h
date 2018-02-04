@@ -68,8 +68,8 @@ static const int ELEVATOR_HEIGHT_BUTTON_PORT			= 3;
 static const int RAMP_BUTTON_PORT						= 6;
 
 // Auto mode switch ports
-static const int LEFT_AUTO_SWITCH_PORT					= 1;	// TODO CHECK THIS
-static const int RIGHT_AUTO_SWITCH_PORT					= 2;	// TODO CHECK THIS
+static const int LEFT_AUTO_SWITCH_PORT					= 2;	// TODO CHECK THIS
 static const int MIDDLE_AUTO_SWITCH_PORT				= 3;	// TODO CHECK THIS
+static const int RIGHT_AUTO_SWITCH_PORT					= 4;	// TODO CHECK THIS
 
 #endif /* SRC_PORTS2018_H_ */

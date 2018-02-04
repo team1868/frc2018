@@ -21,6 +21,20 @@ public:
 	DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
 			AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
 			double desiredDistance);
+
+	/**
+		 * Constructor that generates the DriveStraight Command
+		 * @param navXSource angle input for the PID Loop
+		 * @param talonEncoderSource distance input for distance PID Loop
+		 * @param anglePIDOutput output for the angle PID Loop
+		 * @param robot robot model
+		 * @param distance in feet
+		 * @param angle the robot should be
+		 */
+	DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
+				AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
+				double desiredDistance, double absoluteAngle);
+
 	/**
 	 * Destructor
 	 */
@@ -28,11 +42,15 @@ public:
 	virtual ~DriveStraightCommand();
 
 	/**
-	 * Chekcs if the PID is on target or if it times out, then sets isDone_ is true and stops the motors. Otherwise, sets the right and left motors to the PID outputs.
+	 * Checks if the PID is on target or if it times out, then sets isDone_ is true and stops the motors. Otherwise, sets the right and
+	 * left motors to the PID outputs.
 	 */
 
 	void Init();
 
+	/**
+	 * Runs the DriveStraight PIDs. Times out after 3 seconds for now.
+	 */
 	void Update(double currTime, double deltaTime);
 
 	/**
@@ -62,11 +80,12 @@ private:
 	PIDController *distancePID_;
 	RobotModel *robot_;
 
+	bool isAbsoluteAngle_;
 	double rPFac_, rIFac_, rDFac_;
 	double rMaxOutput_, rTolerance_;
 	double dPFac_, dIFac_, dDFac_;
 	double dMaxOutput_, dTolerance_;
-	double initialAngle_;
+	double desiredAngle_;
 	double initialAvgDistance_;
 	double desiredDistance_;
 	double desiredTotalAvgDistance_;

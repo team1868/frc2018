@@ -13,7 +13,7 @@
 class BlankMode : public AutoMode {
 public:
 	BlankMode();
-	void CreateQueue();
+	void CreateQueue(string gameData, AutoMode::AutoPositions pos) override;
 	void Init();
 	void RefreshIni();
 	virtual ~BlankMode();

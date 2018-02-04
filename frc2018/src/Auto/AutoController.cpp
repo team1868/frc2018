@@ -15,10 +15,16 @@ void AutoController::SetAutonomousMode(AutoMode *myAutoMode) {
 	autoMode = myAutoMode;
 }
 
-void AutoController::Init() {
-	autoMode->CreateQueue();
-	autoMode->Init();
-	autoMode->RefreshIni();
+void AutoController::Init(string gameData, AutoMode::AutoPositions pos) {
+	printf("queuing now\n");
+	if (autoMode == NULL) {
+		printf("autoMode is null\n");
+	} else {
+		autoMode->CreateQueue(gameData, pos);
+		printf("Queue finished\n");
+		autoMode->Init();
+		printf("init finished\n");
+	}
 }
 
 void AutoController::Update(double currTimeSec, double deltaTimeSec) {

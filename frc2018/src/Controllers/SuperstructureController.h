@@ -2,7 +2,7 @@
 #define SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_
 
 #include "RobotModel.h"
-#include "DriverStation/ControlBoard.h"
+#include <DriverStation/ControlBoard.h>
 #include "Auto/Commands/ElevatorHeightCommand.h"
 
 

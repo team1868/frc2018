@@ -32,8 +32,9 @@ public:
 
 	/**
 	 * create a queue for automode and initializes it
+	 * @param string of switch & scale position
 	 */
-	void Init();
+	void Init(string gameData, AutoMode::AutoPositions pos);
 
 	/**
 	 * Updates automode

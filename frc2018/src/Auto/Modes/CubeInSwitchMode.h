@@ -12,8 +12,8 @@
 
 class CubeInSwitchMode : public AutoMode{
 public:
-	CubeInSwitchMode();
-	void CreateQueue();
+	CubeInSwitchMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoder);
+	void CreateQueue(string gameData, AutoPositions pos) override;
 	void Init();
 	void RefreshIni();
 

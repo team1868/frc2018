@@ -3,6 +3,7 @@
 
 #include <WPILib.h>
 #include <DriverStation/ButtonReader.h>
+#include <Auto/Modes/AutoMode.h>
 #include <Ports2018.h>
 
 class ControlBoard {
@@ -42,6 +43,9 @@ public:
 	double GetElevatorHeightValue();
 	bool GetRampDesired();
 
+	// Auto Controls
+	AutoMode::AutoPositions GetDesiredAutoPosition();
+
 	virtual ~ControlBoard();
 private:
 	void ReadAllButtons();
@@ -61,15 +65,16 @@ private:
 	// Buttons for drive
 	ButtonReader *driveDirectionButton_, *gearShiftButton_, *arcadeDriveButton_, *quickTurnButton_;
 
-	// Auto switches
-	ButtonReader *leftAutoSwitch_, *rightAutoSwitch_, *middleAutoSwitch_;
-
 	// Buttons for superstructure
 	ButtonReader *intakeButton_, *outtakeButton_, *elevatorUpButton_, *elevatorDownButton_, *elevatorHeightButton_, *rampButton_;
 
 	// Variables for superstructure
 	bool intakeDesired_, outtakeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHeightDesired_, rampDesired_;
 	double elevatorHeightValue_;
+
+	// Auto switches
+	bool leftDown_, rightDown_, middleDown_;
+	ButtonReader *leftAutoSwitch_, *rightAutoSwitch_, *middleAutoSwitch_;
 };
 
 #endif /* SRC_DRIVERSTATION_CONTROLBOARD_H_ */

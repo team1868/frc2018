@@ -4,6 +4,7 @@
 DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
 		AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
 		double desiredDistance) {
+	isAbsoluteAngle_ = false;
 	robot_ = robot;
 
 	navXSource_ = navXSource;
@@ -12,7 +13,46 @@ DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncod
 	anglePIDOutput_ = anglePIDOutput;
 	distancePIDOutput_ = distancePIDOutput;
 
-	initialAngle_ = navXSource_->PIDGet();
+	desiredAngle_ = navXSource_->PIDGet();
+	initialAvgDistance_ = talonEncoderSource_->PIDGet();
+
+	desiredDistance_ = desiredDistance;
+	desiredTotalAvgDistance_ = initialAvgDistance_ + desiredDistance_;
+
+	leftMotorOutput_ = 0.0;
+	rightMotorOutput_ = 0.0;
+	isDone_ = false;
+	initialDriveTime_ = robot_->GetTime();
+	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
+
+	// Setting up the PID controllers
+	GetIniValues();
+	anglePID_ = new PIDController(rPFac_, rIFac_, rDFac_, navXSource_, anglePIDOutput_);
+	distancePID_ = new PIDController(dPFac_, dIFac_, dDFac_, talonEncoderSource_, distancePIDOutput_);
+
+	rTolerance_ = 1.0;
+	dTolerance_ = 1.0 / 12.0;
+
+	rMaxOutput_ = 0.2;
+	dMaxOutput_ = 0.7; // Currently for the KOP @ google (slipped a lot when higher)
+	// initializing number of times robot is on target
+	numTimesOnTarget_ = 0;
+
+}
+
+DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
+		AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
+		double desiredDistance, double absoluteAngle) {
+	isAbsoluteAngle_ = true;
+	robot_ = robot;
+
+	navXSource_ = navXSource;
+	talonEncoderSource_ = talonEncoderSource;
+
+	anglePIDOutput_ = anglePIDOutput;
+	distancePIDOutput_ = distancePIDOutput;
+
+	desiredAngle_ = absoluteAngle;
 	initialAvgDistance_ = talonEncoderSource_->PIDGet();
 
 	desiredDistance_ = desiredDistance;
@@ -50,11 +90,13 @@ void DriveStraightCommand::Init() {
 	anglePID_->SetPID(rPFac_, rIFac_, rDFac_);
 	distancePID_->SetPID(dPFac_, dIFac_, dDFac_);
 
-	initialAngle_ = navXSource_->PIDGet();
+	if (!isAbsoluteAngle_) {
+		desiredAngle_ = navXSource_->PIDGet();
+	}
 	initialAvgDistance_ = talonEncoderSource_->PIDGet();
 	desiredTotalAvgDistance_ = initialAvgDistance_ + desiredDistance_;
 
-	anglePID_->SetSetpoint(initialAngle_);
+	anglePID_->SetSetpoint(desiredAngle_);
 	distancePID_->SetSetpoint(desiredTotalAvgDistance_);
 
 	anglePID_->SetContinuous(false);
@@ -85,7 +127,7 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Right Motor Output", rightMotorOutput_);
 	SmartDashboard::PutNumber("Angle Error", anglePID_->GetError());
 	SmartDashboard::PutNumber("Angle Error Graph", anglePID_->GetError());
-	SmartDashboard::PutNumber("DesiredAngle", initialAngle_);
+	SmartDashboard::PutNumber("DesiredAngle", desiredAngle_);
 	SmartDashboard::PutNumber("Encoder Error Feet", distancePID_->GetError());
 	SmartDashboard::PutNumber("Encoder Error Feet Graph", distancePID_->GetError());
 	SmartDashboard::PutNumber("Desired Total Feet", desiredTotalAvgDistance_);
@@ -160,5 +202,3 @@ void DriveStraightCommand::GetIniValues() { // Ini values are refreshed at the s
 DriveStraightCommand::~DriveStraightCommand() {
 
 }
-
-

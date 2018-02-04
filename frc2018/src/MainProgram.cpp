@@ -68,35 +68,41 @@ public:
 
 		// Setup to chooser auto mode from SmartDashboard
 		autoChooser_.AddDefault("Blank Auto", new BlankMode());
-		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode());
+		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode(robot_, navXSource_, talonEncoderSource_));
 		autoChooser_.AddObject("Test Mode", new TestMode(robot_, navXSource_, talonEncoderSource_));
-		autoChooser_.AddObject("Sequence Mode", new SequenceMode(robot_, navXSource_, talonEncoderSource_));
+//		autoChooser_.AddObject("Sequence Mode", new SequenceMode(robot_, navXSource_, talonEncoderSource_));
 		SmartDashboard::PutData("Auto Modes", &autoChooser_);
 
+		autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		ResetTimerVariables();
 	}
 
 	/*
 	 * This autonomous (along with the chooser code above) shows how to
 	 * select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * GetString line to get the auto name from the text box below the Gyro.
+	 * between different autonomous modes using the dashboard.
 	 *
-	 * You can add additional auto modes by adding additional comparisons to
-	 * the
-	 * if-else structure below with additional strings. If using the
-	 * SendableChooser make sure to add them to the chooser code above as
-	 * well.
+	 * Auto Position List (Determined by the auto switches):
+	 * 0: Far Left
+	 * 1: Middle
+	 * 2: Middle Right
+	 * 3: Far Right
 	 */
 	void AutonomousInit() override {
-//		autoMode_ = new TestMode(robot_, navXSource_, talonEncoderSource_); // TODO change this
+		string gameData = "LRL"; // TODO Change this :)
+//		gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
 		robot_->RefreshIniVals();
 
 		autoMode_ = autoChooser_.GetSelected();
+		autoMode_ = new CubeInSwitchMode(robot_, navXSource_, talonEncoderSource_);
+		if (autoMode_ == NULL) {
+			printf("auto mode is null from autoinit\n");
+		}
+		printf("Get selected\n");
 		autoController_->SetAutonomousMode(autoMode_);
-		autoController_->Init();
+		printf("Auto mode set\n");
+		autoController_->Init(gameData, autoPosition_);
+		printf("Auto mode init\n");
 
 		// TAKE OUT AFTER DONE
 		robot_->ZeroNavXYaw();
@@ -132,6 +138,8 @@ public:
 		SmartDashboard::PutNumber("NavX Yaw: ", robot_->GetNavXYaw());
 	};
 private:
+	AutoMode::AutoPositions autoPosition_;
+
 	void ResetTimerVariables() {
 		currTimeSec_ = 0.0;
 		lastTimeSec_ = 0.0;

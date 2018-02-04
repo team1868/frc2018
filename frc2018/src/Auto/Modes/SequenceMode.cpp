@@ -7,13 +7,7 @@
 
 #include <Auto/Modes/SequenceMode.h>
 
-SequenceMode::SequenceMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoder) {
-	robot_ = robot;
-	navX_ = navX;
-	talonEncoder_ = talonEncoder;
-
-	angleOutput_ = new AnglePIDOutput();
-	distanceOutput_ = new DistancePIDOutput();
+SequenceMode::SequenceMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoder) : AutoMode(robot, navX, talonEncoder) {
 	autoSequenceStr_ = robot_->pini_->gets("TEST MODE", "autoSequence", "");
 
 	firstCommand_ = NULL;

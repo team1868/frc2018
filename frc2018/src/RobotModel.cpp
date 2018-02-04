@@ -83,6 +83,21 @@ double RobotModel::GetTime() {
 	return timer_->Get();
 }
 
+WPI_TalonSRX *RobotModel::GetTalon(Talons talon) {
+	switch(talon) {
+		case(kLeftMaster):
+				return leftMaster_;
+		case(kLeftSlave):
+				return leftSlave_;
+		case(kRightMaster):
+				return rightMaster_;
+		case(kRightSlave):
+				return rightSlave_;
+		default:
+			return NULL;
+	}
+}
+
 void RobotModel::SetDriveValues(RobotModel::Wheels wheel, double value) {
 	switch(wheel) {
 		case (kLeftWheels):

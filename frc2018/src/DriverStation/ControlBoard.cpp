@@ -44,6 +44,12 @@ ControlBoard::ControlBoard() {
 	rampDesired_ = false;
 
 	elevatorHeightValue_ = 0.0;
+
+	leftAutoSwitch_ = new ButtonReader(operatorJoy_,LEFT_AUTO_SWITCH_PORT);
+	rightAutoSwitch_ = new ButtonReader(operatorJoy_, RIGHT_AUTO_SWITCH_PORT);
+	middleAutoSwitch_ = new ButtonReader(operatorJoy_, MIDDLE_AUTO_SWITCH_PORT);
+
+	ReadControls();
 }
 
 void ControlBoard::ReadControls() {
@@ -73,6 +79,11 @@ void ControlBoard::ReadControls() {
 	}
 	elevatorHeightValue_ = operatorJoy_->GetZ(); // TODO Figure out axis and joystick
 	rampDesired_ = rampButton_->WasJustPressed();
+
+	// Reading Auto Switch vals;
+	leftDown_ = leftAutoSwitch_->IsDown();
+	middleDown_ = middleAutoSwitch_->IsDown();
+	rightDown_ = rightAutoSwitch_->IsDown();
 }
 
 double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
@@ -153,6 +164,32 @@ bool ControlBoard::GetRampDesired() {
 	return rampDesired_;
 }
 
+AutoMode::AutoPositions ControlBoard::GetDesiredAutoPosition() {
+	AutoMode::AutoPositions position = AutoMode::kBlank;
+
+	if (!leftDown_) {
+		if (!middleDown_) {
+			if (!rightDown_){
+				position = AutoMode::kMiddle;	// starting position middle
+			} else {
+				position = AutoMode::kFarRight;	// starting position far right
+			}
+		} else {
+			if (rightDown_) {
+				position = AutoMode::kMiddleRight;	// starting position middle right
+			}
+		}
+	} else {
+		if (!middleDown_) {
+			if(!rightDown_) {
+				position = AutoMode::kLeft;	// starting position left
+			}
+		}
+	}
+
+	return position;
+}
+
 void ControlBoard::ReadAllButtons() {
 	driveDirectionButton_->ReadValue();
 	gearShiftButton_->ReadValue();
@@ -165,6 +202,10 @@ void ControlBoard::ReadAllButtons() {
 	elevatorDownButton_->ReadValue();
 	elevatorHeightButton_->ReadValue();
 	rampButton_->ReadValue();
+
+	rightAutoSwitch_->ReadValue();
+	middleAutoSwitch_->ReadValue();
+	leftAutoSwitch_->ReadValue();
 }
 
 ControlBoard::~ControlBoard() {

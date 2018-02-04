@@ -1,17 +1,80 @@
 #ifndef SRC_AUTO_MODES_AUTOMODE_H_
 #define SRC_AUTO_MODES_AUTOMODE_H_
 
+#include "RobotModel.h"
+#include "Auto/PIDSource/PIDInputSource.h"
+#include "Auto/PIDSource/PIDOutputSource.h"
 #include "Auto/Commands/AutoCommand.h"
+#include "Auto/Commands/PivotCommand.h"
+#include "Auto/Commands/DriveStraightCommand.h"
 
 class AutoMode {
 public:
-	AutoMode() {
+	enum AutoPositions { kBlank, kLeft, kMiddle, kMiddleRight, kFarRight };
+
+	AutoMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoder) {
+		printf("Constructing AutoMode\n");
 		currentCommand_ = NULL;
+		robot_ = robot;
+		navX_ = navX;
+		talonEncoder_ = talonEncoder;
+
+		angleOutput_ = new AnglePIDOutput();
+		distanceOutput_ = new DistancePIDOutput();
+		printf("Done constructing AutoMode\n");
 	};
 
 	virtual ~AutoMode() {};
 
-	virtual void CreateQueue() = 0;
+	virtual void CreateQueue(string gameData, AutoMode::AutoPositions pos) {
+	}
+
+	void QueueFromString(string autoSequence) {
+		currentCommand_ = NULL;
+		AutoCommand *lastCommand = NULL;
+		RefreshIni();
+		std::istringstream iss(autoSequence);
+		bool breakDesired = false;
+		while (!iss.eof() && !breakDesired) {
+			AutoCommand* tempCommand = NULL;
+			char command;
+			iss >> command;
+			printf("Command: %c, ", command);
+
+			double angle;
+			double distance;
+
+			switch(command) {
+			case 'p':	// Pivots with absolute position
+				iss >> angle;
+				printf("Angle: %f\n",angle);
+				tempCommand = new PivotCommand(robot_, angle, true, navX_);
+				break;
+			case 'a':	// Drive straight at absolute position
+				iss >> distance >> angle;
+				printf("Distance: %f, Angle: %f\n", distance, angle);
+				tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance, angle);
+				break;
+			case 'd':	// Drive straight
+				iss >> distance;
+				printf("Distance: %f", distance);
+				tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance);
+				break;
+			default:	// When it's not listed, don't do anything :)
+				currentCommand_ = NULL;
+				tempCommand = NULL;
+				breakDesired = true;
+				break;
+			}
+
+			if (currentCommand_ == NULL) {
+				currentCommand_ = tempCommand;
+				lastCommand = currentCommand_;
+			} else {
+				lastCommand->SetNextCommand(tempCommand);
+				lastCommand = lastCommand->GetNextCommand();			}
+		}
+	}
 
 	virtual void Init() = 0;
 
@@ -39,7 +102,9 @@ public:
 		}
 	}
 
-	virtual void RefreshIni() = 0;
+	virtual void RefreshIni() {
+
+	}
 
 	/**
 	 * Returns when AutoMode is done
@@ -59,6 +124,13 @@ public:
 
 protected:
 	AutoCommand *currentCommand_;
+	RobotModel* robot_;
+
+	NavXPIDSource* navX_;
+	TalonEncoderPIDSource* talonEncoder_;
+
+	AnglePIDOutput *angleOutput_;
+	DistancePIDOutput *distanceOutput_;
 };
 
 #endif /* SRC_AUTO_MODES_AUTOMODE_H_ */

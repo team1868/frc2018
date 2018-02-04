@@ -14,6 +14,7 @@ using namespace std;
 class RobotModel {
 public:
 	enum Wheels { kLeftWheels, kRightWheels, kAllWheels };
+	enum Talons { kLeftMaster, kRightMaster, kLeftSlave, kRightSlave };
 
 	/**
 	 * Creates all objects regarding the robot parts. Configures the left and right
@@ -37,6 +38,7 @@ public:
 	double GetTime();
 
 	/* -------------------- DRIVE --------------------  */
+	WPI_TalonSRX *GetTalon(Talons talon);
 
 	/**
 	 * Sets specified side of talons to a value
