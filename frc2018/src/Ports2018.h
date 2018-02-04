@@ -65,6 +65,7 @@ static const int OUTTAKE_BUTTON_PORT					= 1;
 static const int ELEVATOR_UP_BUTTON_PORT				= 8;
 static const int ELEVATOR_DOWN_BUTTON_PORT				= 7;
 static const int ELEVATOR_HEIGHT_BUTTON_PORT			= 3;
+static const int RAMP_BUTTON_PORT						= 6;
 
 // Auto mode switch ports
 static const int LEFT_AUTO_SWITCH_PORT					= 1;	// TODO CHECK THIS

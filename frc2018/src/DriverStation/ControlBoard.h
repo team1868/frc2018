@@ -38,7 +38,9 @@ public:
 	bool GetElevatorUpDesired();
 	bool GetElevatorDownDesired();
 	bool GetElevatorHeightDesired();
+	void SetElevatorHeightDesired(bool desired);
 	double GetElevatorHeightValue();
+	bool GetRampDesired();
 
 	virtual ~ControlBoard();
 private:
@@ -63,10 +65,10 @@ private:
 	ButtonReader *leftAutoSwitch_, *rightAutoSwitch_, *middleAutoSwitch_;
 
 	// Buttons for superstructure
-	ButtonReader *intakeButton_, *outtakeButton_, *elevatorUpButton_, *elevatorDownButton_, *elevatorHeightButton_;
+	ButtonReader *intakeButton_, *outtakeButton_, *elevatorUpButton_, *elevatorDownButton_, *elevatorHeightButton_, *rampButton_;
 
 	// Variables for superstructure
-	bool intakeDesired_, outtakeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHeightDesired_;
+	bool intakeDesired_, outtakeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHeightDesired_, rampDesired_;
 	double elevatorHeightValue_;
 };
 

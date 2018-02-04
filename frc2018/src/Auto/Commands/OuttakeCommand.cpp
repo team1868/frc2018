@@ -16,11 +16,12 @@ OuttakeCommand::OuttakeCommand(RobotModel *robot) {
 	deltaTime_ = 2.5; //TODO TEST
 }
 
-void OuttakeCommand::Init(){
+void OuttakeCommand::Init() {
 	isDone_ = false;
+	startTime_ = robot_->GetTime();
 }
 
-void OuttakeCommand::Reset(){
+void OuttakeCommand::Reset() {
 	isDone_ = true;
 }
 

@@ -34,31 +34,34 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	switch(currState_) {
 	case kInit:
 		nextState_ = kIdle;
-
-		robot_->SetIntakeOutput(0.0);
-		robot_->SetElevatorOutput(0.0);
-
-		desiredElevatorHeight_ = 0.0;
+		printf("kInit\n");
+		 robot_->SetIntakeOutput(0.0);
+		 robot_->SetElevatorOutput(0.0);
+		 desiredElevatorHeight_ = 0.0;
 		break;
 	case kIdle:
 		nextState_ = kIdle;
 
 		if (humanControl_->GetIntakeDesired()) {
-			robot_->SetIntakeOutput(intakeMotorOutput_);
+			 robot_->SetIntakeOutput(intakeMotorOutput_);
 			if (robot_->GetCubeInIntake()) {
 				humanControl_->SetIntakeDesired(false);
 				robot_->SetIntakeOutput(0.0);
 			}
+			printf("intake desired \n");
 		} else if (humanControl_->GetOuttakeDesired()) {
 			robot_->SetIntakeOutput(outtakeMotorOutput_);
+			printf("outtake desired \n");
 		} else {
 			robot_->SetIntakeOutput(0.0);
 		}
 
 		if (humanControl_->GetElevatorUpDesired()) {
 			robot_->SetElevatorOutput(elevatorOutput_);
+			printf("elevator up desired\n");
 		} else if (humanControl_->GetElevatorDownDesired()) {
 			robot_->SetElevatorOutput(-elevatorOutput_);
+			printf("elevator down desired\n");
 		} else {
 			robot_->SetElevatorOutput(0.0);
 		}
@@ -70,16 +73,24 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			nextState_ = kElevatorToHeight;
 		}
 
+		if (humanControl_->GetRampDesired()) {
+			nextState_ = kRamp;
+		}
+		printf("in kIdle\n");
 		break;
 	case kElevatorToHeight:
+		printf("in kElevatorToHeight\n");
 		if (elevatorHeightCommand_->IsDone()) {
 			elevatorHeightCommand_->Reset();
+			humanControl_->SetElevatorHeightDesired(false);
 			nextState_ = kIdle;
 		} else {
 			elevatorHeightCommand_->Update(currTimeSec, deltaTimeSec);
 		}
 		break;
 	case kRamp:
+		printf("in kRamp\n");
+		nextState_ = kRamp;
 		break;
 	}
 	currState_ = nextState_;

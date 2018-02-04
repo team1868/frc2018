@@ -34,12 +34,14 @@ ControlBoard::ControlBoard() {
 	elevatorUpButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_UP_BUTTON_PORT);
 	elevatorDownButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_DOWN_BUTTON_PORT);
 	elevatorHeightButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_HEIGHT_BUTTON_PORT);
+	rampButton_ = new ButtonReader(operatorJoyB_, RAMP_BUTTON_PORT);
 
 	intakeDesired_ = false;
 	outtakeDesired_ = false;
 	elevatorUpDesired_ = false;
 	elevatorDownDesired_ = false;
 	elevatorHeightDesired_ = false;
+	rampDesired_ = false;
 
 	elevatorHeightValue_ = 0.0;
 }
@@ -60,11 +62,17 @@ void ControlBoard::ReadControls() {
 	arcadeDriveDesired_ = arcadeDriveButton_->IsDown();
 	quickTurnDesired_ = quickTurnButton_->IsDown();
 
-	intakeDesired_ = intakeButton_->WasJustPressed();
+	if (intakeButton_->WasJustPressed()) {
+		intakeDesired_ = true;
+	}
 	outtakeDesired_ = outtakeButton_->IsDown();
 	elevatorUpDesired_ = elevatorUpButton_->IsDown();
 	elevatorDownDesired_ = elevatorDownButton_->IsDown();
+	if (elevatorHeightButton_->WasJustPressed()) {
+		elevatorHeightDesired_ = true;
+	}
 	elevatorHeightValue_ = operatorJoy_->GetZ(); // TODO Figure out axis and joystick
+	rampDesired_ = rampButton_->WasJustPressed();
 }
 
 double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
@@ -133,8 +141,16 @@ bool ControlBoard::GetElevatorHeightDesired() {
 	return elevatorHeightDesired_;
 }
 
+void ControlBoard::SetElevatorHeightDesired(bool desired) {
+	elevatorHeightDesired_ = desired;
+}
+
 double ControlBoard::GetElevatorHeightValue() {
 	return elevatorHeightValue_;
+}
+
+bool ControlBoard::GetRampDesired() {
+	return rampDesired_;
 }
 
 void ControlBoard::ReadAllButtons() {
@@ -148,6 +164,7 @@ void ControlBoard::ReadAllButtons() {
 	elevatorUpButton_->ReadValue();
 	elevatorDownButton_->ReadValue();
 	elevatorHeightButton_->ReadValue();
+	rampButton_->ReadValue();
 }
 
 ControlBoard::~ControlBoard() {

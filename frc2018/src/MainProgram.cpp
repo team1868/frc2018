@@ -115,6 +115,7 @@ public:
 		UpdateTimerVariables();
 		humanControl_->ReadControls();
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
+		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
 		Logger::LogState(robot_, humanControl_);
 	}
 
