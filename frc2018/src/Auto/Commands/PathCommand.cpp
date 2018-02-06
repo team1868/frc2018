@@ -69,8 +69,8 @@ PathCommand::PathCommand(RobotModel *robot, Path path) {
 
 void PathCommand::ReadTrajectory() {
 
-	string left_Trajectory_File_Name = NULL;
-	string right_Trajectory_File_Name = NULL;
+	string left_Trajectory_File_Name;
+	string right_Trajectory_File_Name;
 
 	switch (path_) {
 	case kRightSideToRightSwitch:
@@ -140,48 +140,26 @@ void PathCommand::ReadTrajectory() {
 
 void PathCommand::Init() {
 
-	switch (path_) {
-	case kRightSideToRightSwitch:
-		break;
-	case kLeftSideToLeftSwitch:
-		break;
-//	case kLeftSwitchToRight:
+//	switch (path_) {
+//	case kRightSideToRightSwitch:
 //		break;
-//	case kRightSwitchToLeft:
+//	case kLeftSideToLeftSwitch:
 //		break;
-//	case kLeftSwitchToLeftScale:
+////	case kLeftSwitchToRight:
+////		break;
+////	case kRightSwitchToLeft:
+////		break;
+////	case kLeftSwitchToLeftScale:
+////		break;
+////	case kLeftSwitchToRightScale:
+////		break;
+////	case kRightSwitchToRightScale:
+////		break;
+////	case kRightSwitchToLeftScale:
+////		break;
+//	default:
+//		printf("MOTION PROFILE IS NULL\n");
 //		break;
-//	case kLeftSwitchToRightScale:
-//		break;
-//	case kRightSwitchToRightScale:
-//		break;
-//	case kRightSwitchToLeftScale:
-//		break;
-	default:
-		printf("MOTION PROFILE IS NULL\n");
-		break;
-	}
-
-//  FOR ONBOARD GENERATING
-//	Waypoint *points = (Waypoint*)malloc(sizeof(Waypoint) * pointLength_);
-//	if (pointLength_ >= 1) {
-//		Waypoint p1 = { p1_x_, p1_y_, d2r(p1_r_) };
-//		points[0] = p1;
-//	}
-//
-//	if (pointLength_ >= 2) {
-//		Waypoint p2 = { p2_x_, p2_y_, d2r(p2_r_) };
-//		points[1] = p2;
-//	}
-//
-//	if (pointLength_ >= 3) {
-//		Waypoint p3 = { p3_x_, p3_y_, d2r(p3_r_) };
-//		points[2] = p3;
-//	}
-//
-//	if (pointLength_ >= 4 ) {
-//		Waypoint p4 = { p4_x_, p4_y_, d2r(p4_r_) };
-//		points[3] = p4;
 //	}
 
 	TrajectoryCandidate candidate;
@@ -196,20 +174,11 @@ void PathCommand::Init() {
 	// Max Acceleration:    10 m/s/s
 	// Max Jerk:            60 m/s/s/s
 
-//  FOR ONBOARD GENERATING
-//	pathfinder_prepare(points, pointLength_, FIT_HERMITE_CUBIC, PATHFINDER_SAMPLES_HIGH, TIME_STEP, MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK, &candidate);
-//
-//	trajectoryLength_ = candidate.length;
-//	printf("trajectory length in init: %i \n", trajectoryLength_);
 
 	Segment *trajectory = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
 
-//	pathfinder_generate(&candidate, trajectory);
-
 	leftTrajectory_ = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
 	rightTrajectory_ = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
-
-//	pathfinder_modify_tank(trajectory, trajectoryLength_, leftTrajectory_, rightTrajectory_, WHEELBASE_WIDTH);
 
 	for (int i = 0; i < trajectoryLength_; i++) {
 		cout << "position: " << trajectory->position << endl;
@@ -252,23 +221,21 @@ void PathCommand::Init() {
 							  lPFac, lIFac, lDFac, lVFac / MAX_VELOCITY, lAFac};
 
 	// To make sure SRX's encoder is updating the RoboRIO fast enough
-	robot_->leftMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 40);
-	robot_->leftSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 40);
-	robot_->rightMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 40);
-	robot_->rightSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 40);
+	// If using different controller for slave, set status frame higher
+	robot_->leftMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
+	robot_->leftSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
+	robot_->rightMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
+	robot_->rightSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
 	// CHANGE TIMEOUT, LAST PARAM
 
-//	FILE *fp_traj = fopen("/home/lvuser/trajectory.csv", "w");
-//	pathfinder_serialize_csv(fp_traj, trajectory, trajectoryLength_);
-//	fclose(fp_traj);
 
-	FILE *fp_leftTraj = fopen("/home/lvuser/left_trajectory.csv", "w");
-	pathfinder_serialize_csv(fp_leftTraj, leftTrajectory_, trajectoryLength_);
-	fclose(fp_leftTraj);
-
-	FILE *fp_rightTraj = fopen("/home/lvuser/right_trajectory.csv", "w");
-	pathfinder_serialize_csv(fp_rightTraj, rightTrajectory_, trajectoryLength_);
-	fclose(fp_rightTraj);
+//	FILE *fp_leftTraj = fopen("/home/lvuser/left_trajectory.csv", "w");
+//	pathfinder_serialize_csv(fp_leftTraj, leftTrajectory_, trajectoryLength_);
+//	fclose(fp_leftTraj);
+//
+//	FILE *fp_rightTraj = fopen("/home/lvuser/right_trajectory.csv", "w");
+//	pathfinder_serialize_csv(fp_rightTraj, rightTrajectory_, trajectoryLength_);
+//	fclose(fp_rightTraj);
 
 	initialAngle_ = robot_->GetNavXYaw();
 
