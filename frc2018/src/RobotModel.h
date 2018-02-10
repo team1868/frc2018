@@ -14,7 +14,7 @@ using namespace std;
 class RobotModel {
 public:
 	enum Wheels { kLeftWheels, kRightWheels, kAllWheels };
-	enum Talons { kLeftMaster, kRightMaster, kLeftSlave, kRightSlave };
+	enum Talons { kLeftMaster, kRightMaster};
 
 	/**
 	 * Creates all objects regarding the robot parts. Configures the left and right
@@ -102,7 +102,8 @@ public:
 	double driveRPFac_, driveRIFac_, driveRDFac_;
 	double elevatorPFac_, elevatorIFac_, elevatorDFac_;
 
-	WPI_TalonSRX *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	// Fix Later
+	WPI_TalonSRX *leftMaster_, *rightMaster_;
+	WPI_VictorSPX *leftSlave_, *rightSlave_;	// Fix Later
 
 private:
 	Timer *timer_;

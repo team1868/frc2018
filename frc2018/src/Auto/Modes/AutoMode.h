@@ -10,7 +10,7 @@
 
 class AutoMode {
 public:
-	enum AutoPositions { kBlank, kLeft, kMiddle, kMiddleRight, kFarRight };
+	enum AutoPositions { kBlank, kLeft, kMiddle, kMiddleRight, kFarRight, kIni };
 
 	AutoMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoder) {
 		printf("Constructing AutoMode\n");

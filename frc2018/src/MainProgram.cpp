@@ -70,7 +70,6 @@ public:
 		autoChooser_.AddDefault("Blank Auto", new BlankMode());
 		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode(robot_, navXSource_, talonEncoderSource_));
 		autoChooser_.AddObject("Test Mode", new TestMode(robot_, navXSource_, talonEncoderSource_));
-//		autoChooser_.AddObject("Sequence Mode", new SequenceMode(robot_, navXSource_, talonEncoderSource_));
 		SmartDashboard::PutData("Auto Modes", &autoChooser_);
 
 		autoPosition_ = humanControl_->GetDesiredAutoPosition();
@@ -104,7 +103,6 @@ public:
 		autoController_->Init(gameData, autoPosition_);
 		printf("Auto mode init\n");
 
-		// TAKE OUT AFTER DONE
 		robot_->ZeroNavXYaw();
 	}
 
@@ -133,8 +131,11 @@ public:
 		}
 
 		robot_->RefreshIniVals();
+		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 	}
 	void DisabledPeriodic() {
+		humanControl_->ReadControls();
+		autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		SmartDashboard::PutNumber("NavX Yaw: ", robot_->GetNavXYaw());
 	};
 private:

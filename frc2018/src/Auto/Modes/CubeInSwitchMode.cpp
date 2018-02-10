@@ -32,38 +32,57 @@ void CubeInSwitchMode::CreateQueue(string gameData, AutoPositions pos) {
 	case kLeft:
 		printf("Left position: ");
 		if (switchSide == 'L') {
-			printf("Left switch\n");
+			printf("Left switch: ");
 			autoSequence = "";
 		} else if (switchSide == 'R') {
-
+			printf("Right switch: ");
+			autoSequence = "";
 		}
 		break;
 	case kMiddle:
-		printf("middle\n");
+		printf("Middle Position: ");
 		if (switchSide == 'L') {
-
+			printf("Left Switch: ");
+			autoSequence = "";
 		} else if (switchSide == 'R') {
-
+			printf("Right Switch: ");
+			autoSequence = "";
 		}
 		break;
 	case kMiddleRight:
-		printf("middle right\n");
+		printf("Middle Right: ");
 		if (switchSide == 'L') {
-
+			printf("Left Switch: ");
+			autoSequence = "";
 		} else if (switchSide == 'R') {
-
+			printf("Right Switch: ");
+			autoSequence = "";
 		}
 		break;
 	case kFarRight:
-		printf("far right\n");
+		printf("Far Right: ");
 		if (switchSide == 'L') {
-
+			printf("Left Switch: ");
+			autoSequence = "";
 		} else if (switchSide == 'R') {
-
+			printf("Right Switch: ");
+			autoSequence = "";
+		}
+		break;
+	case kIni:
+		printf("Reading from Ini: ");
+		if (switchSide == 'L') {
+			printf("Left Switch: ");
+			autoSequence = "";
+		} else if (switchSide == 'R') {
+			printf("Right Switch: ");
+			autoSequence = "";
 		}
 		break;
 	}
 
+	const char* autoSequenceCharArray = autoSequence.c_str();
+	printf("%s\n", autoSequenceCharArray);
 //	QueueFromString(autoSequence);	// TODO uncomment this when ready
 }
 

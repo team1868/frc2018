@@ -184,6 +184,10 @@ AutoMode::AutoPositions ControlBoard::GetDesiredAutoPosition() {
 			if(!rightDown_) {
 				position = AutoMode::kLeft;	// starting position left
 			}
+		} else {
+			if(rightDown_) {
+				position = AutoMode::kIni;
+			}
 		}
 	}
 

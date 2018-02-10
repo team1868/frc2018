@@ -43,8 +43,8 @@ RobotModel::RobotModel() {
 	isLeftInverted_ = false;
 	leftMaster_ = new WPI_TalonSRX(LEFT_DRIVE_MASTER_ID);
 	rightMaster_ = new WPI_TalonSRX(RIGHT_DRIVE_MASTER_ID);
-	leftSlave_ = new WPI_TalonSRX(LEFT_DRIVE_SLAVE_ID);
-	rightSlave_ = new WPI_TalonSRX(RIGHT_DRIVE_SLAVE_ID);
+	leftSlave_ = new WPI_VictorSPX(LEFT_DRIVE_SLAVE_ID);
+	rightSlave_ = new WPI_VictorSPX(RIGHT_DRIVE_SLAVE_ID);
 
 	rightMaster_->SetInverted(!isLeftInverted_);
 	rightSlave_->SetInverted(!isLeftInverted_);
@@ -87,12 +87,8 @@ WPI_TalonSRX *RobotModel::GetTalon(Talons talon) {
 	switch(talon) {
 		case(kLeftMaster):
 				return leftMaster_;
-		case(kLeftSlave):
-				return leftSlave_;
 		case(kRightMaster):
 				return rightMaster_;
-		case(kRightSlave):
-				return rightSlave_;
 		default:
 			return NULL;
 	}
