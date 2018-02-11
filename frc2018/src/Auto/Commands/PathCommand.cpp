@@ -3,6 +3,7 @@
 #include "../../../ext/pathfinder/pathfinder.h"
 #include <fstream>
 #include <string>
+#include <sstream>
 
 const double WHEELBASE_WIDTH = 22.5/12.0; // mid of wheels, tentative
 const double WHEEL_DIAMETER = 6.252/12.0; // in ft
@@ -93,47 +94,60 @@ void PathCommand::ReadTrajectory() {
 	while (lfin.good()) {
 		string leftvalue;
 		string rightvalue;
-		getline(lfin, leftvalue, ',');
-		getline(rfin, rightvalue, ',');
-		if (lineNum < 8) {
+		getline(lfin, leftvalue);
+		getline(rfin, rightvalue);
+		if (lineNum == 0) {
 			lineNum += 1;
 			continue;
 		}
 
+		std::stringstream leftLineStream(leftvalue);
+		std::stringstream rightLineStream(rightvalue);
+
+		string leftLittleVal;
+		string rightLittleVal;
+
 		Segment tempLeft;
 		Segment tempRight;
 
-		int lineModEight = lineNum % 8;
-		double leftVal = std::stod(leftvalue);
-		double rightVal = std::stod(rightvalue);
-		if (lineModEight == 0) { // dt value
-			tempLeft.dt = leftVal;
-			tempRight.dt = rightVal;
-		} else if (lineModEight == 1) { // x val
-			tempLeft.x = leftVal;
-			tempRight.x = rightVal;
-		} else if (lineModEight == 2) { // y val
-			tempLeft.y = leftVal;
-			tempRight.y = rightVal;
-		} else if (lineModEight == 3) { // position
-			tempLeft.position = leftVal;
-			tempRight.position = rightVal;
-		} else if (lineModEight == 4) { // velocity
-			tempLeft.velocity = leftVal;
-			tempRight.velocity = rightVal;
-		} else if (lineModEight == 5) { // acceleration
-			tempLeft.acceleration =  leftVal;
-			tempRight.acceleration = rightVal;
-		} else if (lineModEight == 6) { // jerk
-			tempLeft.jerk = leftVal;
-			tempRight.jerk = rightVal;
-		} else if (lineModEight == 7) { // heading
-			tempLeft.heading = leftVal;
-			tempRight.heading = rightVal;
+		int lineCount = 0;
 
-			leftTrajectory_[lineNum/8 - 1] = tempLeft;
-			rightTrajectory_[lineNum/8 - 1] = tempRight;
+		while (getline(leftLineStream, leftLittleVal, ',') && getline(rightLineStream, rightLittleVal, ',')) {
+			int lineModEight = lineCount % 8;
+			double leftVal = std::stod(leftLittleVal);
+			double rightVal = std::stod(rightLittleVal);
+
+			if (lineModEight == 0) { // dt value
+				tempLeft.dt = leftVal;
+				tempRight.dt = rightVal;
+			} else if (lineModEight == 1) { // x val
+				tempLeft.x = leftVal;
+				tempRight.x = rightVal;
+			} else if (lineModEight == 2) { // y val
+				tempLeft.y = leftVal;
+				tempRight.y = rightVal;
+			} else if (lineModEight == 3) { // position
+				tempLeft.position = leftVal;
+				tempRight.position = rightVal;
+			} else if (lineModEight == 4) { // velocity
+				tempLeft.velocity = leftVal;
+				tempRight.velocity = rightVal;
+			} else if (lineModEight == 5) { // acceleration
+				tempLeft.acceleration =  leftVal;
+				tempRight.acceleration = rightVal;
+			} else if (lineModEight == 6) { // jerk
+				tempLeft.jerk = leftVal;
+				tempRight.jerk = rightVal;
+			} else if (lineModEight == 7) { // heading
+				tempLeft.heading = leftVal;
+				tempRight.heading = rightVal;
+
+				leftTrajectory_[lineNum - 1] = tempLeft;
+				rightTrajectory_[lineNum - 1] = tempRight;
+			}
+			lineCount += 1;
 		}
+		printf("Line finished :D");
 		lineNum += 1;
 	}
 }
@@ -179,6 +193,8 @@ void PathCommand::Init() {
 
 	leftTrajectory_ = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
 	rightTrajectory_ = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
+
+	ReadTrajectory();
 
 	for (int i = 0; i < trajectoryLength_; i++) {
 		cout << "position: " << trajectory->position << endl;
