@@ -7,7 +7,7 @@
 
 #include <Auto/Commands/ElevatorHeightCommand.h>
 
-ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHeight) {
+ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHeight) : AutoCommand(){
 	robot_ = robot;
 	desiredHeight_ = desiredHeight;
 

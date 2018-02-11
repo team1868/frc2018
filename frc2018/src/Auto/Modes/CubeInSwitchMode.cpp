@@ -7,7 +7,7 @@
 
 #include <Auto/Modes/CubeInSwitchMode.h>
 
-CubeInSwitchMode::CubeInSwitchMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoder) : AutoMode(robot, navX, talonEncoder) {
+CubeInSwitchMode::CubeInSwitchMode(RobotModel *robot) : AutoMode(robot) {
 	printf("In Cube in Switch Mode Constructor\n");
 }
 
@@ -21,14 +21,6 @@ void CubeInSwitchMode::CreateQueue(string gameData, AutoPositions pos) {
 
 	// TODO fill in the auto sequence
 	switch(autoPos) {
-	default:
-		autoSequence = "";
-		printf("default\n");
-		break;
-	case kBlank:
-		autoSequence = "";
-		printf("blank\n");
-		break;
 	case kLeft:
 		printf("Left position: ");
 		if (switchSide == 'L') {
@@ -73,26 +65,29 @@ void CubeInSwitchMode::CreateQueue(string gameData, AutoPositions pos) {
 		printf("Reading from Ini: ");
 		if (switchSide == 'L') {
 			printf("Left Switch: ");
-			autoSequence = "";
+			autoSequence = robot_->cubeInSwitchL_;
 		} else if (switchSide == 'R') {
 			printf("Right Switch: ");
-			autoSequence = "";
+			autoSequence = robot_->cubeInSwitchR_;
 		}
+		break;
+	case kBlank:
+		autoSequence = "";
+		printf("blank\n");
+		break;
+	default:
+		autoSequence = "";
+		printf("default\n");
 		break;
 	}
 
-	const char* autoSequenceCharArray = autoSequence.c_str();
-	printf("%s\n", autoSequenceCharArray);
+	printf("%s\n", autoSequence.c_str());
 //	QueueFromString(autoSequence);	// TODO uncomment this when ready
 }
 
 void CubeInSwitchMode::Init() {
 	printf("Cube In Switch Mode Init\n");
 //	currentCommand_->Init();
-}
-
-void CubeInSwitchMode::RefreshIni() {
-
 }
 
 CubeInSwitchMode::~CubeInSwitchMode() {

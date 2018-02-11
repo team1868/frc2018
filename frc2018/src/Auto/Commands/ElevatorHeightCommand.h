@@ -8,11 +8,12 @@
 #ifndef SRC_AUTO_COMMANDS_ELEVATORHEIGHTCOMMAND_H_
 #define SRC_AUTO_COMMANDS_ELEVATORHEIGHTCOMMAND_H_
 
-#include "WPILib.h"
+#include <WPILib.h>
 #include "RobotModel.h"
+#include "Auto/Commands/AutoCommand.h"
 #include "Auto/PIDSource/PIDOutputSource.h"
 
-class ElevatorHeightCommand {
+class ElevatorHeightCommand : public AutoCommand{
 public:
 	ElevatorHeightCommand(RobotModel *robot, double desiredHeight);
 	ElevatorHeightCommand(RobotModel *robot);

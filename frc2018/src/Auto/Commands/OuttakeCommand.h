@@ -8,9 +8,10 @@
 #ifndef SRC_AUTO_COMMANDS_OUTTAKECOMMAND_H_
 #define SRC_AUTO_COMMANDS_OUTTAKECOMMAND_H_
 
+#include "Auto/Commands/AutoCommand.h"
 #include "RobotModel.h"
 
-class OuttakeCommand {
+class OuttakeCommand : public AutoCommand {
 public:
 	OuttakeCommand(RobotModel* robot);
 	virtual ~OuttakeCommand();

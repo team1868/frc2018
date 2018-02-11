@@ -55,4 +55,37 @@ private:
 	double pidOutput_;
 };
 
+/**
+ * PivotPIDTalonOutput a constructor Class for WPI PIDOutput for Pivoting
+ */
+class PivotPIDTalonOutput : public frc::PIDOutput {
+
+public:
+
+	/**
+	 * PivotPIDTalonOutput is a constructor that initializes robot_ and output_
+	 * @param robot a RobotModel
+	 */
+	PivotPIDTalonOutput(RobotModel *robot);
+
+	/**
+	 * PIDWrite a function that initializes output_ and sets the drive values
+	 */
+	void PIDWrite(double output);
+
+	/**
+	 * PivotPIDTalonOutput is a destructor
+	 */
+	virtual ~PivotPIDTalonOutput();
+
+	/**
+	 * @return output
+	 */
+	double GetOutput();
+
+private:
+	RobotModel *robot_;
+	double output_;
+};
+
 #endif /* SRC_AUTO_PIDOUTPUTSOURCE_H_ */

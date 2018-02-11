@@ -58,10 +58,14 @@ public:
 	void SetLowGear();
 
 	/**
-	 * @param wheel the side of the talon
-	 * @return native encoder value
+	 * @return native left encoder value
 	 */
-	double GetDriveEncoderValue(Wheels wheel);
+	double GetLeftEncoderValue();
+
+	/**
+	 * @return native right encoder value
+	 */
+	double GetRightEncoderValue();
 
 	/**
 	 * @return left wheel distance
@@ -73,7 +77,7 @@ public:
 	double GetRightDistance();
 
 	/**
-	 * Returns angle from navX
+	 * @return angle from navX
 	 */
 	double GetNavXYaw();
 
@@ -82,15 +86,47 @@ public:
 	 */
 	void ZeroNavXYaw();
 
+	/**
+	 * @return pitch from navX
+	 */
+	double GetNavXPitch();
+
+	/**
+	 * @return roll from navX
+	 */
+	double GetNavXRoll();
+
+	/**
+	 * Sets intake/outake motors
+	 * @param output
+	 */
 	void SetIntakeOutput(double output);
+
+	/**
+	 * Sets elevator output
+	 * @param output
+	 */
 	void SetElevatorOutput(double output);
+
+	/**
+	 * @return whether the cube is in the intake or not
+	 */
 	bool GetCubeInIntake();
+
+	/**
+	 * @return the elevator cube height
+	 */
 	double GetElevatorHeight();
 
+	/**
+	 * @return elevator victor
+	 */
 	Victor* GetElevatorMotor();
 
+	/**
+	 * Deletes the ini object and creates it again. Sets the ini values to whatever it reads
+	 */
 	void RefreshIni();
-	void RefreshIniVals();
 
 	/* ------------------ SUPERSTRUCTURE ------------------  */
 
@@ -101,11 +137,15 @@ public:
 	double driveDPFac_, driveDIFac_, driveDDFac_;
 	double driveRPFac_, driveRIFac_, driveRDFac_;
 	double elevatorPFac_, elevatorIFac_, elevatorDFac_;
+	double driveTimeoutSec_, pivotTimeoutSec_;
+	string cubeInSwitchL_, cubeInSwitchR_;
 
 	WPI_TalonSRX *leftMaster_, *rightMaster_;
 	WPI_VictorSPX *leftSlave_, *rightSlave_;	// Fix Later
 
 private:
+	void RefreshIniVals();
+
 	Timer *timer_;
 	AHRS *navX_;
 

@@ -10,39 +10,6 @@
 #include "Profiler.h"
 
 /**
- * PivotPIDTalonOutput a constructor Class for WPI PIDOutput for Pivoting
- */
-class PivotPIDTalonOutput : public frc::PIDOutput {
-
-public:
-
-	/**
-	 * PivotPIDTalonOutput is a constructor that initializes robot_ and output_
-	 * @param robot a RobotModel
-	 */
-	PivotPIDTalonOutput(RobotModel *robot);
-
-	/**
-	 * PIDWrite a function that initializes output_ and sets the drive values
-	 */
-	void PIDWrite(double output);
-
-	/**
-	 * PivotPIDTalonOutput is a destructor
-	 */
-	virtual ~PivotPIDTalonOutput();
-
-	/**
-	 * @return output
-	 */
-	double GetOutput();
-
-private:
-	RobotModel *robot_;
-	double output_;
-};
-
-/**
  * A class implementing Pivot PID the WPILibrary PID Controller
  */
 class PivotCommand : public AutoCommand {
@@ -89,11 +56,6 @@ public:
 	void GetIniValues();
 
 private:
-	/**
-	 * calculates the angle needed to get to the desired angle
-	 * @param desiredAngle a double that is the angle of the turn
-	 */
-	double CalculateDeltaAngle(double desiredAngle);
 
 	double pFac_, iFac_, dFac_;
 	double desiredAngle_;
@@ -117,6 +79,8 @@ private:
 	double minDrivePivotOutput_;
 
 	double pivotCommandStartTime_;
+
+	double pivotTimeoutSec_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_PIVOTCOMMAND_H_ */

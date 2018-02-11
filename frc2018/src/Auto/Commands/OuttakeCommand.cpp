@@ -7,7 +7,7 @@
 
 #include <Auto/Commands/OuttakeCommand.h>
 
-OuttakeCommand::OuttakeCommand(RobotModel *robot) {
+OuttakeCommand::OuttakeCommand(RobotModel *robot) : AutoCommand() {
 	// TODO Auto-generated constructor stub
 	robot_ = robot;
 	isDone_ = false;

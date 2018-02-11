@@ -7,7 +7,7 @@
 
 #include <Auto/Commands/IntakeCommand.h>
 
-IntakeCommand::IntakeCommand(RobotModel *robot) {
+IntakeCommand::IntakeCommand(RobotModel *robot) : AutoCommand(){
 
 	isDone_ = false;
 	robot_ = robot;

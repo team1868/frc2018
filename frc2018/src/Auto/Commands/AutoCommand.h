@@ -17,7 +17,7 @@ public:
 	 * If extended, allows other commands to implement these methods
 	 */
 	AutoCommand() {
-		nextCommand = NULL;
+		nextCommand_ = NULL;
 	}
 
 	virtual ~AutoCommand() {}
@@ -31,14 +31,14 @@ public:
 	virtual void Reset() = 0;
 
 	AutoCommand* GetNextCommand() {
-		return nextCommand;
+		return nextCommand_;
 	}
 
 	void SetNextCommand(AutoCommand* myNextCommand) {
-		nextCommand = myNextCommand;
+		nextCommand_ = myNextCommand;
 	}
 
 private:
-	AutoCommand *nextCommand;
+	AutoCommand *nextCommand_;
 };
 #endif /* AUTOCOMMAND_H */

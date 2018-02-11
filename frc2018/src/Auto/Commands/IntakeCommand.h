@@ -8,7 +8,7 @@
 #ifndef SRC_AUTO_COMMANDS_INTAKECOMMAND_H_
 #define SRC_AUTO_COMMANDS_INTAKECOMMAND_H_
 
-#include "AutoCommand.h"
+#include "Auto/Commands/AutoCommand.h"
 #include "RobotModel.h"
 
 class IntakeCommand : public AutoCommand {

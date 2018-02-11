@@ -12,12 +12,13 @@ class AutoMode {
 public:
 	enum AutoPositions { kBlank, kLeft, kMiddle, kMiddleRight, kFarRight, kIni };
 
-	AutoMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoder) {
+	AutoMode(RobotModel *robot) {
 		printf("Constructing AutoMode\n");
+		firstCommand_ = NULL;
 		currentCommand_ = NULL;
 		robot_ = robot;
-		navX_ = navX;
-		talonEncoder_ = talonEncoder;
+		navX_ = new NavXPIDSource(robot_);
+		talonEncoder_ = new TalonEncoderPIDSource(robot_);
 
 		angleOutput_ = new AnglePIDOutput();
 		distanceOutput_ = new DistancePIDOutput();
@@ -27,14 +28,16 @@ public:
 	virtual ~AutoMode() {};
 
 	virtual void CreateQueue(string gameData, AutoMode::AutoPositions pos) {
+
 	}
 
 	void QueueFromString(string autoSequence) {
 		currentCommand_ = NULL;
 		AutoCommand *lastCommand = NULL;
-		RefreshIni();
 		std::istringstream iss(autoSequence);
 		bool breakDesired = false;
+		double currentAngle = robot_->GetNavXYaw();
+
 		while (!iss.eof() && !breakDesired) {
 			AutoCommand* tempCommand = NULL;
 			char command;
@@ -47,28 +50,27 @@ public:
 			switch(command) {
 			case 'p':	// Pivots with absolute position
 				iss >> angle;
+				currentAngle = angle;
 				printf("Angle: %f\n",angle);
 				tempCommand = new PivotCommand(robot_, angle, true, navX_);
-				break;
-			case 'a':	// Drive straight at absolute position
-				iss >> distance >> angle;
-				printf("Distance: %f, Angle: %f\n", distance, angle);
-				tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance, angle);
 				break;
 			case 'd':	// Drive straight
 				iss >> distance;
 				printf("Distance: %f", distance);
-				tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance);
+				tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance, currentAngle);
 				break;
 			default:	// When it's not listed, don't do anything :)
+				printf("Unexpected character %c detected. Terminating queue", command);
+				firstCommand_ = NULL;
 				currentCommand_ = NULL;
 				tempCommand = NULL;
 				breakDesired = true;
 				break;
 			}
 
-			if (currentCommand_ == NULL) {
-				currentCommand_ = tempCommand;
+			if (firstCommand_ == NULL) {
+				firstCommand_ = tempCommand;
+				currentCommand_ = firstCommand_;
 				lastCommand = currentCommand_;
 			} else {
 				lastCommand->SetNextCommand(tempCommand);
@@ -102,10 +104,6 @@ public:
 		}
 	}
 
-	virtual void RefreshIni() {
-
-	}
-
 	/**
 	 * Returns when AutoMode is done
 	 * @return true if there is no current command or current command is NULL
@@ -119,10 +117,19 @@ public:
 		if (!IsDone()) {
 			currentCommand_->Reset();
 		}
+		currentCommand_ = firstCommand_;
+		AutoCommand* nextCommand;
+		while (currentCommand_ != NULL) {
+			nextCommand = currentCommand_->GetNextCommand();
+			delete(currentCommand_);
+			currentCommand_ = nextCommand;
+		}
+
 		printf("Successfully disabled\n");
 	}
 
 protected:
+	AutoCommand *firstCommand_;
 	AutoCommand *currentCommand_;
 	RobotModel* robot_;
 

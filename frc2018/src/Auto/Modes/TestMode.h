@@ -12,10 +12,9 @@
 
 class TestMode : public AutoMode {
 public:
-	TestMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoder);
+	TestMode(RobotModel *robot);
 	void CreateQueue(string gameData, AutoMode::AutoPositions pos) override;
 	void Init();
-	void RefreshIni();
 
 	virtual ~TestMode();
 

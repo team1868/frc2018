@@ -25,6 +25,12 @@ RobotModel::RobotModel() {
 	elevatorIFac_ = 0.0;
 	elevatorDFac_ = 0.0;
 
+	driveTimeoutSec_ = 0.0; // TODO add to ini file
+	pivotTimeoutSec_ = 0.0; // TODO add to ini file
+
+	string cubeInSwitchL_ = ""; // TODO add to ini file
+	string cubeInSwitchR_ = ""; // TODO add to ini file
+
 	// Initializing timer
 	timer_= new Timer();
 	timer_->Start();
@@ -116,17 +122,12 @@ void RobotModel::SetLowGear() {
 //	gearShiftSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right
 }
 
-double RobotModel::GetDriveEncoderValue(RobotModel::Wheels wheel) { // TODO check if encoders are working
-	switch(wheel) {
-		case (kLeftWheels):
-				return leftDriveEncoder_->Get();
-		case (kRightWheels):
-				return rightDriveEncoder_->Get();
-		case (kAllWheels):
-				return 0;
-		default:
-			return 0;
-	}
+double RobotModel::GetLeftEncoderValue() {
+	return leftDriveEncoder_->Get();
+}
+
+double RobotModel::GetRightEncoderValue() {
+	return rightDriveEncoder_->Get();
 }
 
 double RobotModel::GetLeftDistance() {
@@ -143,6 +144,14 @@ double RobotModel::GetNavXYaw() {
 
 void RobotModel::ZeroNavXYaw() {
 	navX_->ZeroYaw();
+}
+
+double RobotModel::GetNavXPitch() {
+	return navX_->GetPitch();
+}
+
+double RobotModel::GetNavXRoll() {
+	return navX_->GetRoll();
 }
 
 void RobotModel::SetIntakeOutput(double output) {
@@ -166,7 +175,6 @@ Victor* RobotModel::GetElevatorMotor() {
 	return elevatorMotor_;
 }
 
-
 void RobotModel::RefreshIni() {
 	delete pini_;
 	const char* usbPath = "insert path here"; // TODO fix
@@ -185,6 +193,7 @@ void RobotModel::RefreshIniVals() {
 	pivotPFac_ = pini_->getf("PIVOT PID", "pFac", 0.0);
 	pivotIFac_ = pini_->getf("PIVOT PID", "iFac", 0.0);
 	pivotDFac_ = pini_->getf("PIVOT PID", "dFac", 0.0);
+	pivotTimeoutSec_ = pini_->getf("PIVOT PID", "pivotTimeoutSec", 3.5);
 
 	driveDPFac_ = pini_->getf("DRIVESTRAIGHT PID", "dPFac", 0.0);
 	driveDIFac_ = pini_->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
@@ -192,10 +201,14 @@ void RobotModel::RefreshIniVals() {
 	driveRPFac_ = pini_->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
 	driveRIFac_ = pini_->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
 	driveRDFac_ = pini_->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
+	driveTimeoutSec_ = pini_->getf("DRIVESTRAIGHT PID", "driveTimeoutSec", 3);
 
 	elevatorPFac_ = pini_->getf("ELEVATOR PID", "pFac", 0.0);
 	elevatorIFac_ = pini_->getf("ELEVATOR PID", "iFac", 0.0);
 	elevatorDFac_ = pini_->getf("ELEVATOR PID", "dFac", 0.0);
+
+	cubeInSwitchL_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchL", "d10");
+	cubeInSwitchR_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchR", "d10");
 
 	printf("Refreshed ini vals succesfully\n");
 }

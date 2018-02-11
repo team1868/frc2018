@@ -7,7 +7,7 @@
 
 #include <Auto/Modes/TestMode.h>
 
-TestMode::TestMode(RobotModel *robot, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoder) : AutoMode(robot, navX, talonEncoder){
+TestMode::TestMode(RobotModel *robot) : AutoMode(robot){
 	printf("In Test Mode\n");
 	driveStraightFirst_ = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, 5.0);
 	pivot_ = new PivotCommand(robot_, -90, true, navX_);
@@ -34,10 +34,6 @@ void TestMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) {
 
 void TestMode::Init() {
 	currentCommand_->Init();
-}
-
-void TestMode::RefreshIni() {
-
 }
 
 TestMode::~TestMode() {

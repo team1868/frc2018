@@ -1,33 +1,21 @@
 #include "Auto/Commands/PivotCommand.h"
 #include "WPILib.h"
 
-PivotPIDTalonOutput::PivotPIDTalonOutput(RobotModel *robot){
-		robot_ = robot;
-		output_ = 0.0;
-}
-
-void PivotPIDTalonOutput::PIDWrite(double myOutput){
-	output_ = myOutput;
-}
-
-double PivotPIDTalonOutput::GetOutput() {
-	return output_;
-}
-
-PivotPIDTalonOutput::~PivotPIDTalonOutput(){
-}
-
-PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavXPIDSource* navXSource) {
+PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsoluteAngle, NavXPIDSource* navXSource) {
 
 	navXSource_ = navXSource;
 
 	initYaw_ = navXSource_->CalculateAccumulatedYaw();
 
-	if (isAbsolutePosition){
-//		desiredDeltaAngle_ = CalculateDeltaAngle(desiredAngle);
+	if (isAbsoluteAngle){
 		desiredAngle_ = desiredAngle;
 	} else {
 		desiredAngle_ = initYaw_ + desiredAngle;
+		if (desiredAngle_ > 180) {
+			desiredAngle_ -= -360;
+		} else if (desiredAngle_ < -180) {
+			desiredAngle_ += 360;
+		}
 	}
 
 	isDone_ = false;
@@ -35,6 +23,7 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 	talonOutput_ = new PivotPIDTalonOutput(robot_);
 
 	pivotCommandStartTime_ = robot_->GetTime();
+	pivotTimeoutSec_ = 0.0;
 	GetIniValues();
 	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, talonOutput_);
 
@@ -71,9 +60,7 @@ void PivotCommand::Init() {
 void PivotCommand::Reset() {
 	printf("Disabling pivotcommand\n");
 	pivotPID_->Reset();
-	pivotPID_->Disable();
 	isDone_ = true;
-	delete(pivotPID_);
 	printf("DONE FROM RESET \n");
 }
 
@@ -83,35 +70,34 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Delta setpoint", pivotPID_->GetDeltaSetpoint());
 
 	double timeDiff = robot_->GetTime() - pivotCommandStartTime_;
-	bool timeOut = (timeDiff > 3.5);								//test this value
+	bool timeOut = (timeDiff > pivotTimeoutSec_);								//test this value
 
 	SmartDashboard::PutNumber("Pivot time diff", timeDiff);
 
 	if (pivotPID_->OnTarget()) {
-			numTimesOnTarget_++;
-		} else {
-			numTimesOnTarget_ = 0;
-		}
-		if ((pivotPID_->OnTarget() && numTimesOnTarget_ > 3) || timeOut) {
-			printf("Final NavX Angle: %f\n", navXSource_->PIDGet());
-			printf("Angle NavX Error %f\n", pivotPID_->GetError());
-			pivotPID_->Reset();
-			pivotPID_->Disable();
-			isDone_ = true;
-			robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
-			robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
-			printf("PIVOT IS DONE \n");
-			if (timeOut) {
-				printf("FROM TIME OUT\n");
-			}
-		} else {
-			double output = talonOutput_->GetOutput();
-			robot_->SetDriveValues(RobotModel::kLeftWheels, output);
-			robot_->SetDriveValues(RobotModel::kRightWheels, -output);
-			SmartDashboard::PutNumber("left output", output);
-			SmartDashboard::PutNumber("right output", -output);
-		}
+		numTimesOnTarget_++;
+	} else {
+		numTimesOnTarget_ = 0;
 	}
+	if ((pivotPID_->OnTarget() && numTimesOnTarget_ > 3) || timeOut) {
+		printf("Final NavX Angle: %f\n", navXSource_->PIDGet());
+		printf("Angle NavX Error %f\n", pivotPID_->GetError());
+		pivotPID_->Reset();
+		isDone_ = true;
+		robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
+		robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
+		printf("PIVOT IS DONE \n");
+		if (timeOut) {
+			printf("FROM TIME OUT\n");
+		}
+	} else {
+		double output = talonOutput_->GetOutput();
+		robot_->SetDriveValues(RobotModel::kLeftWheels, output);
+		robot_->SetDriveValues(RobotModel::kRightWheels, -output);
+		SmartDashboard::PutNumber("left output", output);
+		SmartDashboard::PutNumber("right output", -output);
+	}
+}
 
 bool PivotCommand::IsDone() {
 	return isDone_;
@@ -122,13 +108,9 @@ void PivotCommand::GetIniValues() {
 	pFac_ = robot_->pivotPFac_;
 	iFac_ = robot_->pivotIFac_;
 	dFac_ = robot_->pivotDFac_;
+	pivotTimeoutSec_ = robot_->pivotTimeoutSec_;
 //	minDrivePivotOutput_ = robot_->pini_->getf("PIVOT PID", "minDrivePivotOutput", 0.0);
 	printf("PIVOT COMMAND p: %f, i: %f, d: %f\n", pFac_, iFac_, dFac_);
-}
-
-double PivotCommand::CalculateDeltaAngle(double desiredAngle) {
-	double currYaw = fmod(initYaw_, 360.0);
-	return desiredAngle - currYaw;
 }
 
 PivotCommand::~PivotCommand() {

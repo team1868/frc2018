@@ -68,10 +68,13 @@ public:
 	/**
 	 * Gets PID values from the ini file
 	 */
-
 	void GetIniValues();
 
 private:
+	void Initializations(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
+			AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
+			double desiredDistance);
+
 	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonEncoderSource_;
 	AnglePIDOutput *anglePIDOutput_;
@@ -90,7 +93,7 @@ private:
 	double desiredDistance_;
 	double desiredTotalAvgDistance_;
 	double leftMotorOutput_, rightMotorOutput_;
-	double initialDriveTime_, diffDriveTime_;
+	double initialDriveTime_, diffDriveTime_, driveTimeoutSec_;
 	bool isDone_;
 	int numTimesOnTarget_;
 

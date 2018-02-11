@@ -15,7 +15,6 @@ public:
 	BlankMode();
 	void CreateQueue(string gameData, AutoMode::AutoPositions pos) override;
 	void Init();
-	void RefreshIni();
 	virtual ~BlankMode();
 };
 

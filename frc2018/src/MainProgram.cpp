@@ -27,26 +27,6 @@ using namespace std;
 
 class MainProgram : public frc::IterativeRobot {
 
-	// Robot setup
-	RobotModel *robot_;
-	ControlBoard *humanControl_;
-	DriveController *driveController_;
-	SuperstructureController *superstructureController_;
-
-	// Auto setup
-	AutoController *autoController_;
-	AutoMode *autoMode_;
-	frc::SendableChooser<AutoMode*> autoChooser_;
-
-	NavXPIDSource *navXSource_;
-	TalonEncoderPIDSource *talonEncoderSource_;
-
-	// Time setup
-	Timer *timer_;
-	double currTimeSec_;
-	double lastTimeSec_;
-	double deltaTimeSec_;
-
 public:
 	void RobotInit() {
 		// Initializing robot
@@ -58,18 +38,13 @@ public:
 		driveController_ = new DriveController(robot_, humanControl_);
 		superstructureController_ = new SuperstructureController(robot_, humanControl_);
 
-		// PID sources
-		navXSource_ = new NavXPIDSource(robot_);
-		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
-		timer_ = new Timer();
-
 		// Initializing auto controller
 		autoController_ = new AutoController();
 
 		// Setup to chooser auto mode from SmartDashboard
 		autoChooser_.AddDefault("Blank Auto", new BlankMode());
-		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode(robot_, navXSource_, talonEncoderSource_));
-		autoChooser_.AddObject("Test Mode", new TestMode(robot_, navXSource_, talonEncoderSource_));
+		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode(robot_));
+		autoChooser_.AddObject("Test Mode", new TestMode(robot_));
 		SmartDashboard::PutData("Auto Modes", &autoChooser_);
 
 		autoPosition_ = humanControl_->GetDesiredAutoPosition();
@@ -88,12 +63,16 @@ public:
 	 * 3: Far Right
 	 */
 	void AutonomousInit() override {
-		string gameData = "LRL"; // TODO Change this :)
-//		gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
-		robot_->RefreshIniVals();
+		robot_->ZeroNavXYaw();
+		ResetTimerVariables();
+		string gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+		if(gameData == "") { // Check this
+			gameData = "LRL"; // TODO Change this :)
+		}
+		robot_->RefreshIni();
 
 		autoMode_ = autoChooser_.GetSelected();
-		autoMode_ = new CubeInSwitchMode(robot_, navXSource_, talonEncoderSource_);
+//		autoMode_ = new CubeInSwitchMode(robot_, navXSource_, talonEncoderSource_);
 		if (autoMode_ == NULL) {
 			printf("auto mode is null from autoinit\n");
 		}
@@ -103,14 +82,16 @@ public:
 		autoController_->Init(gameData, autoPosition_);
 		printf("Auto mode init\n");
 
-		robot_->ZeroNavXYaw();
+		robot_->ResetTimer();
 	}
 
 	void AutonomousPeriodic() {
+		UpdateTimerVariables();
 		autoController_->Update(currTimeSec_, deltaTimeSec_);
 	}
 
 	void TeleopInit() {
+		robot_->ResetTimer();
 		ResetTimerVariables();
 		ResetControllers();
 	}
@@ -130,7 +111,7 @@ public:
 			autoMode_->Disable();
 		}
 
-		robot_->RefreshIniVals();
+		robot_->RefreshIni();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 	}
 	void DisabledPeriodic() {
@@ -139,11 +120,26 @@ public:
 		SmartDashboard::PutNumber("NavX Yaw: ", robot_->GetNavXYaw());
 	};
 private:
+	// Robot setup
+	RobotModel *robot_;
+	ControlBoard *humanControl_;
+	DriveController *driveController_;
+	SuperstructureController *superstructureController_;
+
+	// Auto setup
+	AutoController *autoController_;
+	AutoMode *autoMode_;
+	frc::SendableChooser<AutoMode*> autoChooser_;
 	AutoMode::AutoPositions autoPosition_;
 
+	// Time setup
+	double currTimeSec_;
+	double lastTimeSec_;
+	double deltaTimeSec_;
+
 	void ResetTimerVariables() {
-		currTimeSec_ = 0.0;
-		lastTimeSec_ = 0.0;
+		currTimeSec_ = robot_->GetTime();
+		lastTimeSec_ = currTimeSec_;
 		deltaTimeSec_ = 0.0;
 	}
 
@@ -155,6 +151,7 @@ private:
 
 	void ResetControllers() {
 		driveController_->Reset();
+		superstructureController_->Reset();
 	}
 };
 

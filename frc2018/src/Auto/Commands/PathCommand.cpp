@@ -226,12 +226,12 @@ void PathCommand::Init() {
 	double rVFac = robot_->pini_->getf("MOTION PROFILE PID", "rVFac", 1.0);
 	double rAFac = robot_->pini_->getf("MOTION PROFILE PID", "rAFac", 0.0);
 
-	leftEncoderPosition_ = robot_->GetDriveEncoderValue(RobotModel::kLeftWheels);
+	leftEncoderPosition_ = robot_->GetLeftEncoderValue();
 
 	leftEncoderConfig_ = { leftEncoderPosition_, TICKS_PER_REV, WHEEL_DIAMETER * M_PI,      // Position, Ticks per Rev, Wheel Circumference
 							 lPFac, lIFac, lDFac, lVFac / MAX_VELOCITY, lAFac};          // Kp, Ki, Kd and Kv, Ka
 
-	rightEncoderPosition_ = robot_->GetDriveEncoderValue(RobotModel::kRightWheels);
+	rightEncoderPosition_ = robot_->GetRightEncoderValue();
 
 	rightEncoderConfig_ = { rightEncoderPosition_, TICKS_PER_REV, WHEEL_DIAMETER * M_PI,
 							  lPFac, lIFac, lDFac, lVFac / MAX_VELOCITY, lAFac};
@@ -260,8 +260,8 @@ void PathCommand::Init() {
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
-	leftEncoderPosition_ = robot_->GetDriveEncoderValue(RobotModel::kLeftWheels);
-	rightEncoderPosition_ = robot_->GetDriveEncoderValue(RobotModel::kRightWheels);
+	leftEncoderPosition_ = robot_->GetLeftEncoderValue();
+	rightEncoderPosition_ = robot_->GetRightEncoderValue();
 
 	leftError = leftEncoderFollower_->last_error;
 	rightError = rightEncoderFollower_->last_error;
@@ -307,8 +307,8 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	logData_ << robot_->GetTime() << ", " <<
 			   deltaTimeSec << ", " <<
-			   robot_->GetDriveEncoderValue(RobotModel::kLeftWheels) << ", " <<
-			   robot_->GetDriveEncoderValue(RobotModel::kRightWheels) << ", " <<
+			   robot_->GetLeftEncoderValue() << ", " <<
+			   robot_->GetRightEncoderValue() << ", " <<
 			   robot_->GetLeftDistance() << ", " <<
 			   robot_->GetRightDistance() << ", " <<
 //			   get_expected_position(leftEncoderFollower_) << ", " <<

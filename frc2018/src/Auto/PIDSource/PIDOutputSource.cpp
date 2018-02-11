@@ -32,3 +32,20 @@ double DistancePIDOutput::GetPIDOutput() {
 DistancePIDOutput::~DistancePIDOutput() {
 
 }
+
+
+PivotPIDTalonOutput::PivotPIDTalonOutput(RobotModel *robot){
+		robot_ = robot;
+		output_ = 0.0;
+}
+
+void PivotPIDTalonOutput::PIDWrite(double myOutput){
+	output_ = myOutput;
+}
+
+double PivotPIDTalonOutput::GetOutput() {
+	return output_;
+}
+
+PivotPIDTalonOutput::~PivotPIDTalonOutput(){
+}

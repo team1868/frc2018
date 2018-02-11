@@ -7,7 +7,7 @@
 
 #include <Auto/Modes/BlankMode.h>
 
-BlankMode::BlankMode() : AutoMode(NULL, NULL, NULL) {
+BlankMode::BlankMode() : AutoMode(NULL) {
 	printf("In Blank Mode\n");
 }
 
@@ -17,10 +17,6 @@ void BlankMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) {
 
 void BlankMode::Init() {
 	printf("In Blank Mode Init\n");
-}
-
-void BlankMode::RefreshIni() {
-
 }
 
 BlankMode::~BlankMode() {
