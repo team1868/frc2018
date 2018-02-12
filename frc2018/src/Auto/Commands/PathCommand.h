@@ -12,7 +12,7 @@
 
 class PathCommand : public AutoCommand {
 public:
-	enum Path { kRightSideToRightSwitch, kLeftSideToLeftSwitch };
+	enum Path { kRightSideToRightSwitch, kLeftSideToLeftSwitch, kTestKOP };
 	//, kRightSideToLeftSwitch, kLeftSideToRightSwitch, kLeftSwitchToRight, kRightSwitchToLeft, kLeftSwitchToLeftScale, kLeftSwitchToRightScale, kRightSwitchToRightScale, kRightSwitchToLeftScale
 
 	/**

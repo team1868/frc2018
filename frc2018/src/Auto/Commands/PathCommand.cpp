@@ -15,6 +15,9 @@ const int TICKS_PER_REV = 256; // optical encoder
 
 const string TRAJECTORY_FILE_DIR = "../MotionProfiling";
 
+const string LEFT_KOP_TEST = "left_kop_test_trajectory.csv";
+const string RIGHT_KOP_TEST = "right_kop_test_trajectory.csv";
+
 const string LEFT_RIGHT_SIDE_TO_RIGHT_SWITCH = "left_right_side_to_right_switch.csv";
 const string RIGHT_RIGHT_SIDE_TO_RIGHT_SWITCH = "right_right_side_to_right_switch.csv";
 
@@ -81,6 +84,10 @@ void PathCommand::ReadTrajectory() {
 	case kLeftSideToLeftSwitch:
 		left_Trajectory_File_Name = TRAJECTORY_FILE_DIR + LEFT_LEFT_SIDE_TO_LEFT_SWITCH;
 		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_LEFT_SIDE_TO_LEFT_SWITCH;
+		break;
+	case kTestKOP:
+		left_Trajectory_File_Name = TRAJECTORY_FILE_DIR + LEFT_KOP_TEST;
+		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_KOP_TEST;
 		break;
 	default:
 		printf("MOTION PROFILE IS NULL\n");
@@ -238,6 +245,7 @@ void PathCommand::Init() {
 
 	// To make sure SRX's encoder is updating the RoboRIO fast enough
 	// If using different controller for slave, set status frame higher
+
 	robot_->leftMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
 	robot_->leftSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
 	robot_->rightMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
