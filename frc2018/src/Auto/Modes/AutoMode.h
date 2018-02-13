@@ -7,6 +7,7 @@
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/Commands/PivotCommand.h"
 #include "Auto/Commands/DriveStraightCommand.h"
+#include "Auto/Commands/OuttakeCommand.h"
 
 class AutoMode {
 public:
@@ -32,6 +33,7 @@ public:
 	}
 
 	void QueueFromString(string autoSequence) {
+		firstCommand_ = NULL;
 		currentCommand_ = NULL;
 		AutoCommand *lastCommand = NULL;
 		std::istringstream iss(autoSequence);
@@ -56,8 +58,12 @@ public:
 				break;
 			case 'd':	// Drive straight
 				iss >> distance;
-				printf("Distance: %f", distance);
+				printf("Distance: %f\n", distance);
 				tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance, currentAngle);
+				break;
+			case 'o':   // Outtake
+				printf("Outtake Command\n");
+				tempCommand = new OuttakeCommand(robot_);
 				break;
 			default:	// When it's not listed, don't do anything :)
 				printf("Unexpected character %c detected. Terminating queue", command);
@@ -74,7 +80,8 @@ public:
 				lastCommand = currentCommand_;
 			} else {
 				lastCommand->SetNextCommand(tempCommand);
-				lastCommand = lastCommand->GetNextCommand();			}
+				lastCommand = lastCommand->GetNextCommand();
+			}
 		}
 	}
 

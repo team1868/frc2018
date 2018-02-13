@@ -29,6 +29,7 @@ class MainProgram : public frc::IterativeRobot {
 
 public:
 	void RobotInit() {
+		printf("In robot init\n");
 		// Initializing robot
 		robot_ = new RobotModel();
 		robot_->ZeroNavXYaw();
@@ -42,11 +43,15 @@ public:
 		autoController_ = new AutoController();
 
 		// Setup to chooser auto mode from SmartDashboard
-		autoChooser_.AddDefault("Blank Auto", new BlankMode());
-		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode(robot_));
+		autoChooser_.AddDefault("Baseline Mode", new BaselineMode(robot_));
+		autoChooser_.AddObject("Switch Mode", new CubeInSwitchMode(robot_));
 		autoChooser_.AddObject("Test Mode", new TestMode(robot_));
+		autoChooser_.AddObject("Blank Mode", new BlankMode(robot_));
 		SmartDashboard::PutData("Auto Modes", &autoChooser_);
-
+		autoMode_ = autoChooser_.GetSelected();
+		if (autoMode_ == NULL) {
+			printf("autoMode_ is null in RobotInit\n");
+		}
 		autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		ResetTimerVariables();
 	}
@@ -66,22 +71,22 @@ public:
 		robot_->ZeroNavXYaw();
 		ResetTimerVariables();
 		string gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
-		if(gameData == "") { // Check this
-			gameData = "LRL"; // TODO Change this :)
+		if(gameData == "") {
+			gameData = "LRL";
 		}
 		robot_->RefreshIni();
 
 		autoMode_ = autoChooser_.GetSelected();
-//		autoMode_ = new CubeInSwitchMode(robot_, navXSource_, talonEncoderSource_);
+//		autoMode_ = new CubeInSwitchMode(robot_);
 		if (autoMode_ == NULL) {
 			printf("auto mode is null from autoinit\n");
+		} else {
+			printf("Get selected\n");
+			autoController_->SetAutonomousMode(autoMode_);
+			printf("Auto mode set\n");
+			autoController_->Init(gameData, autoPosition_);
+			printf("Auto mode init\n");
 		}
-		printf("Get selected\n");
-		autoController_->SetAutonomousMode(autoMode_);
-		printf("Auto mode set\n");
-		autoController_->Init(gameData, autoPosition_);
-		printf("Auto mode init\n");
-
 		robot_->ResetTimer();
 	}
 

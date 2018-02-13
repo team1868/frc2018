@@ -1,8 +1,8 @@
 /*
  * CubeInSwitchMode.h
  *
- *  Created on: Jan 12, 2018
- *      Author: Lynn D
+ *  Created on: Feb 12, 2018
+ *      Author: starr
  */
 
 #ifndef SRC_AUTO_MODES_CUBEINSWITCHMODE_H_
@@ -10,12 +10,11 @@
 
 #include "Auto/Modes/AutoMode.h"
 
-class CubeInSwitchMode : public AutoMode{
+class CubeInSwitchMode : public AutoMode {
 public:
 	CubeInSwitchMode(RobotModel *robot);
-	void CreateQueue(string gameData, AutoPositions pos) override;
+	void CreateQueue(string gameData, AutoMode::AutoPositions pos) override;
 	void Init();
-
 	virtual ~CubeInSwitchMode();
 };
 

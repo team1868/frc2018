@@ -7,7 +7,7 @@
 
 #include <Auto/Modes/BlankMode.h>
 
-BlankMode::BlankMode() : AutoMode(NULL) {
+BlankMode::BlankMode(RobotModel *robot) : AutoMode(robot) {
 	printf("In Blank Mode\n");
 }
 
