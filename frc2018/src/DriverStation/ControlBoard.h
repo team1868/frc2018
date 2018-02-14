@@ -36,11 +36,9 @@ public:
 	bool GetIntakeDesired();
 	void SetIntakeDesired(bool desired);
 	bool GetOuttakeDesired();
+	bool GetHoldCubeDesired();
 	bool GetElevatorUpDesired();
 	bool GetElevatorDownDesired();
-	bool GetElevatorHeightDesired();
-	void SetElevatorHeightDesired(bool desired);
-	double GetElevatorHeightValue();
 	bool GetRampDesired();
 
 	// Auto Controls
@@ -66,11 +64,10 @@ private:
 	ButtonReader *driveDirectionButton_, *gearShiftButton_, *arcadeDriveButton_, *quickTurnButton_;
 
 	// Buttons for superstructure
-	ButtonReader *intakeButton_, *outtakeButton_, *elevatorUpButton_, *elevatorDownButton_, *elevatorHeightButton_, *rampButton_;
+	ButtonReader *intakeButton_, *outtakeButton_, *holdCubeButton_, *elevatorUpButton_, *elevatorDownButton_, *rampButton_;
 
 	// Variables for superstructure
-	bool intakeDesired_, outtakeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHeightDesired_, rampDesired_;
-	double elevatorHeightValue_;
+	bool intakeDesired_, outtakeDesired_, holdCubeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHeightDesired_, rampDesired_;
 
 	// Auto switches
 	bool leftDown_, rightDown_, middleDown_;

@@ -19,20 +19,19 @@ public:
 	virtual ~SuperstructureController();
 
 	enum SuperstructureState {
-		kInit, kIdle, kElevatorToHeight, kRamp
+		kInit, kIdle, kRamp
 	};
 
 private:
+	void HoldCube();
+
 	RobotModel *robot_;
 	ControlBoard *humanControl_;
-
-	ElevatorHeightCommand *elevatorHeightCommand_;
 
 	uint32_t currState_;
 	uint32_t nextState_;
 
 	double intakeMotorOutput_, outtakeMotorOutput_, elevatorOutput_;
-	double desiredElevatorHeight_;
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */

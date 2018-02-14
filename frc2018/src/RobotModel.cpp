@@ -63,8 +63,8 @@ RobotModel::RobotModel() {
 	rightSlave_->Set(ControlMode::Follower, RIGHT_DRIVE_MASTER_ID);
 
 	// Initializing NavX
-//	navX_ = new AHRS(SPI::kMXP);
-	navX_ = new AHRS(SerialPort::Port::kUSB);
+	navX_ = new AHRS(SPI::kMXP);
+//	navX_ = new AHRS(SerialPort::Port::kUSB);
 	Wait(1.0); // NavX takes a second to calibrate
 
 	// Initializing pneumatics
