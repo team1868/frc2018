@@ -76,8 +76,11 @@ void PathCommand::ReadTrajectory() {
 	string left_Trajectory_File_Name;
 	string right_Trajectory_File_Name;
 
+	printf("hi\n");
+
 	switch (path_) {
 	case kRightSideToRightSwitch:
+
 		left_Trajectory_File_Name = TRAJECTORY_FILE_DIR + LEFT_RIGHT_SIDE_TO_RIGHT_SWITCH;
 		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_RIGHT_SIDE_TO_RIGHT_SWITCH;
 		break;
@@ -86,6 +89,7 @@ void PathCommand::ReadTrajectory() {
 		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_LEFT_SIDE_TO_LEFT_SWITCH;
 		break;
 	case kTestKOP:
+		printf("blah\n");
 		left_Trajectory_File_Name = TRAJECTORY_FILE_DIR + LEFT_KOP_TEST;
 		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_KOP_TEST;
 		break;
@@ -93,20 +97,27 @@ void PathCommand::ReadTrajectory() {
 		printf("MOTION PROFILE IS NULL\n");
 		break;
 	}
-
+	cout << left_Trajectory_File_Name << endl;
+	cout << right_Trajectory_File_Name << endl;
 	ifstream lfin(left_Trajectory_File_Name);
 	ifstream rfin(right_Trajectory_File_Name);
-
+	cout << "reading stuff" << endl;
 	int lineNum = 0;
-	while (lfin.good()) {
+	cout << lfin.good() << endl;
+	while (lineNum < 100) { //try for now
+		cout << lineNum << " sup" << endl;
 		string leftvalue;
 		string rightvalue;
-		getline(lfin, leftvalue);
-		getline(rfin, rightvalue);
+		lfin >> leftvalue;
+		rfin >> rightvalue;
+		//getline(lfin, leftvalue);
+		//getline(rfin, rightvalue);
 		if (lineNum == 0) {
 			lineNum += 1;
 			continue;
 		}
+		cout << leftvalue << endl;
+		cout << rightvalue << endl;
 
 		std::stringstream leftLineStream(leftvalue);
 		std::stringstream rightLineStream(rightvalue);

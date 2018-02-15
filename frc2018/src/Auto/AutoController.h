@@ -3,7 +3,9 @@
 
 #include "Auto/Modes/AutoMode.h"
 #include "Auto/Modes/BlankMode.h"
+#include "Auto/Modes/BaselineMode.h"
 #include "Auto/Modes/CubeInSwitchMode.h"
+//#include "Auto/Modes/InSwitchGetCubeMode.h"
 #include "Auto/Modes/TestMode.h"
 #include "Auto/Modes/KOPTestMPMode.h"
 

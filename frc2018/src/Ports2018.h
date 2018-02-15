@@ -62,6 +62,7 @@ static const int QUICK_TURN_BUTTON_PORT					= 2;
 // Superstructure controller button ports
 static const int INTAKE_BUTTON_PORT						= 2;
 static const int OUTTAKE_BUTTON_PORT					= 1;
+static const int HOLD_CUBE_BUTTON_PORT					= 5;
 static const int ELEVATOR_UP_BUTTON_PORT				= 8;
 static const int ELEVATOR_DOWN_BUTTON_PORT				= 7;
 static const int ELEVATOR_HEIGHT_BUTTON_PORT			= 3;
