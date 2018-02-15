@@ -7,6 +7,7 @@
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/Commands/PivotCommand.h"
 #include "Auto/Commands/DriveStraightCommand.h"
+#include "Auto/Commands/PathCommand.h"
 
 class AutoMode {
 public:
@@ -17,9 +18,11 @@ public:
 		firstCommand_ = NULL;
 		currentCommand_ = NULL;
 		robot_ = robot;
+		printf("tbh whats up\n");
 		navX_ = new NavXPIDSource(robot_);
+		printf("hello\n");
 		talonEncoder_ = new TalonEncoderPIDSource(robot_);
-
+		printf("ded?\n");
 		angleOutput_ = new AnglePIDOutput();
 		distanceOutput_ = new DistancePIDOutput();
 		printf("Done constructing AutoMode\n");

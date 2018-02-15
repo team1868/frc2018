@@ -7,7 +7,7 @@
 #include "RobotModel.h"
 #include <fstream>
 #include <string>
-#include "Logger.h"
+//#include "Logger.h"
 #include "../../../ext/pathfinder/pathfinder.h"
 
 class PathCommand : public AutoCommand {
@@ -40,6 +40,8 @@ public:
 	 * @return isDone_
 	 */
 	bool IsDone();
+
+	void Reset();
 
 	double leftError;
 	double rightError;

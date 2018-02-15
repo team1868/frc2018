@@ -5,6 +5,7 @@
 #include "Auto/Modes/BlankMode.h"
 #include "Auto/Modes/CubeInSwitchMode.h"
 #include "Auto/Modes/TestMode.h"
+#include "Auto/Modes/KOPTestMPMode.h"
 
 class AutoController {
 public:

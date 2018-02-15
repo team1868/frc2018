@@ -36,7 +36,7 @@ const string RIGHT_LEFT_SWITCH_TO_RIGHT = "right_left_switch_to_right.csv";
 const string LEFT_RIGHT_SWITCH_TO_LEFT = "left_right_switch_to_left.csv";
 const string RIGHT_RIGHT_SWITCH_TO_LEFT = "right_right_switch_to_left.csv";
 
-PathCommand::PathCommand(RobotModel *robot, Path path) {
+PathCommand::PathCommand(RobotModel *robot, Path path) : AutoCommand() {
 	robot_ = robot;
 	path_ = path;
 
@@ -241,15 +241,15 @@ void PathCommand::Init() {
 	rightEncoderPosition_ = robot_->GetRightEncoderValue();
 
 	rightEncoderConfig_ = { rightEncoderPosition_, TICKS_PER_REV, WHEEL_DIAMETER * M_PI,
-							  lPFac, lIFac, lDFac, lVFac / MAX_VELOCITY, lAFac};
+							  rPFac, rIFac, rDFac, rVFac / MAX_VELOCITY, rAFac};
 
 	// To make sure SRX's encoder is updating the RoboRIO fast enough
 	// If using different controller for slave, set status frame higher
 
-	robot_->leftMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
-	robot_->leftSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
-	robot_->rightMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
-	robot_->rightSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 20, 100);
+	robot_->leftMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 10, 100);
+	robot_->leftSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 10, 100);
+	robot_->rightMaster_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 10, 100);
+	robot_->rightSlave_->SetStatusFramePeriod(ctre::phoenix::motorcontrol::Status_3_Quadrature, 10, 100);
 	// CHANGE TIMEOUT, LAST PARAM
 
 
@@ -307,34 +307,34 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	robot_->SetDriveValues(RobotModel::kLeftWheels, l);
 	robot_->SetDriveValues(RobotModel::kRightWheels, r);
 
-	if (!logData_.is_open()) {
-		logData_.open(Logger::GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_moprolog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
-		logData_ << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftExpectedDistance, RightExpectedDistance, LeftVelocity, Right Velocity, "
-				 << "LeftExpectedVelocity, RightExpectedVelocity, LeftError, RightError, LeftOutput, RightOutput, Turn, NavXAngle, ExpectedHeading, ExpectedHeading_Edited" << "\r\n";
-	}
-
-	logData_ << robot_->GetTime() << ", " <<
-			   deltaTimeSec << ", " <<
-			   robot_->GetLeftEncoderValue() << ", " <<
-			   robot_->GetRightEncoderValue() << ", " <<
-			   robot_->GetLeftDistance() << ", " <<
-			   robot_->GetRightDistance() << ", " <<
-//			   get_expected_position(leftEncoderFollower_) << ", " <<
-//			   get_expected_position(rightEncoderFollower_) << ", " <<
-			   (robot_->GetLeftDistance() - lastLeftDistance_) / deltaTimeSec << ", " <<
-			   (robot_->GetRightDistance() - lastRightDistance_) / deltaTimeSec << ", " <<
-			   leftEncoderFollower_->output << ", " <<
-			   rightEncoderFollower_->output << ", " <<
-			   leftError << ", " <<
-			   rightError << ", " <<
-			   l << ", " <<
-			   r << ", " <<
-			   turn << ", " <<
-			   gyro_heading << ", " <<
-			   r2d(leftEncoderFollower_->heading) << ", " <<
-			   desired_heading << "\r\n";
-
-	logData_.flush();
+//	if (!logData_.is_open()) {
+//		logData_.open(Logger::GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_moprolog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
+//		logData_ << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftExpectedDistance, RightExpectedDistance, LeftVelocity, Right Velocity, "
+//				 << "LeftExpectedVelocity, RightExpectedVelocity, LeftError, RightError, LeftOutput, RightOutput, Turn, NavXAngle, ExpectedHeading, ExpectedHeading_Edited" << "\r\n";
+//	}
+//
+//	logData_ << robot_->GetTime() << ", " <<
+//			   deltaTimeSec << ", " <<
+//			   robot_->GetLeftEncoderValue() << ", " <<
+//			   robot_->GetRightEncoderValue() << ", " <<
+//			   robot_->GetLeftDistance() << ", " <<
+//			   robot_->GetRightDistance() << ", " <<
+////			   get_expected_position(leftEncoderFollower_) << ", " <<
+////			   get_expected_position(rightEncoderFollower_) << ", " <<
+//			   (robot_->GetLeftDistance() - lastLeftDistance_) / deltaTimeSec << ", " <<
+//			   (robot_->GetRightDistance() - lastRightDistance_) / deltaTimeSec << ", " <<
+//			   leftEncoderFollower_->output << ", " <<
+//			   rightEncoderFollower_->output << ", " <<
+//			   leftError << ", " <<
+//			   rightError << ", " <<
+//			   l << ", " <<
+//			   r << ", " <<
+//			   turn << ", " <<
+//			   gyro_heading << ", " <<
+//			   r2d(leftEncoderFollower_->heading) << ", " <<
+//			   desired_heading << "\r\n";
+//
+//	logData_.flush();
 
 	lastLeftDistance_ = robot_->GetLeftDistance();
 	lastRightDistance_ = robot_->GetRightDistance();
@@ -361,6 +361,10 @@ bool PathCommand::IsDone() {
 		isDone_ = false;
 		return false;
 	}
+}
+
+void PathCommand::Reset() {
+
 }
 
 PathCommand::~PathCommand() {

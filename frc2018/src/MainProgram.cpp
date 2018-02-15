@@ -43,8 +43,9 @@ public:
 
 		// Setup to chooser auto mode from SmartDashboard
 		autoChooser_.AddDefault("Blank Auto", new BlankMode());
-		autoChooser_.AddObject("One Cube in Switch Mode", new CubeInSwitchMode(robot_));
+		autoChooser_.AddObject("Switch Mode", new CubeInSwitchMode(robot_));
 		autoChooser_.AddObject("Test Mode", new TestMode(robot_));
+		autoChooser_.AddObject("KOP Test", new KOPTestMPMode(robot_));
 		SmartDashboard::PutData("Auto Modes", &autoChooser_);
 
 		autoPosition_ = humanControl_->GetDesiredAutoPosition();
