@@ -1,9 +1,4 @@
 #include <Auto/Commands/PathCommand.h>
-#include <ctre/Phoenix.h>
-#include "../../../ext/pathfinder/pathfinder.h"
-#include <fstream>
-#include <string>
-#include <sstream>
 
 const double WHEELBASE_WIDTH = 22.5/12.0; // mid of wheels, tentative
 const double WHEEL_DIAMETER = 6.252/12.0; // in ft
@@ -72,101 +67,65 @@ PathCommand::PathCommand(RobotModel *robot, Path path) : AutoCommand() {
 }
 
 void PathCommand::ReadTrajectory() {
+	int leftMoProSz = 0;
+	int rightMoProSz = 0;
 
-	string left_Trajectory_File_Name;
-	string right_Trajectory_File_Name;
-
-	printf("hi\n");
+	double* leftMotionProfile[][8];
+	double* rightMotionProfile[][8];
 
 	switch (path_) {
 	case kRightSideToRightSwitch:
-
-		left_Trajectory_File_Name = TRAJECTORY_FILE_DIR + LEFT_RIGHT_SIDE_TO_RIGHT_SWITCH;
-		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_RIGHT_SIDE_TO_RIGHT_SWITCH;
 		break;
 	case kLeftSideToLeftSwitch:
-		left_Trajectory_File_Name = TRAJECTORY_FILE_DIR + LEFT_LEFT_SIDE_TO_LEFT_SWITCH;
-		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_LEFT_SIDE_TO_LEFT_SWITCH;
 		break;
 	case kTestKOP:
-		printf("blah\n");
-		left_Trajectory_File_Name = TRAJECTORY_FILE_DIR + LEFT_KOP_TEST;
-		right_Trajectory_File_Name = TRAJECTORY_FILE_DIR + RIGHT_KOP_TEST;
+		KOPTestTrajectory* temp = new KOPTestTrajectory();
+		leftMoProSz = temp->GetLengthOfLeftMotionProfile();
+		leftMotionProfile = temp->GetLeftMotionProfile();
+		rightMoProSz = temp->GetLengthOfRightMotionProfile();
+		rightMotionProfile = temp->GetRightMotionProfile();
 		break;
 	default:
 		printf("MOTION PROFILE IS NULL\n");
 		break;
 	}
-	cout << left_Trajectory_File_Name << endl;
-	cout << right_Trajectory_File_Name << endl;
-	ifstream lfin(left_Trajectory_File_Name);
-	ifstream rfin(right_Trajectory_File_Name);
-	cout << "reading stuff" << endl;
-	int lineNum = 0;
-	cout << lfin.good() << endl;
-	while (lineNum < 100) { //try for now
-		cout << lineNum << " sup" << endl;
-		string leftvalue;
-		string rightvalue;
-		lfin >> leftvalue;
-		rfin >> rightvalue;
-		//getline(lfin, leftvalue);
-		//getline(rfin, rightvalue);
-		if (lineNum == 0) {
-			lineNum += 1;
-			continue;
-		}
-		cout << leftvalue << endl;
-		cout << rightvalue << endl;
 
-		std::stringstream leftLineStream(leftvalue);
-		std::stringstream rightLineStream(rightvalue);
+	Segment tempLeft;
+	Segment tempRight;
 
-		string leftLittleVal;
-		string rightLittleVal;
-
-		Segment tempLeft;
-		Segment tempRight;
-
-		int lineCount = 0;
-
-		while (getline(leftLineStream, leftLittleVal, ',') && getline(rightLineStream, rightLittleVal, ',')) {
-			int lineModEight = lineCount % 8;
-			double leftVal = std::stod(leftLittleVal);
-			double rightVal = std::stod(rightLittleVal);
-
-			if (lineModEight == 0) { // dt value
+	for (int i = 0; i < leftMoProSz; i++) {
+		for (int j = 0; j < 8; j++) {
+			double leftVal = leftMotionProfile[i][j];
+			double rightVal = rightMotionProfile[i][j];
+			if (j == 0) { // dt value
 				tempLeft.dt = leftVal;
 				tempRight.dt = rightVal;
-			} else if (lineModEight == 1) { // x val
+			} else if (j == 1) { // x val
 				tempLeft.x = leftVal;
 				tempRight.x = rightVal;
-			} else if (lineModEight == 2) { // y val
+			} else if (j == 2) { // y val
 				tempLeft.y = leftVal;
 				tempRight.y = rightVal;
-			} else if (lineModEight == 3) { // position
+			} else if (j == 3) { // position
 				tempLeft.position = leftVal;
 				tempRight.position = rightVal;
-			} else if (lineModEight == 4) { // velocity
+			} else if (j == 4) { // velocity
 				tempLeft.velocity = leftVal;
 				tempRight.velocity = rightVal;
-			} else if (lineModEight == 5) { // acceleration
+			} else if (j == 5) { // acceleration
 				tempLeft.acceleration =  leftVal;
 				tempRight.acceleration = rightVal;
-			} else if (lineModEight == 6) { // jerk
+			} else if (j == 6) { // jerk
 				tempLeft.jerk = leftVal;
 				tempRight.jerk = rightVal;
-			} else if (lineModEight == 7) { // heading
+			} else if (j == 7) { // heading
 				tempLeft.heading = leftVal;
 				tempRight.heading = rightVal;
 
-				leftTrajectory_[lineNum - 1] = tempLeft;
-				rightTrajectory_[lineNum - 1] = tempRight;
+				leftTrajectory_[i] = tempLeft;
+				rightTrajectory_[i] = tempRight;
 			}
-			lineCount += 1;
 		}
-		printf("Line finished :D");
-		lineNum += 1;
 	}
 }
 

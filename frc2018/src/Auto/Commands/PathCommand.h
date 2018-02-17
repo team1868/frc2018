@@ -3,12 +3,15 @@
 
 #include "WPILib.h"
 #include "Auto/Commands/AutoCommand.h"
+#include "Auto/MotionProfiling/KOPTestTrajectory.h"
 #include "Auto/MotionProfiling/MotionProfile.h"
+#include <ctre/Phoenix.h>
+#include "../../../ext/pathfinder/pathfinder.h"
 #include "RobotModel.h"
 #include <fstream>
 #include <string>
-//#include "Logger.h"
-#include "../../../ext/pathfinder/pathfinder.h"
+#include <sstream>
+
 
 class PathCommand : public AutoCommand {
 public:

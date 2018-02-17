@@ -11,21 +11,21 @@ public:
 		return kRightMotionProfileSz;
 	}
 
-	virtual double (*GetLeftMotionProfile())[3] {
+	virtual double (*GetLeftMotionProfile())[8] {
 	    return kLeftMotionProfile;
 	}
 
-	virtual double (*GetRightMotionProfile())[3] {
+	virtual double (*GetRightMotionProfile())[8] {
 	    return kRightMotionProfile;
 	}
 
 	virtual ~MotionProfile() {}
 protected:
 	int kLeftMotionProfileSz;
-	double kLeftMotionProfile[][3];
+	double kLeftMotionProfile[][8];
 
 	int kRightMotionProfileSz;
-	double kRightMotionProfile[][3];
+	double kRightMotionProfile[][8];
 };
 
 #endif /* SRC_AUTO_MOTIONPROFILING_MOTIONPROFILE_H_ */
