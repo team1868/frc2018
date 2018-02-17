@@ -189,7 +189,6 @@ void RobotModel::RefreshIni() {
 }
 
 void RobotModel::RefreshIniVals() {
-	printf("Refreshing ini vals\n");
 	pivotPFac_ = pini_->getf("PIVOT PID", "pFac", 0.0);
 	pivotIFac_ = pini_->getf("PIVOT PID", "iFac", 0.0);
 	pivotDFac_ = pini_->getf("PIVOT PID", "dFac", 0.0);
@@ -209,8 +208,6 @@ void RobotModel::RefreshIniVals() {
 
 	cubeInSwitchL_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchL", "d10");
 	cubeInSwitchR_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchR", "d10");
-
-	printf("Refreshed ini vals succesfully\n");
 }
 
 RobotModel::~RobotModel() {

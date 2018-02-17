@@ -120,7 +120,6 @@ void DriveStraightCommand::Reset() {
 }
 
 void DriveStraightCommand::GetIniValues() { // Ini values are refreshed at the start of auto
-	printf("Changed ini values\n");
 	dPFac_ = robot_->driveDPFac_;
 	dIFac_ = robot_->driveDIFac_;
 	dDFac_ = robot_->driveDDFac_;

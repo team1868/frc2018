@@ -19,14 +19,14 @@ public:
 	virtual ~TestMode();
 
 private:
-	DriveStraightCommand* driveStraightFirst_;
-	PivotCommand* pivot_;
-	DriveStraightCommand* driveStraightSecond_;
-	PivotCommand* pivotSecond_;
-	DriveStraightCommand* driveStraightThird_;
-	PivotCommand* pivotThird_;
-	DriveStraightCommand* driveStraightFourth_;
-	PivotCommand* pivotFourth_;
+//	DriveStraightCommand* driveStraightFirst_;
+//	PivotCommand* pivot_;
+//	DriveStraightCommand* driveStraightSecond_;
+//	PivotCommand* pivotSecond_;
+//	DriveStraightCommand* driveStraightThird_;
+//	PivotCommand* pivotThird_;
+//	DriveStraightCommand* driveStraightFourth_;
+//	PivotCommand* pivotFourth_;
 };
 
 #endif /* SRC_AUTO_MODES_TESTMODE_H_ */

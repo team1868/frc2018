@@ -31,19 +31,18 @@ ControlBoard::ControlBoard() {
 
 	intakeButton_ = new ButtonReader(operatorJoyB_, INTAKE_BUTTON_PORT);
 	outtakeButton_ = new ButtonReader(operatorJoyB_, OUTTAKE_BUTTON_PORT);
+	holdCubeButton_ = new ButtonReader(operatorJoyB_, HOLD_CUBE_BUTTON_PORT);
 	elevatorUpButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_UP_BUTTON_PORT);
 	elevatorDownButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_DOWN_BUTTON_PORT);
-	elevatorHeightButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_HEIGHT_BUTTON_PORT);
 	rampButton_ = new ButtonReader(operatorJoyB_, RAMP_BUTTON_PORT);
 
 	intakeDesired_ = false;
 	outtakeDesired_ = false;
+	holdCubeDesired_ = false;
 	elevatorUpDesired_ = false;
 	elevatorDownDesired_ = false;
 	elevatorHeightDesired_ = false;
 	rampDesired_ = false;
-
-	elevatorHeightValue_ = 0.0;
 
 	leftAutoSwitch_ = new ButtonReader(operatorJoy_,LEFT_AUTO_SWITCH_PORT);
 	rightAutoSwitch_ = new ButtonReader(operatorJoy_, RIGHT_AUTO_SWITCH_PORT);
@@ -68,16 +67,11 @@ void ControlBoard::ReadControls() {
 	arcadeDriveDesired_ = arcadeDriveButton_->IsDown();
 	quickTurnDesired_ = quickTurnButton_->IsDown();
 
-	if (intakeButton_->WasJustPressed()) {
-		intakeDesired_ = true;
-	}
+	intakeDesired_ = intakeButton_->IsDown();
 	outtakeDesired_ = outtakeButton_->IsDown();
+	holdCubeDesired_ = holdCubeButton_->IsDown();
 	elevatorUpDesired_ = elevatorUpButton_->IsDown();
 	elevatorDownDesired_ = elevatorDownButton_->IsDown();
-	if (elevatorHeightButton_->WasJustPressed()) {
-		elevatorHeightDesired_ = true;
-	}
-	elevatorHeightValue_ = operatorJoy_->GetZ(); // TODO Figure out axis and joystick
 	rampDesired_ = rampButton_->WasJustPressed();
 
 	// Reading Auto Switch vals;
@@ -140,24 +134,16 @@ bool ControlBoard::GetOuttakeDesired() {
 	return outtakeDesired_;
 }
 
+bool ControlBoard::GetHoldCubeDesired() {
+	return holdCubeDesired_;
+}
+
 bool ControlBoard::GetElevatorUpDesired() {
 	return elevatorUpDesired_;
 }
 
 bool ControlBoard::GetElevatorDownDesired() {
 	return elevatorDownDesired_;
-}
-
-bool ControlBoard::GetElevatorHeightDesired() {
-	return elevatorHeightDesired_;
-}
-
-void ControlBoard::SetElevatorHeightDesired(bool desired) {
-	elevatorHeightDesired_ = desired;
-}
-
-double ControlBoard::GetElevatorHeightValue() {
-	return elevatorHeightValue_;
 }
 
 bool ControlBoard::GetRampDesired() {
@@ -202,9 +188,9 @@ void ControlBoard::ReadAllButtons() {
 
 	intakeButton_->ReadValue();
 	outtakeButton_->ReadValue();
+	holdCubeButton_->ReadValue();
 	elevatorUpButton_->ReadValue();
 	elevatorDownButton_->ReadValue();
-	elevatorHeightButton_->ReadValue();
 	rampButton_->ReadValue();
 
 	rightAutoSwitch_->ReadValue();

@@ -12,7 +12,7 @@
 
 class BlankMode : public AutoMode {
 public:
-	BlankMode();
+	BlankMode(RobotModel *robot);
 	void CreateQueue(string gameData, AutoMode::AutoPositions pos) override;
 	void Init();
 	virtual ~BlankMode();

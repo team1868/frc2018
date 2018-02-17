@@ -3,10 +3,7 @@
 
 NavXPIDSource::NavXPIDSource(RobotModel *robot) {
 	robot_ = robot;
-	printf("in navxpidsource constructor\n");
-	printf("curr yaw %f\n", robot_->GetNavXYaw());
 	ResetAccumulatedYaw();
-	printf("done constructing navx\n");
 }
 
 double NavXPIDSource::PIDGet() {
