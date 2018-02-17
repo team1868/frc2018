@@ -11,11 +11,11 @@ public:
 		return kRightMotionProfileSz;
 	}
 
-	virtual double (*GetLeftMotionProfile())[8] {
+	virtual const double (*GetLeftMotionProfile())[8] {
 	    return kLeftMotionProfile;
 	}
 
-	virtual double (*GetRightMotionProfile())[8] {
+	virtual const double (*GetRightMotionProfile())[8] {
 	    return kRightMotionProfile;
 	}
 

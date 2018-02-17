@@ -31,7 +31,7 @@ const string RIGHT_LEFT_SWITCH_TO_RIGHT = "right_left_switch_to_right.csv";
 const string LEFT_RIGHT_SWITCH_TO_LEFT = "left_right_switch_to_left.csv";
 const string RIGHT_RIGHT_SWITCH_TO_LEFT = "right_right_switch_to_left.csv";
 
-PathCommand::PathCommand(RobotModel *robot, Path path) : AutoCommand() {
+PathCommand::PathCommand(RobotModel *robot, Path path, int traj_length) : AutoCommand() {
 	robot_ = robot;
 	path_ = path;
 
@@ -48,7 +48,7 @@ PathCommand::PathCommand(RobotModel *robot, Path path) : AutoCommand() {
 	leftTrajectory_ = NULL;
 	rightTrajectory_ = NULL;
 
-	trajectoryLength_ = 0;
+	trajectoryLength_ = traj_length;
 	pointLength_ = 0;
 
 	leftEncoderFollower_ = NULL;
@@ -70,8 +70,8 @@ void PathCommand::ReadTrajectory() {
 	int leftMoProSz = 0;
 	int rightMoProSz = 0;
 
-	double* leftMotionProfile[][8];
-	double* rightMotionProfile[][8];
+	const double (*leftMotionProfile)[8] = {NULL};
+	const double (*rightMotionProfile)[8] = {NULL};
 
 	switch (path_) {
 	case kRightSideToRightSwitch:
@@ -79,24 +79,27 @@ void PathCommand::ReadTrajectory() {
 	case kLeftSideToLeftSwitch:
 		break;
 	case kTestKOP:
-		KOPTestTrajectory* temp = new KOPTestTrajectory();
+		{KOPTestTrajectory* temp = new KOPTestTrajectory();
 		leftMoProSz = temp->GetLengthOfLeftMotionProfile();
 		leftMotionProfile = temp->GetLeftMotionProfile();
 		rightMoProSz = temp->GetLengthOfRightMotionProfile();
-		rightMotionProfile = temp->GetRightMotionProfile();
+		rightMotionProfile = temp->GetRightMotionProfile();}
 		break;
 	default:
 		printf("MOTION PROFILE IS NULL\n");
 		break;
 	}
-
+	printf("in read stuff\n");
 	Segment tempLeft;
 	Segment tempRight;
 
 	for (int i = 0; i < leftMoProSz; i++) {
 		for (int j = 0; j < 8; j++) {
+			//printf("hi again %d %d \n",i,j);
 			double leftVal = leftMotionProfile[i][j];
+			//printf("left %f\n", leftVal);
 			double rightVal = rightMotionProfile[i][j];
+			//printf("right %f\n", rightVal);
 			if (j == 0) { // dt value
 				tempLeft.dt = leftVal;
 				tempRight.dt = rightVal;
@@ -153,7 +156,7 @@ void PathCommand::Init() {
 //		break;
 //	}
 
-	TrajectoryCandidate candidate;
+//	TrajectoryCandidate candidate;
 
 	// Arguments:
 	// Fit Function:        FIT_HERMITE_CUBIC or FIT_HERMITE_QUINTIC
@@ -171,12 +174,14 @@ void PathCommand::Init() {
 	leftTrajectory_ = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
 	rightTrajectory_ = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
 
+	printf("traj length %d", trajectoryLength_);
 	ReadTrajectory();
+	printf("did this work\n");
 
 	for (int i = 0; i < trajectoryLength_; i++) {
-		cout << "position: " << trajectory->position << endl;
-		cout << "velocity: " << trajectory->velocity << endl;
-		cout << "heading: " << trajectory->heading << endl;
+		printf("position: %f\n", leftTrajectory_[i].position);
+		printf("velocity: %f\n", leftTrajectory_[i].velocity);
+		printf("heading: %f\n", leftTrajectory_[i].heading);
 	}
 
 	leftEncoderFollower_ = (EncoderFollower*)malloc(sizeof(EncoderFollower));
@@ -252,10 +257,10 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	// Arg 4: The Length of the Trajectory (length used in Segment seg[length];)
 	// Arg 5: The current value of your encoder
 
-	printf("IN PATH UPDATE!!!!!\n");
-	printf("trajectory length in update: %i\n", trajectoryLength_);
-	printf("leftEncoderPosition: %i\n", leftEncoderPosition_);
-	printf("rightEncoderPosition: %i\n", rightEncoderPosition_);
+	//printf("IN PATH UPDATE!!!!!\n");
+	//printf("trajectory length in update: %i\n", trajectoryLength_);
+	//printf("leftEncoderPosition: %i\n", leftEncoderPosition_);
+	//printf("rightEncoderPosition: %i\n", rightEncoderPosition_);
 
 	double l = pathfinder_follow_encoder(leftEncoderConfig_, leftEncoderFollower_, leftTrajectory_, trajectoryLength_, leftEncoderPosition_);
 	double r = pathfinder_follow_encoder(rightEncoderConfig_, rightEncoderFollower_, rightTrajectory_, trajectoryLength_, rightEncoderPosition_);
@@ -319,10 +324,22 @@ bool PathCommand::IsDone() {
 		isDone_ = true;
 
 		// Free memory for the followers and trajectories
-		free(leftEncoderFollower_);
-		free(rightEncoderFollower_);
-		free(leftTrajectory_);
-		free(rightTrajectory_);
+		if (leftEncoderFollower_ != NULL) {
+			free(leftEncoderFollower_);
+			leftEncoderFollower_ = NULL;
+		}
+		if (rightEncoderFollower_ != NULL) {
+			free(rightEncoderFollower_);
+			rightEncoderFollower_ = NULL;
+		}
+		if (leftTrajectory_ != NULL) {
+			free(leftTrajectory_);
+			leftTrajectory_ = NULL;
+		}
+		if (rightTrajectory_ != NULL) {
+			free(rightTrajectory_);
+			rightTrajectory_ = NULL;
+		}
 //		free(trajectory);
 //		free(points);
 

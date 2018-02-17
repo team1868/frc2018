@@ -83,6 +83,7 @@ public:
 		robot_->RefreshIni();
 
 		autoMode_ = autoChooser_.GetSelected();
+		printf("hi\n");
 //		autoMode_ = new CubeInSwitchMode(robot_);
 		if (autoMode_ == NULL) {
 			printf("auto mode is null from autoinit\n");
