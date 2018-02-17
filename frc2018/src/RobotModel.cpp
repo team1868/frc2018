@@ -39,10 +39,10 @@ RobotModel::RobotModel() {
 	pdp_ = new PowerDistributionPanel();
 
 	// Initializing Encoders
-	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_A_PWM_PORT, LEFT_DRIVE_ENCODER_B_PWM_PORT, true);		// TODO check if true or false
+	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_YELLOW_PWM_PORT, LEFT_DRIVE_ENCODER_RED_PWM_PORT, true);		// TODO check if true or false
 	leftDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
-	rightDriveEncoder_ = new Encoder(RIGHT_DRIVE_ENCODER_A_PWM_PORT, RIGHT_DRIVE_ENCODER_B_PWM_PORT, false);
+	rightDriveEncoder_ = new Encoder(RIGHT_DRIVE_ENCODER_YELLOW_PWM_PORT, RIGHT_DRIVE_ENCODER_RED_PWM_PORT, false);
 	rightDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
 	// Initializing Drive Talons
@@ -74,7 +74,7 @@ RobotModel::RobotModel() {
 	rightIntakeMotor_ = new Victor(RIGHT_INTAKE_MOTOR_PWM_PORT);
 	elevatorMotor_ = new Victor(ELEVATOR_MOTOR_PWM_PORT);
 
-	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_A_PWM_PORT, ELEVATOR_ENCODER_B_PWM_PORT, false);
+	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
 
 	intakeSensor_ = new DigitalInput(INTAKE_SENSOR_PWM_PORT);

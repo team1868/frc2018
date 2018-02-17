@@ -23,14 +23,14 @@ static const int ELEVATOR_MOTOR_PWM_PORT				= 0; // TODO Change this
 /* --------------------- PDP CHANNELS ------------------- */
 
 /* ------------------ DIGITAL I/O PORTS ----------------- */
-static const int LEFT_DRIVE_ENCODER_A_PWM_PORT			= 8;
-static const int LEFT_DRIVE_ENCODER_B_PWM_PORT			= 9;
+static const int LEFT_DRIVE_ENCODER_YELLOW_PWM_PORT		= 8;
+static const int LEFT_DRIVE_ENCODER_RED_PWM_PORT		= 9;
 
-static const int RIGHT_DRIVE_ENCODER_A_PWM_PORT			= 5;
-static const int RIGHT_DRIVE_ENCODER_B_PWM_PORT			= 6;
+static const int RIGHT_DRIVE_ENCODER_YELLOW_PWM_PORT	= 5;
+static const int RIGHT_DRIVE_ENCODER_RED_PWM_PORT		= 6;
 
-static const int ELEVATOR_ENCODER_A_PWM_PORT			= 0; // TODO Change this
-static const int ELEVATOR_ENCODER_B_PWM_PORT			= 0; // TODO Change this
+static const int ELEVATOR_ENCODER_YELLOW_PWM_PORT		= 0; // TODO Change this
+static const int ELEVATOR_ENCODER_RED_PWM_PORT			= 0; // TODO Change this
 
 static const int INTAKE_SENSOR_PWM_PORT					= 0; // TODO Change this
 
