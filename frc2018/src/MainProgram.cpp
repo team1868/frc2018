@@ -110,6 +110,7 @@ public:
 
 	void TeleopPeriodic() {
 		UpdateTimerVariables();
+		robot_->PrintState();
 		humanControl_->ReadControls();
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
 		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
@@ -129,7 +130,7 @@ public:
 	void DisabledPeriodic() {
 		humanControl_->ReadControls();
 		autoPosition_ = humanControl_->GetDesiredAutoPosition();
-		SmartDashboard::PutNumber("NavX Yaw: ", robot_->GetNavXYaw());
+		robot_->PrintState();
 	};
 private:
 	// Robot setup

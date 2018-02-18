@@ -52,15 +52,15 @@ RobotModel::RobotModel() {
 	leftSlave_ = new WPI_VictorSPX(LEFT_DRIVE_SLAVE_ID);
 	rightSlave_ = new WPI_VictorSPX(RIGHT_DRIVE_SLAVE_ID);
 
+	leftMaster_->Set(ControlMode::PercentOutput, 0.0);
+	rightMaster_->Set(ControlMode::PercentOutput, 0.0);
+	leftSlave_->Follow(*leftMaster_);
+	rightSlave_->Follow(*rightMaster_);
+
 	rightMaster_->SetInverted(!isLeftInverted_);
 	rightSlave_->SetInverted(!isLeftInverted_);
 	leftMaster_->SetInverted(isLeftInverted_);
 	leftSlave_->SetInverted(isLeftInverted_);
-
-	leftMaster_->Set(ControlMode::PercentOutput, 0.0);
-	rightMaster_->Set(ControlMode::PercentOutput, 0.0);
-	leftSlave_->Set(ControlMode::Follower, LEFT_DRIVE_MASTER_ID);
-	rightSlave_->Set(ControlMode::Follower, RIGHT_DRIVE_MASTER_ID);
 
 	// Initializing NavX
 	navX_ = new AHRS(SPI::kMXP);
@@ -160,7 +160,7 @@ double RobotModel::GetNavXRoll() {
 
 void RobotModel::SetIntakeOutput(double output) {
 	leftIntakeMotor_->Set(output);
-	rightIntakeMotor_->Set(output);
+	rightIntakeMotor_->Set(-output);
 }
 
 void RobotModel::SetElevatorOutput(double output) {
@@ -226,6 +226,14 @@ void RobotModel::RefreshIniVals() {
 
 	cubeInSwitchL_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchL", "d10");
 	cubeInSwitchR_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchR", "d10");
+}
+
+void RobotModel::PrintState() {
+	SmartDashboard::PutNumber("Left Drive Output", leftMaster_->Get());
+	SmartDashboard::PutNumber("Right Drive Output", rightMaster_->Get());
+	SmartDashboard::PutNumber("Left Drive Encoder", GetLeftDistance());
+	SmartDashboard::PutNumber("Right Drive Encoder", GetRightDistance());
+	SmartDashboard::PutNumber("NavX Yaw", GetNavXYaw());
 }
 
 RobotModel::~RobotModel() {

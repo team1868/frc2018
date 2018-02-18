@@ -5,7 +5,7 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 
 	navXSource_ = navXSource;
 
-	initYaw_ = navXSource_->CalculateAccumulatedYaw();
+	initYaw_ = navXSource_->PIDGet();
 
 	if (isAbsoluteAngle){
 		desiredAngle_ = desiredAngle;

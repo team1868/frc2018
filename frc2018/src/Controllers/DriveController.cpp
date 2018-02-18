@@ -74,7 +74,11 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			QuickTurn(rightJoyX, 0.0);
 			nextState_ = kTeleopDrive;
 		} else {
-			ArcadeDrive(rightJoyX, leftJoyY, thrustSensitivity_, rotateSensitivity_);
+			if (humanControl_->GetArcadeDriveDesired()) {
+				ArcadeDrive(rightJoyX, leftJoyY, thrustSensitivity_, rotateSensitivity_);
+			} else {
+				TankDrive(leftJoyY, rightJoyY);
+			}
 			nextState_ = kTeleopDrive;
 		}
 
