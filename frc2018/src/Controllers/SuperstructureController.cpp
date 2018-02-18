@@ -29,12 +29,21 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		printf("kInit\n");
 		 robot_->SetIntakeOutput(0.0);
 		 robot_->SetElevatorOutput(0.0);
+		 robot_->SetWristUp();
 		break;
 	case kIdle:
 		nextState_ = kIdle;
+		if (humanControl_->GetWristDesired()) {
+			if (robot_->GetWristUp()) {
+				robot_->SetWristDown();
+			} else {
+				robot_->SetWristUp();
+			}
+		}
 		if (humanControl_->GetHoldCubeDesired()) {
 			HoldCube();
 		}
+
 		if (humanControl_->GetIntakeDesired()) {
 			 robot_->SetIntakeOutput(intakeMotorOutput_);
 		} else if (humanControl_->GetOuttakeDesired()) {

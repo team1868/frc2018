@@ -16,9 +16,9 @@ static const int RIGHT_DRIVE_SLAVE_ID 					= 1;
 /* ---------------------- PWM PORTS --------------------- */
 
 // Superstructure PWM Ports
-static const int LEFT_INTAKE_MOTOR_PWM_PORT				= 0; // TODO Change this
-static const int RIGHT_INTAKE_MOTOR_PWM_PORT			= 0; // TODO Change this
-static const int ELEVATOR_MOTOR_PWM_PORT				= 0; // TODO Change this
+static const int LEFT_INTAKE_MOTOR_PWM_PORT				= 8; // TODO Change this
+static const int RIGHT_INTAKE_MOTOR_PWM_PORT			= 9; // TODO Change this
+static const int ELEVATOR_MOTOR_PWM_PORT				= 7; // TODO Change this
 
 /* --------------------- PDP CHANNELS ------------------- */
 
@@ -43,6 +43,9 @@ static const int PNEUMATICS_CONTROL_MODULE_ID			= 0;
 static const int GEAR_SHIFT_FORWARD_SOLENOID_PORT		= 0;
 static const int GEAR_SHIFT_REVERSE_SOLENOID_PORT		= 1;
 
+static const int WRIST_UP_SOLENOID_PORT					= 2;
+static const int WRIST_DOWN_SOLENOID_PORT				= 3;
+
 /* ************************ DRIVER STATION PORTS ************************ */
 
 /* ----------------- JOYSTICK USB PORTS ----------------- */
@@ -62,11 +65,11 @@ static const int QUICK_TURN_BUTTON_PORT					= 2;
 // Superstructure controller button ports
 static const int INTAKE_BUTTON_PORT						= 2;
 static const int OUTTAKE_BUTTON_PORT					= 1;
-static const int HOLD_CUBE_BUTTON_PORT					= 5;
+static const int HOLD_CUBE_BUTTON_PORT					= 0;
 static const int ELEVATOR_UP_BUTTON_PORT				= 8;
 static const int ELEVATOR_DOWN_BUTTON_PORT				= 7;
-static const int ELEVATOR_HEIGHT_BUTTON_PORT			= 3;
 static const int RAMP_BUTTON_PORT						= 6;
+static const int WRIST_BUTTON_PORT						= 3;
 
 // Auto mode switch ports
 static const int LEFT_AUTO_SWITCH_PORT					= 2;	// TODO CHECK THIS

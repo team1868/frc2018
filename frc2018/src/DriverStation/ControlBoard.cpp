@@ -35,6 +35,7 @@ ControlBoard::ControlBoard() {
 	elevatorUpButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_UP_BUTTON_PORT);
 	elevatorDownButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_DOWN_BUTTON_PORT);
 	rampButton_ = new ButtonReader(operatorJoyB_, RAMP_BUTTON_PORT);
+	wristButton_ = new ButtonReader(operatorJoyB_, WRIST_BUTTON_PORT);
 
 	intakeDesired_ = false;
 	outtakeDesired_ = false;
@@ -43,6 +44,7 @@ ControlBoard::ControlBoard() {
 	elevatorDownDesired_ = false;
 	elevatorHeightDesired_ = false;
 	rampDesired_ = false;
+	wristDesired_ = false;
 
 	leftAutoSwitch_ = new ButtonReader(operatorJoy_,LEFT_AUTO_SWITCH_PORT);
 	rightAutoSwitch_ = new ButtonReader(operatorJoy_, RIGHT_AUTO_SWITCH_PORT);
@@ -73,6 +75,11 @@ void ControlBoard::ReadControls() {
 	elevatorUpDesired_ = elevatorUpButton_->IsDown();
 	elevatorDownDesired_ = elevatorDownButton_->IsDown();
 	rampDesired_ = rampButton_->WasJustPressed();
+	if (wristButton_->WasJustPressed()) {
+		wristDesired_ = true;
+	} else {
+		wristDesired_ = false;
+	}
 
 	// Reading Auto Switch vals;
 	leftDown_ = leftAutoSwitch_->IsDown();
@@ -150,6 +157,11 @@ bool ControlBoard::GetRampDesired() {
 	return rampDesired_;
 }
 
+bool ControlBoard::GetWristDesired() {
+	return wristDesired_;
+}
+
+
 AutoMode::AutoPositions ControlBoard::GetDesiredAutoPosition() {
 	AutoMode::AutoPositions position = AutoMode::kBlank;
 
@@ -192,6 +204,7 @@ void ControlBoard::ReadAllButtons() {
 	elevatorUpButton_->ReadValue();
 	elevatorDownButton_->ReadValue();
 	rampButton_->ReadValue();
+	wristButton_->ReadValue();
 
 	rightAutoSwitch_->ReadValue();
 	middleAutoSwitch_->ReadValue();

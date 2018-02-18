@@ -68,7 +68,7 @@ RobotModel::RobotModel() {
 
 	// Initializing pneumatics
 	compressor_ = new Compressor(PNEUMATICS_CONTROL_MODULE_ID);
-//	gearShiftSolenoid_ = new DoubleSolenoid(GEAR_SHIFT_FORWARD_SOLENOID_PORT, GEAR_SHIFT_REVERSE_SOLENOID_PORT);
+	gearShiftSolenoid_ = new DoubleSolenoid(GEAR_SHIFT_FORWARD_SOLENOID_PORT, GEAR_SHIFT_REVERSE_SOLENOID_PORT);
 
 	leftIntakeMotor_ = new Victor(LEFT_INTAKE_MOTOR_PWM_PORT);
 	rightIntakeMotor_ = new Victor(RIGHT_INTAKE_MOTOR_PWM_PORT);
@@ -77,7 +77,11 @@ RobotModel::RobotModel() {
 	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
 
+	wristSolenoid_ = new DoubleSolenoid(WRIST_UP_SOLENOID_PORT, WRIST_DOWN_SOLENOID_PORT);
+
 	intakeSensor_ = new DigitalInput(INTAKE_SENSOR_PWM_PORT);
+
+	wristUp_ = true;
 
 }
 
@@ -115,11 +119,11 @@ void RobotModel::SetDriveValues(RobotModel::Wheels wheel, double value) {
 }
 
 void RobotModel::SetHighGear() {
-//	gearShiftSolenoid_->Set(DoubleSolenoid::kForward); // TODO Check if right
+	gearShiftSolenoid_->Set(DoubleSolenoid::kForward); // TODO Check if right
 }
 
 void RobotModel::SetLowGear() {
-//	gearShiftSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right
+	gearShiftSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right
 }
 
 double RobotModel::GetLeftEncoderValue() {
@@ -173,6 +177,20 @@ bool RobotModel::GetCubeInIntake() {
 
 Victor* RobotModel::GetElevatorMotor() {
 	return elevatorMotor_;
+}
+
+void RobotModel::SetWristUp() {
+	wristSolenoid_->Set(DoubleSolenoid::kForward); // TODO Check if right
+	wristUp_ = true;
+}
+
+void RobotModel::SetWristDown() {
+	wristSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right
+	wristUp_ = false;
+}
+
+bool RobotModel::GetWristUp() {
+	return wristUp_;
 }
 
 void RobotModel::RefreshIni() {

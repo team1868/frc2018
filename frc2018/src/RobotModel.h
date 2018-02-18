@@ -96,6 +96,8 @@ public:
 	 */
 	double GetNavXRoll();
 
+	/* ------------------ SUPERSTRUCTURE ------------------  */
+
 	/**
 	 * Sets intake/outake motors
 	 * @param output
@@ -126,9 +128,15 @@ public:
 	/**
 	 * Deletes the ini object and creates it again. Sets the ini values to whatever it reads
 	 */
+
+	void SetWristUp();
+
+	void SetWristDown();
+
+	bool GetWristUp();
+
 	void RefreshIni();
 
-	/* ------------------ SUPERSTRUCTURE ------------------  */
 
 	/* ------------------------------------------------------  */
 
@@ -150,14 +158,16 @@ private:
 	AHRS *navX_;
 
 	Compressor *compressor_;
-//	DoubleSolenoid *gearShiftSolenoid_;
+	DoubleSolenoid *gearShiftSolenoid_;
 	Encoder *leftDriveEncoder_, *rightDriveEncoder_;
 	PowerDistributionPanel* pdp_;
 	bool isLeftInverted_;
 
 	Victor *leftIntakeMotor_, *rightIntakeMotor_, *elevatorMotor_;
 	Encoder *elevatorEncoder_;
+	DoubleSolenoid *wristSolenoid_;
 	DigitalInput *intakeSensor_;
+	bool wristUp_;
 };
 
 
