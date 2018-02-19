@@ -63,7 +63,8 @@ RobotModel::RobotModel() {
 	leftSlave_->SetInverted(isLeftInverted_);
 
 	// Initializing NavX
-	navX_ = new AHRS(SPI::kMXP);
+//	navX_ = new AHRS(SPI::kMXP);
+	navX_ = new AHRS(SerialPort::kUSB);
 	Wait(1.0); // NavX takes a second to calibrate
 
 	// Initializing pneumatics
