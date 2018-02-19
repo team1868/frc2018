@@ -29,7 +29,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		printf("kInit\n");
 		 robot_->SetIntakeOutput(0.0);
 		 robot_->SetElevatorOutput(0.0);
-		 robot_->SetWristUp();
 		break;
 	case kIdle:
 		nextState_ = kIdle;
