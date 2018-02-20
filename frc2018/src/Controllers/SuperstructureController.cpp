@@ -26,9 +26,8 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	switch(currState_) {
 	case kInit:
 		nextState_ = kIdle;
-		printf("kInit\n");
-		 robot_->SetIntakeOutput(0.0);
-		 robot_->SetElevatorOutput(0.0);
+		robot_->SetIntakeOutput(0.0);
+		robot_->SetElevatorOutput(0.0);
 		break;
 	case kIdle:
 		nextState_ = kIdle;
@@ -44,18 +43,20 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		}
 
 		if (humanControl_->GetIntakeDesired()) {
-			 robot_->SetIntakeOutput(intakeMotorOutput_);
+			printf("intaking\n");
+			robot_->SetIntakeOutput(intakeMotorOutput_);
 		} else if (humanControl_->GetOuttakeDesired()) {
+			printf("outtaking\n");
 			robot_->SetIntakeOutput(outtakeMotorOutput_);
 		} else {
 			robot_->SetIntakeOutput(0.0);
 		}
 
 		if (humanControl_->GetElevatorUpDesired()) {
-			HoldCube();
+			printf("elevator up\n");
 			robot_->SetElevatorOutput(elevatorOutput_);
 		} else if (humanControl_->GetElevatorDownDesired()) {
-			HoldCube();
+			printf("elevator down\n");
 			robot_->SetElevatorOutput(-elevatorOutput_);
 		} else {
 			robot_->SetElevatorOutput(0.0);
