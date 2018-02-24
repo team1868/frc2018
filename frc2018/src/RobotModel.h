@@ -149,9 +149,12 @@ public:
 	double elevatorPFac_, elevatorIFac_, elevatorDFac_;
 	double driveTimeoutSec_, pivotTimeoutSec_;
 	string cubeInSwitchL_, cubeInSwitchR_;
+	double intakeMotorOutput_, outtakeMotorOutput_;
 
 	WPI_TalonSRX *leftMaster_, *rightMaster_;
 	WPI_VictorSPX *leftSlave_, *rightSlave_;	// Fix Later
+
+
 
 private:
 	void RefreshIniVals();

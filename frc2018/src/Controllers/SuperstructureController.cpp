@@ -9,8 +9,6 @@ SuperstructureController::SuperstructureController(RobotModel *myRobot, ControlB
 	currState_ = kInit;
 	nextState_ = kIdle;
 
-	intakeMotorOutput_ = 0.7; // TODO test this
-	outtakeMotorOutput_ = -0.7; // TODO test this
 	elevatorOutput_ = 0.5; // TODO test this
 }
 
@@ -44,10 +42,10 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 
 		if (humanControl_->GetIntakeDesired()) {
 			printf("intaking\n");
-			robot_->SetIntakeOutput(intakeMotorOutput_);
+			robot_->SetIntakeOutput(robot_->intakeMotorOutput_);
 		} else if (humanControl_->GetOuttakeDesired()) {
 			printf("outtaking\n");
-			robot_->SetIntakeOutput(outtakeMotorOutput_);
+			robot_->SetIntakeOutput(robot_->outtakeMotorOutput_);
 		} else {
 			robot_->SetIntakeOutput(0.0);
 		}
@@ -83,7 +81,7 @@ void SuperstructureController::HoldCube() {
 	if (robot_->GetCubeInIntake()) {
 		robot_->SetIntakeOutput(0.0);
 	} else {
-		robot_->SetIntakeOutput(intakeMotorOutput_);
+		robot_->SetIntakeOutput(robot_->intakeMotorOutput_);
 	}
 }
 

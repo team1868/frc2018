@@ -31,7 +31,7 @@ private:
 	uint32_t currState_;
 	uint32_t nextState_;
 
-	double intakeMotorOutput_, outtakeMotorOutput_, elevatorOutput_;
+	double elevatorOutput_;
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */

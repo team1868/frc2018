@@ -31,6 +31,9 @@ RobotModel::RobotModel() {
 	string cubeInSwitchL_ = ""; // TODO add to ini file
 	string cubeInSwitchR_ = ""; // TODO add to ini file
 
+	intakeMotorOutput_ = 0.0;
+	outtakeMotorOutput_ = 0.0;
+
 	// Initializing timer
 	timer_= new Timer();
 	timer_->Start();
@@ -227,6 +230,9 @@ void RobotModel::RefreshIniVals() {
 
 	cubeInSwitchL_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchL", "d10");
 	cubeInSwitchR_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchR", "d10");
+
+	intakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutput", 0.3);
+	outtakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "outtakeMotorOutput", -0.3);
 }
 
 void RobotModel::PrintState() {
