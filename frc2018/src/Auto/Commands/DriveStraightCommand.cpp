@@ -96,8 +96,8 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		double dOutput = distancePIDOutput_->GetPIDOutput();
 		double rOutput = anglePIDOutput_->GetPIDOutput();
 
-		rightMotorOutput_ = dOutput - rOutput;
-		leftMotorOutput_ = dOutput + rOutput;
+		rightMotorOutput_ = dOutput + rOutput;
+		leftMotorOutput_ = dOutput - rOutput;
 
 //		double maxOutput = fmax(fabs(rightMotorOutput_), fabs(leftMotorOutput_));
 	}

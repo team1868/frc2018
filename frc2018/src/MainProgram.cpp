@@ -74,6 +74,7 @@ public:
 	 * 3: Far Right
 	 */
 	void AutonomousInit() override {
+		robot_->SetHighGear();
 		robot_->ZeroNavXYaw();
 		ResetTimerVariables();
 		string gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
@@ -115,6 +116,8 @@ public:
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
 		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
 		Logger::LogState(robot_, humanControl_);
+		SmartDashboard::PutNumber("Intake", robot_->intakeMotorOutput_);
+		SmartDashboard::PutNumber("Outtake", robot_->outtakeMotorOutput_);
 	}
 
 	void TestPeriodic() {}
@@ -131,6 +134,8 @@ public:
 		humanControl_->ReadControls();
 		autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		robot_->PrintState();
+		SmartDashboard::PutNumber("Intake", robot_->intakeMotorOutput_);
+		SmartDashboard::PutNumber("Outtake", robot_->outtakeMotorOutput_);
 	};
 private:
 	// Robot setup

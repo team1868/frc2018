@@ -32,7 +32,7 @@ static const int RIGHT_DRIVE_ENCODER_RED_PWM_PORT		= 3;
 static const int ELEVATOR_ENCODER_YELLOW_PWM_PORT		= 4;
 static const int ELEVATOR_ENCODER_RED_PWM_PORT			= 5;
 
-static const int INTAKE_SENSOR_PWM_PORT					= 0; // TODO Change this
+static const int INTAKE_SENSOR_PWM_PORT					= 6; // TODO CHANGE THIS
 
 /* ------------------ ANALOG IN PORTS --------------------*/
 
@@ -65,15 +65,15 @@ static const int QUICK_TURN_BUTTON_PORT					= 2;
 // Superstructure controller button ports
 static const int INTAKE_BUTTON_PORT						= 2;
 static const int OUTTAKE_BUTTON_PORT					= 1;
-static const int HOLD_CUBE_BUTTON_PORT					= 0;
+static const int HOLD_CUBE_BUTTON_PORT					= 0;	// TODO CHECK THIS
 static const int ELEVATOR_UP_BUTTON_PORT				= 8;
 static const int ELEVATOR_DOWN_BUTTON_PORT				= 7;
 static const int RAMP_BUTTON_PORT						= 6;
 static const int WRIST_BUTTON_PORT						= 3;
 
 // Auto mode switch ports
-static const int LEFT_AUTO_SWITCH_PORT					= 2;	// TODO CHECK THIS
-static const int MIDDLE_AUTO_SWITCH_PORT				= 3;	// TODO CHECK THIS
-static const int RIGHT_AUTO_SWITCH_PORT					= 4;	// TODO CHECK THIS
+static const int LEFT_AUTO_SWITCH_PORT					= 2;
+static const int MIDDLE_AUTO_SWITCH_PORT				= 3;
+static const int RIGHT_AUTO_SWITCH_PORT					= 4;
 
 #endif /* SRC_PORTS2018_H_ */

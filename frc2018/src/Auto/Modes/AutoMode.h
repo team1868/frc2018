@@ -1,15 +1,18 @@
 #ifndef SRC_AUTO_MODES_AUTOMODE_H_
 #define SRC_AUTO_MODES_AUTOMODE_H_
 
-#include "RobotModel.h"
+#include "Auto/Commands/AutoCommand.h"
+#include "Auto/Commands/DriveStraightCommand.h"
+#include "Auto/Commands/OuttakeCommand.h"
+#include "Auto/Commands/ParallelCommand.h"
+#include "Auto/Commands/PathCommand.h"
+#include "Auto/Commands/PivotCommand.h"
 #include "Auto/PIDSource/PIDInputSource.h"
 #include "Auto/PIDSource/PIDOutputSource.h"
-#include "Auto/Commands/AutoCommand.h"
-#include "Auto/Commands/PivotCommand.h"
-#include "Auto/Commands/DriveStraightCommand.h"
-#include "Auto/Commands/PathCommand.h"
-#include "Auto/Commands/OuttakeCommand.h"
+#include "RobotModel.h"
+#include <iostream>
 
+using namespace std;
 
 class AutoMode {
 public:
@@ -24,6 +27,8 @@ public:
 		talonEncoder_ = new TalonEncoderPIDSource(robot_);
 		angleOutput_ = new AnglePIDOutput();
 		distanceOutput_ = new DistancePIDOutput();
+		breakDesired_ = false;
+		currAngle_ = robot_->GetNavXYaw();
 		printf("Done constructing AutoMode\n");
 	};
 
@@ -37,41 +42,25 @@ public:
 		firstCommand_ = NULL;
 		currentCommand_ = NULL;
 		AutoCommand *lastCommand = NULL;
-		std::istringstream iss(autoSequence);
-		bool breakDesired = false;
-		double currentAngle = robot_->GetNavXYaw();
+		iss.str (autoSequence);
+		breakDesired_ = false;
+		currAngle_ = robot_->GetNavXYaw();
 
-		while (!iss.eof() && !breakDesired) {
+		while (!iss.eof() && !breakDesired_) {
 			AutoCommand* tempCommand = NULL;
 			char command;
 			iss >> command;
 			printf("Command: %c, ", command);
 
-			double angle;
-			double distance;
-
-			switch(command) {
-			case 'p':	// Pivots with absolute position
-				iss >> angle;
-				currentAngle = angle;
-				printf("Angle: %f\n",angle);
-				tempCommand = new PivotCommand(robot_, angle, true, navX_);
-				break;
-			case 'd':	// Drive straight
-				iss >> distance;
-				printf("Distance: %f\n", distance);
-				tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance, currentAngle);
-				break;
-			case 'o':   // Outtake
-				printf("Outtake Command\n");
-				tempCommand = new OuttakeCommand(robot_);
-				break;
-			default:	// When it's not listed, don't do anything :)
-				printf("Unexpected character %c detected. Terminating queue", command);
-				firstCommand_ = NULL;
-				currentCommand_ = NULL;
-				tempCommand = NULL;
-				breakDesired = true;
+			if (command == 'p') {
+				char charA, charB;
+				iss >> charA;
+				AutoCommand* commandA = GetStringCommand(charA);
+				iss >> charB;
+				AutoCommand* commandB = GetStringCommand(charB);
+				tempCommand = new ParallelCommand(commandA, commandB);
+			} else {
+				tempCommand = GetStringCommand(command);
 				break;
 			}
 
@@ -84,6 +73,39 @@ public:
 				lastCommand = lastCommand->GetNextCommand();
 			}
 		}
+	}
+
+	AutoCommand* GetStringCommand(char command) {
+		AutoCommand* tempCommand = NULL;
+
+		switch(command) {
+		case 't':	// Pivots with absolute position
+			double angle;
+			iss >> angle;
+			currAngle_ = angle;
+			printf("Angle: %f\n",angle);
+			tempCommand = new PivotCommand(robot_, angle, true, navX_);
+			break;
+		case 'd':	// Drive straight
+			double distance;
+			iss >> distance;
+			printf("Distance: %f\n", distance);
+			tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance, currAngle_);
+			break;
+		case 'o':   // Outtake
+			printf("Outtake Command\n");
+			tempCommand = new OuttakeCommand(robot_);
+			break;
+		default:	// When it's not listed, don't do anything :)
+			printf("Unexpected character %c detected. Terminating queue", command);
+			firstCommand_ = NULL;
+			currentCommand_ = NULL;
+			tempCommand = NULL;
+			breakDesired_ = true;
+			break;
+		}
+
+		return tempCommand;
 	}
 
 	virtual void Init() = 0;
@@ -146,6 +168,10 @@ protected:
 
 	AnglePIDOutput *angleOutput_;
 	DistancePIDOutput *distanceOutput_;
+
+	istringstream iss;
+	bool breakDesired_;
+	double currAngle_;
 };
 
 #endif /* SRC_AUTO_MODES_AUTOMODE_H_ */

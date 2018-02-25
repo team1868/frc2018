@@ -49,7 +49,7 @@ RobotModel::RobotModel() {
 	rightDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
 	// Initializing Drive Talons
-	isLeftInverted_ = false;
+	isLeftInverted_ = true;	// TODO COMP IS FALSE
 	leftMaster_ = new WPI_TalonSRX(LEFT_DRIVE_MASTER_ID);
 	rightMaster_ = new WPI_TalonSRX(RIGHT_DRIVE_MASTER_ID);
 	leftSlave_ = new WPI_VictorSPX(LEFT_DRIVE_SLAVE_ID);
@@ -123,11 +123,11 @@ void RobotModel::SetDriveValues(RobotModel::Wheels wheel, double value) {
 }
 
 void RobotModel::SetHighGear() {
-	gearShiftSolenoid_->Set(DoubleSolenoid::kForward); // TODO Check if right
+	gearShiftSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right
 }
 
 void RobotModel::SetLowGear() {
-	gearShiftSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right
+	gearShiftSolenoid_->Set(DoubleSolenoid::kForward); // TODO Check if right
 }
 
 double RobotModel::GetLeftEncoderValue() {
@@ -231,8 +231,8 @@ void RobotModel::RefreshIniVals() {
 	cubeInSwitchL_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchL", "d10");
 	cubeInSwitchR_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchR", "d10");
 
-	intakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutput", 0.3);
-	outtakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "outtakeMotorOutput", -0.3);
+	intakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutput", 0.0);
+	outtakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "outtakeMotorOutput", 0.0);
 }
 
 void RobotModel::PrintState() {

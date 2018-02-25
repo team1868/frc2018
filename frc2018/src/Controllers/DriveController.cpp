@@ -112,8 +112,8 @@ void DriveController::ArcadeDrive(double myX, double myY, double thrustSensitivi
 
 	thrustValue = GetCubicAdjustment(thrustValue, thrustSensitivity);
 
-	leftOutput = thrustValue - rotateValue;
-	rightOutput = thrustValue + rotateValue;
+	leftOutput = thrustValue + rotateValue;			// CHECK FOR COMP BOT
+	rightOutput = thrustValue - rotateValue;
 
 	// Make sure, output values are within range
 	if (leftOutput > 1.0) {
@@ -147,8 +147,8 @@ void DriveController::QuickTurn(double myRight, double turnConstant) {
 
 	double rotateValue = GetCubicAdjustment(myRight, turnConstant);
 
-	robot_->SetDriveValues(RobotModel::kLeftWheels, -rotateValue);
-	robot_->SetDriveValues(RobotModel::kRightWheels, rotateValue);
+	robot_->SetDriveValues(RobotModel::kLeftWheels, rotateValue);		// CHECK FOR COMP BOT
+	robot_->SetDriveValues(RobotModel::kRightWheels, -rotateValue);		// CHECK FOR COMP BOT
 }
 
 int DriveController::GetDriveDirection() {

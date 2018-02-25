@@ -12,7 +12,7 @@ TestMode::TestMode(RobotModel *robot) : AutoMode(robot){
 }
 
 void TestMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) {
-	string autoSequence = "p90";
+	string autoSequence = "t90";
 	QueueFromString(autoSequence);
 }
 

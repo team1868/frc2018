@@ -92,8 +92,11 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 		}
 	} else {
 		double output = talonOutput_->GetOutput();
-		robot_->SetDriveValues(RobotModel::kLeftWheels, output);
-		robot_->SetDriveValues(RobotModel::kRightWheels, -output);
+//		double output = 0.0;
+		robot_->SetDriveValues(RobotModel::kLeftWheels, -output);
+		robot_->SetDriveValues(RobotModel::kRightWheels, output);
+
+//		output = talonOutput_->GetOutput();
 		SmartDashboard::PutNumber("left output", output);
 		SmartDashboard::PutNumber("right output", -output);
 	}
