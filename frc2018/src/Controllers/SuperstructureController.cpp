@@ -50,12 +50,15 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			robot_->SetIntakeOutput(0.0);
 		}
 
-		if (humanControl_->GetElevatorUpDesired()) {
+		if (humanControl_->GetElevatorUpDesired()) { //elevator direction fixed
 			printf("elevator up\n");
-			robot_->SetElevatorOutput(elevatorOutput_);
+			robot_->SetElevatorOutput(-elevatorOutput_);
 		} else if (humanControl_->GetElevatorDownDesired()) {
 			printf("elevator down\n");
-			robot_->SetElevatorOutput(-elevatorOutput_);
+			robot_->SetElevatorOutput(elevatorOutput_);
+		} else if (humanControl_->GetElevatorHoldDesired()) {
+					printf("elevator down\n");
+					robot_->SetElevatorOutput(-double(elevatorOutput_)/5.0);
 		} else {
 			robot_->SetElevatorOutput(0.0);
 		}

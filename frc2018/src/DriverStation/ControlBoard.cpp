@@ -34,6 +34,7 @@ ControlBoard::ControlBoard() {
 	holdCubeButton_ = new ButtonReader(operatorJoyB_, HOLD_CUBE_BUTTON_PORT);
 	elevatorUpButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_UP_BUTTON_PORT);
 	elevatorDownButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_DOWN_BUTTON_PORT);
+	elevatorHoldButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_HOLD_BUTTON_PORT);
 	rampButton_ = new ButtonReader(operatorJoyB_, RAMP_BUTTON_PORT);
 	wristButton_ = new ButtonReader(operatorJoyB_, WRIST_BUTTON_PORT);
 
@@ -43,6 +44,7 @@ ControlBoard::ControlBoard() {
 	elevatorUpDesired_ = false;
 	elevatorDownDesired_ = false;
 	elevatorHeightDesired_ = false;
+	elevatorHoldDesired_ = false;
 	rampDesired_ = false;
 	wristDesired_ = false;
 
@@ -74,6 +76,8 @@ void ControlBoard::ReadControls() {
 	holdCubeDesired_ = holdCubeButton_->IsDown();
 	elevatorUpDesired_ = elevatorUpButton_->IsDown();
 	elevatorDownDesired_ = elevatorDownButton_->IsDown();
+	elevatorHoldDesired_ = elevatorHoldButton_->IsDown(); //testing 2/24
+
 	rampDesired_ = rampButton_->WasJustPressed();
 	if (wristButton_->WasJustPressed()) {
 		wristDesired_ = true;
@@ -153,6 +157,10 @@ bool ControlBoard::GetElevatorDownDesired() {
 	return elevatorDownDesired_;
 }
 
+bool ControlBoard::GetElevatorHoldDesired() {
+	return elevatorHoldDesired_;
+}
+
 bool ControlBoard::GetRampDesired() {
 	return rampDesired_;
 }
@@ -203,6 +211,7 @@ void ControlBoard::ReadAllButtons() {
 	holdCubeButton_->ReadValue();
 	elevatorUpButton_->ReadValue();
 	elevatorDownButton_->ReadValue();
+	elevatorHoldButton_->ReadValue();
 	rampButton_->ReadValue();
 	wristButton_->ReadValue();
 

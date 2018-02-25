@@ -68,6 +68,7 @@ static const int OUTTAKE_BUTTON_PORT					= 1;
 static const int HOLD_CUBE_BUTTON_PORT					= 0;	// TODO CHECK THIS
 static const int ELEVATOR_UP_BUTTON_PORT				= 8;
 static const int ELEVATOR_DOWN_BUTTON_PORT				= 7;
+static const int ELEVATOR_HOLD_BUTTON_PORT				= 5;   //Testing 2/24
 static const int RAMP_BUTTON_PORT						= 6;
 static const int WRIST_BUTTON_PORT						= 3;
 

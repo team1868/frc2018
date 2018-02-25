@@ -39,6 +39,7 @@ public:
 	bool GetHoldCubeDesired();
 	bool GetElevatorUpDesired();
 	bool GetElevatorDownDesired();
+	bool GetElevatorHoldDesired();
 	bool GetRampDesired();
 	bool GetWristDesired();
 
@@ -65,10 +66,10 @@ private:
 	ButtonReader *driveDirectionButton_, *gearShiftButton_, *arcadeDriveButton_, *quickTurnButton_;
 
 	// Buttons for superstructure
-	ButtonReader *intakeButton_, *outtakeButton_, *holdCubeButton_, *elevatorUpButton_, *elevatorDownButton_, *rampButton_, *wristButton_;
+	ButtonReader *intakeButton_, *outtakeButton_, *holdCubeButton_, *elevatorUpButton_, *elevatorDownButton_, *elevatorHoldButton_, *rampButton_, *wristButton_;
 
 	// Variables for superstructure
-	bool intakeDesired_, outtakeDesired_, holdCubeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHeightDesired_, rampDesired_,
+	bool intakeDesired_, outtakeDesired_, holdCubeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHoldDesired_, elevatorHeightDesired_, rampDesired_,
 		 wristDesired_;
 
 	// Auto switches
