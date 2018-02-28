@@ -49,7 +49,8 @@ RobotModel::RobotModel() {
 	rightDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
 	// Initializing Drive Talons
-	isLeftInverted_ = true;	// TODO COMP IS FALSE
+//	isLeftInverted_ = true;	// TODO COMP IS FALSE
+	isLeftInverted_ = false;
 	leftMaster_ = new WPI_TalonSRX(LEFT_DRIVE_MASTER_ID);
 	rightMaster_ = new WPI_TalonSRX(RIGHT_DRIVE_MASTER_ID);
 	leftSlave_ = new WPI_VictorSPX(LEFT_DRIVE_SLAVE_ID);

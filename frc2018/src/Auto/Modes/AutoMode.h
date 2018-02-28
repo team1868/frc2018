@@ -61,7 +61,6 @@ public:
 				tempCommand = new ParallelCommand(commandA, commandB);
 			} else {
 				tempCommand = GetStringCommand(command);
-				break;
 			}
 
 			if (firstCommand_ == NULL) {
