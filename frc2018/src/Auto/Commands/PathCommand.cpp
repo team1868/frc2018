@@ -1,5 +1,6 @@
 #include <Auto/Commands/PathCommand.h>
 
+//change all of this
 const double WHEELBASE_WIDTH = 22.5/12.0; // mid of wheels, tentative
 const double WHEEL_DIAMETER = 6.252/12.0; // in ft
 const double TIME_STEP = 0.02; // 20 milliseconds, iter robot
@@ -10,26 +11,6 @@ const int TICKS_PER_REV = 256; // optical encoder
 
 const string TRAJECTORY_FILE_DIR = "../MotionProfiling";
 
-const string LEFT_KOP_TEST = "left_kop_test_trajectory.csv";
-const string RIGHT_KOP_TEST = "right_kop_test_trajectory.csv";
-
-const string LEFT_RIGHT_SIDE_TO_RIGHT_SWITCH = "left_right_side_to_right_switch.csv";
-const string RIGHT_RIGHT_SIDE_TO_RIGHT_SWITCH = "right_right_side_to_right_switch.csv";
-
-const string LEFT_LEFT_SIDE_TO_LEFT_SWITCH = "left_left_side_to_left_switch.csv";
-const string RIGHT_LEFT_SIDE_TO_LEFT_SWITCH = "right_left_side_to_left_switch.csv";
-
-const string LEFT_LEFT_SIDE_TO_RIGHT_SWITCH = "left_left_side_to_right_switch.csv";
-const string RIGHT_LEFT_SIDE_TO_RIGHT_SWITCH = "right_left_side_to_right_switch.csv";
-
-const string LEFT_RIGHT_SIDE_TO_LEFT_SWITCH = "left_right_side_to_left_switch.csv";
-const string RIGHT_RIGHT_SIDE_TO_LEFT_SWITCH = "right_right_side_to_left_switch.csv";
-
-const string LEFT_LEFT_SWITCH_TO_RIGHT = "left_left_switch_to_right.csv";
-const string RIGHT_LEFT_SWITCH_TO_RIGHT = "right_left_switch_to_right.csv";
-
-const string LEFT_RIGHT_SWITCH_TO_LEFT = "left_right_switch_to_left.csv";
-const string RIGHT_RIGHT_SWITCH_TO_LEFT = "right_right_switch_to_left.csv";
 
 PathCommand::PathCommand(RobotModel *robot, Path path, int traj_length) : AutoCommand() {
 	robot_ = robot;
@@ -75,8 +56,18 @@ void PathCommand::ReadTrajectory() {
 
 	switch (path_) {
 	case kRightSideToRightSwitch:
+		{ThreeToRightSwitchTrajectory* temp = new ThreeToRightSwitchTrajectory();
+		leftMoProSz = temp->GetLengthOfLeftMotionProfile();
+		leftMotionProfile = temp->GetLeftMotionProfile();
+		rightMoProSz = temp->GetLengthOfRightMotionProfile();
+		rightMotionProfile = temp->GetRightMotionProfile();}
 		break;
 	case kLeftSideToLeftSwitch:
+		{ZeroToLeftSwitchTrajectory* temp = new ZeroToLeftSwitchTrajectory();
+		leftMoProSz = temp->GetLengthOfLeftMotionProfile();
+		leftMotionProfile = temp->GetLeftMotionProfile();
+		rightMoProSz = temp->GetLengthOfRightMotionProfile();
+		rightMotionProfile = temp->GetRightMotionProfile();}
 		break;
 	case kTestKOP:
 		{KOPTestTrajectory* temp = new KOPTestTrajectory();

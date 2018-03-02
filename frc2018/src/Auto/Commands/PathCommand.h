@@ -4,6 +4,8 @@
 #include "WPILib.h"
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/MotionProfiling/KOPTestTrajectory.h"
+#include "Auto/MotionProfiling/ZeroToLeftSwitchTrajectory.h"
+#include "Auto/MotionProfiling/ThreeToRightSwitchTrajectory.h"
 #include "Auto/MotionProfiling/MotionProfile.h"
 #include <ctre/Phoenix.h>
 #include "../../../ext/pathfinder/pathfinder.h"
