@@ -54,12 +54,14 @@ public:
 		autoChooser_.AddObject("KOP Test", new KOPTestMPMode(robot_));
 
 		SmartDashboard::PutData("Auto Modes", &autoChooser_);
-		autoMode_ = autoChooser_.GetSelected();
+		//autoMode_ = autoChooser_.GetSelected();
 		if (autoMode_ == NULL) {
 			printf("autoMode_ is null in RobotInit\n");
 		}
 		autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		ResetTimerVariables();
+
+		robot_->SetWristUp();
 	}
 
 	/*
@@ -74,9 +76,12 @@ public:
 	 * 3: Far Right
 	 */
 	void AutonomousInit() override {
-		robot_->SetHighGear();
 		robot_->ZeroNavXYaw();
+		robot_->SetHighGear();
+		robot_->SetWristDown();
+		robot_->StopCompressor();
 		ResetTimerVariables();
+
 		string gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
 		if(gameData == "") {
 			gameData = "LRL";
@@ -101,12 +106,16 @@ public:
 	void AutonomousPeriodic() {
 		UpdateTimerVariables();
 		autoController_->Update(currTimeSec_, deltaTimeSec_);
+		if (autoController_->IsDone()) {
+			robot_->StartCompressor();
+		}
 	}
 
 	void TeleopInit() {
 		robot_->ResetTimer();
 		ResetTimerVariables();
 		ResetControllers();
+		robot_->StartCompressor();
 	}
 
 	void TeleopPeriodic() {

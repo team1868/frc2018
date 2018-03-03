@@ -12,13 +12,14 @@ TestMode::TestMode(RobotModel *robot) : AutoMode(robot){
 }
 
 void TestMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) {
-	string autoSequence = "d10 t90";
+	string autoSequence = robot_->testMode_;
 	QueueFromString(autoSequence);
 }
 
 void TestMode::Init() {
 	printf("Initializing Test mode\n");
 	currentCommand_->Init();
+	printf("Finished initializing\n");
 }
 
 TestMode::~TestMode() {

@@ -95,9 +95,17 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	} else {
 		double dOutput = distancePIDOutput_->GetPIDOutput();
 		double rOutput = anglePIDOutput_->GetPIDOutput();
-
-		rightMotorOutput_ = dOutput + rOutput;
-		leftMotorOutput_ = dOutput - rOutput;
+		SmartDashboard::PutNumber("rOutput:", rOutput);
+		if (fabs(dOutput - lastDOutput_) > 0.8) {
+			if (dOutput > 0) {
+				dOutput = 0.8;
+			} else {
+				dOutput = -0.8;
+			}
+		}
+		rightMotorOutput_ = dOutput - rOutput;
+		leftMotorOutput_ = dOutput + rOutput;
+		lastDOutput_ = dOutput;
 
 //		double maxOutput = fmax(fabs(rightMotorOutput_), fabs(leftMotorOutput_));
 	}
@@ -165,8 +173,8 @@ void DriveStraightCommand::Initializations(NavXPIDSource* navXSource, TalonEncod
 	rTolerance_ = 1.0;
 	dTolerance_ = 1.0 / 12.0;
 
-	rMaxOutput_ = 0.2;
-	dMaxOutput_ = 0.7; // Currently for the KOP @ google (slipped a lot when higher)
+	rMaxOutput_ = 0.15;
+	dMaxOutput_ = 0.85;
 
 	// initializing number of times robot is on target
 	numTimesOnTarget_ = 0;

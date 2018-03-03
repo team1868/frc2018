@@ -44,13 +44,15 @@ RobotModel::RobotModel() {
 	// Initializing Encoders
 	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_YELLOW_PWM_PORT, LEFT_DRIVE_ENCODER_RED_PWM_PORT, true);		// TODO check if true or false
 	leftDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
+	leftDriveEncoder_->SetReverseDirection(false);
 
 	rightDriveEncoder_ = new Encoder(RIGHT_DRIVE_ENCODER_YELLOW_PWM_PORT, RIGHT_DRIVE_ENCODER_RED_PWM_PORT, false);
 	rightDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
+	rightDriveEncoder_->SetReverseDirection(true);
 
 	// Initializing Drive Talons
-//	isLeftInverted_ = true;	// TODO COMP IS FALSE
-	isLeftInverted_ = false;
+	isLeftInverted_ = true;	// TODO COMP IS FALSE
+//	isLeftInverted_ = false;
 	leftMaster_ = new WPI_TalonSRX(LEFT_DRIVE_MASTER_ID);
 	rightMaster_ = new WPI_TalonSRX(RIGHT_DRIVE_MASTER_ID);
 	leftSlave_ = new WPI_VictorSPX(LEFT_DRIVE_SLAVE_ID);
@@ -147,12 +149,21 @@ double RobotModel::GetRightDistance() {
 	return rightDriveEncoder_->GetDistance();
 }
 
+bool RobotModel::GetLeftEncoderStopped() {
+	return leftDriveEncoder_->GetStopped();
+}
+
+bool RobotModel::GetRightEncoderStopped() {
+	return rightDriveEncoder_->GetStopped();
+}
+
 double RobotModel::GetNavXYaw() {
 	return navX_->GetYaw();
 }
 
 void RobotModel::ZeroNavXYaw() {
 	navX_->ZeroYaw();
+	printf("Zeroed Yaw\n");
 }
 
 double RobotModel::GetNavXPitch() {
@@ -198,6 +209,14 @@ bool RobotModel::GetWristUp() {
 	return wristUp_;
 }
 
+void RobotModel::StopCompressor() {
+	compressor_->Stop();
+}
+
+void RobotModel::StartCompressor() {
+	compressor_->Start();
+}
+
 void RobotModel::RefreshIni() {
 	delete pini_;
 	const char* usbPath = "insert path here"; // TODO fix
@@ -217,12 +236,12 @@ void RobotModel::RefreshIniVals() {
 	pivotDFac_ = pini_->getf("PIVOT PID", "dFac", 0.0);
 	pivotTimeoutSec_ = pini_->getf("PIVOT PID", "pivotTimeoutSec", 3.5);
 
-	driveDPFac_ = pini_->getf("DRIVESTRAIGHT PID", "dPFac", 0.0);
-	driveDIFac_ = pini_->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
-	driveDDFac_ = pini_->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
 	driveRPFac_ = pini_->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
 	driveRIFac_ = pini_->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
 	driveRDFac_ = pini_->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
+	driveDPFac_ = pini_->getf("DRIVESTRAIGHT PID", "dPFac", 0.0);
+	driveDIFac_ = pini_->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
+	driveDDFac_ = pini_->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
 	driveTimeoutSec_ = pini_->getf("DRIVESTRAIGHT PID", "driveTimeoutSec", 3);
 
 	elevatorPFac_ = pini_->getf("ELEVATOR PID", "pFac", 0.0);
@@ -234,6 +253,8 @@ void RobotModel::RefreshIniVals() {
 
 	intakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutput", 0.0);
 	outtakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "outtakeMotorOutput", 0.0);
+
+	testMode_ = pini_->gets("AUTO TEST", "sequence", "");
 }
 
 void RobotModel::PrintState() {

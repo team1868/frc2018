@@ -2,7 +2,6 @@
 #include "WPILib.h"
 
 PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsoluteAngle, NavXPIDSource* navXSource) {
-
 	navXSource_ = navXSource;
 
 	initYaw_ = navXSource_->PIDGet();
@@ -27,7 +26,7 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 	GetIniValues();
 	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, talonOutput_);
 
-	maxOutput_ = 0.8;
+	maxOutput_ = 0.9;
 	tolerance_ = 1.0;
 
 	numTimesOnTarget_ = 0;
@@ -93,8 +92,8 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 	} else {
 		double output = talonOutput_->GetOutput();
 //		double output = 0.0;
-		robot_->SetDriveValues(RobotModel::kLeftWheels, -output);
-		robot_->SetDriveValues(RobotModel::kRightWheels, output);
+		robot_->SetDriveValues(RobotModel::kLeftWheels, output);
+		robot_->SetDriveValues(RobotModel::kRightWheels, -output);
 
 //		output = talonOutput_->GetOutput();
 		SmartDashboard::PutNumber("left output", output);

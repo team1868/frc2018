@@ -3,6 +3,7 @@
 
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/Commands/DriveStraightCommand.h"
+#include "Auto/Commands/IntakeCommand.h"
 #include "Auto/Commands/OuttakeCommand.h"
 #include "Auto/Commands/ParallelCommand.h"
 #include "Auto/Commands/PathCommand.h"
@@ -18,8 +19,12 @@ class AutoMode {
 public:
 	enum AutoPositions { kBlank, kLeft, kMiddle, kMiddleRight, kFarRight, kIni };
 
+	/**
+	 * Constructs auto mode and initializes all variables.
+	 */
 	AutoMode(RobotModel *robot) {
 		printf("Constructing AutoMode\n");
+
 		firstCommand_ = NULL;
 		currentCommand_ = NULL;
 		robot_ = robot;
@@ -29,15 +34,22 @@ public:
 		distanceOutput_ = new DistancePIDOutput();
 		breakDesired_ = false;
 		currAngle_ = robot_->GetNavXYaw();
+
 		printf("Done constructing AutoMode\n");
 	};
 
 	virtual ~AutoMode() {};
 
+	/**
+	 * Creates the queue of commands. Currently empty until the auto mode inheriting overrides it.
+	 */
 	virtual void CreateQueue(string gameData, AutoMode::AutoPositions pos) {
 
 	}
 
+	/**
+	 * Queues from a given string parameter. This accounts for parallel auto and calls GetCommand().
+	 */
 	void QueueFromString(string autoSequence) {
 		firstCommand_ = NULL;
 		currentCommand_ = NULL;
@@ -45,6 +57,12 @@ public:
 		iss.str (autoSequence);
 		breakDesired_ = false;
 		currAngle_ = robot_->GetNavXYaw();
+
+		if (autoSequence == "") {
+			printf("NO QUEUEUEUEUEUE!!!!");
+		}
+
+		//printf("AUto sequence: %s", autoSequence.c_str());
 
 		while (!iss.eof() && !breakDesired_) {
 			AutoCommand* tempCommand = NULL;
@@ -55,8 +73,10 @@ public:
 			if (command == 'p') {
 				char charA, charB;
 				iss >> charA;
+				printf("CommandA %c ", charA);
 				AutoCommand* commandA = GetStringCommand(charA);
 				iss >> charB;
+				printf("CommandB %c ", charB);
 				AutoCommand* commandB = GetStringCommand(charB);
 				tempCommand = new ParallelCommand(commandA, commandB);
 			} else {
@@ -72,8 +92,12 @@ public:
 				lastCommand = lastCommand->GetNextCommand();
 			}
 		}
+		iss.clear();
 	}
 
+	/**
+	 * Creates a new command according to the command character input and inputStringStream.
+	 */
 	AutoCommand* GetStringCommand(char command) {
 		AutoCommand* tempCommand = NULL;
 
@@ -81,6 +105,9 @@ public:
 		case 't':	// Pivots with absolute position
 			double angle;
 			iss >> angle;
+			if(IsFailed(command)) {
+				tempCommand = NULL;
+			}
 			currAngle_ = angle;
 			printf("Angle: %f\n",angle);
 			tempCommand = new PivotCommand(robot_, angle, true, navX_);
@@ -88,8 +115,19 @@ public:
 		case 'd':	// Drive straight
 			double distance;
 			iss >> distance;
+			if(IsFailed(command)) {
+				tempCommand = NULL;
+			}
 			printf("Distance: %f\n", distance);
 			tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance, currAngle_);
+			break;
+		case 'i':
+			double intakeOutput;
+			iss >> intakeOutput;
+			if(IsFailed(command)) {
+				tempCommand = NULL;
+			}
+			tempCommand = new IntakeCommand(robot_, intakeOutput);
 			break;
 		case 'o':   // Outtake
 			printf("Outtake Command\n");
@@ -105,6 +143,18 @@ public:
 		}
 
 		return tempCommand;
+	}
+
+	bool IsFailed(char command) {
+		if (iss.fail()) {
+			iss.clear();
+			printf("Unexpected character detected after %c. Terminating queue", command);
+			firstCommand_ = NULL;
+			currentCommand_ = NULL;
+			breakDesired_ = true;
+			return true;
+		}
+		return false;
 	}
 
 	virtual void Init() = 0;

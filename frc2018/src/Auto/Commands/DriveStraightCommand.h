@@ -96,6 +96,7 @@ private:
 	double initialDriveTime_, diffDriveTime_, driveTimeoutSec_;
 	bool isDone_;
 	int numTimesOnTarget_;
+	double lastDOutput_;
 
 };
 

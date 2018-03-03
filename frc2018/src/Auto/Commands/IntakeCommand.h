@@ -13,7 +13,7 @@
 
 class IntakeCommand : public AutoCommand {
 public:
-	IntakeCommand(RobotModel *robot);
+	IntakeCommand(RobotModel *robot, double intakeMotorOutput = 0.7); //TODO TEST
 	virtual ~IntakeCommand();
 
 	void Init();

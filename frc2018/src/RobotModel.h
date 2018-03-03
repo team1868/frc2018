@@ -77,6 +77,16 @@ public:
 	double GetRightDistance();
 
 	/**
+	 * @return if left encoder isn't turning
+	 */
+	bool GetLeftEncoderStopped();
+
+	/**
+	 * @return if right encod
+	 */
+	bool GetRightEncoderStopped();
+
+	/**
 	 * @return angle from navX
 	 */
 	double GetNavXYaw();
@@ -135,6 +145,10 @@ public:
 
 	bool GetWristUp();
 
+	void StopCompressor();
+
+	void StartCompressor();
+
 	void RefreshIni();
 
 	void PrintState();
@@ -148,8 +162,10 @@ public:
 	double driveRPFac_, driveRIFac_, driveRDFac_;
 	double elevatorPFac_, elevatorIFac_, elevatorDFac_;
 	double driveTimeoutSec_, pivotTimeoutSec_;
-	string cubeInSwitchL_, cubeInSwitchR_;
 	double intakeMotorOutput_, outtakeMotorOutput_;
+
+	string cubeInSwitchL_, cubeInSwitchR_;
+	string testMode_;
 
 	WPI_TalonSRX *leftMaster_, *rightMaster_;
 	WPI_VictorSPX *leftSlave_, *rightSlave_;	// Fix Later

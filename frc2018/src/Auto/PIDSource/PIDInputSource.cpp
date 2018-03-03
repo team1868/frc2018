@@ -14,6 +14,7 @@ double NavXPIDSource::PIDGet() {
 }
 
 double NavXPIDSource::CalculateAccumulatedYaw() {
+	bool isLeftStopped =
 	lastYaw_ = currYaw_;
 	currYaw_ = robot_->GetNavXYaw();
 	deltaYaw_ = currYaw_ - lastYaw_;
@@ -51,7 +52,14 @@ double TalonEncoderPIDSource::PIDGet() {
 	double leftDistance = robot_->GetLeftDistance();
 	double rightDistance = robot_->GetRightDistance();
 
-	averageTalonDistance_= (rightDistance + leftDistance) / 2;
+	// FIX THIS TO BE BETTER THANKS
+	if (robot_->GetLeftEncoderStopped()) {
+		averageTalonDistance_ = rightDistance;
+	} else if (robot_->GetRightEncoderStopped()) {
+		averageTalonDistance_ = leftDistance;
+	} else {
+		averageTalonDistance_= (rightDistance + leftDistance) / 2;
+	}
 
 	SmartDashboard::PutNumber("Left Distance", leftDistance);
 	SmartDashboard::PutNumber("Right Distance", rightDistance);
