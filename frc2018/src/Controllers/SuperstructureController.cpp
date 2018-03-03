@@ -1,6 +1,6 @@
 #include <Controllers/SuperstructureController.h>
 
-const double MAX_ELEVATOR_HEIGHT = 2; // TODO CHANGE THIS
+//const double MAX_ELEVATOR_HEIGHT = 2; // TODO CHANGE THIS
 
 SuperstructureController::SuperstructureController(RobotModel *myRobot, ControlBoard *myHumanControl) {
 	robot_ = myRobot;
@@ -10,6 +10,9 @@ SuperstructureController::SuperstructureController(RobotModel *myRobot, ControlB
 	nextState_ = kIdle;
 
 	elevatorOutput_ = 0.5; // TODO test this
+	rampOutput_ = 0.75; // TODO test this
+	rampReleaseTime_ = 0.0;
+	rampReleaseDiffTime_ = 0.5;
 }
 
 void SuperstructureController::Reset() {
@@ -18,6 +21,7 @@ void SuperstructureController::Reset() {
 
 	robot_->SetIntakeOutput(0.0);
 	robot_->SetElevatorOutput(0.0);
+	rampReleaseTime_ = 0.0;
 }
 
 void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
@@ -29,13 +33,12 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		break;
 	case kIdle:
 		nextState_ = kIdle;
-		if (humanControl_->GetWristDesired()) {
-			if (robot_->GetWristUp()) {
-				robot_->SetWristDown();
-			} else {
-				robot_->SetWristUp();
-			}
+		if (humanControl_->GetWristUpDesired()) {
+			robot_->SetWristUp();
+		} else if (humanControl_->GetWristDownDesired()) {
+			robot_->SetWristDown();
 		}
+
 		if (humanControl_->GetHoldCubeDesired()) {
 			HoldCube();
 		}
@@ -46,6 +49,8 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		} else if (humanControl_->GetOuttakeDesired()) {
 			printf("outtaking\n");
 			robot_->SetIntakeOutput(robot_->outtakeMotorOutput_);
+		} else if (humanControl_->GetIntakeHoldDesired()) {
+			robot_->SetIntakeOutput(0.4);
 		} else {
 			robot_->SetIntakeOutput(0.0);
 		}
@@ -63,14 +68,35 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			robot_->SetElevatorOutput(0.0);
 		}
 
-		if (humanControl_->GetRampDesired()) {
-			nextState_ = kRamp;
+		if (humanControl_->GetRampReleaseDesired()) {
+			nextState_ = kRampRelease;
+			rampReleaseTime_ = robot_->GetTime();
+			robot_->ReleaseRampLegs();
 		}
+
 		printf("in kIdle\n");
 		break;
-	case kRamp:
-		printf("in kRamp\n");
-		nextState_ = kRamp;
+	case kRampRelease:
+		printf("in kRampRelease\n");
+		if (robot_->GetTime() - rampReleaseTime_ > 0.5) {
+			robot_->ReleaseRamps();
+			nextState_ = kRampRaise;
+		} else {
+			nextState_ = kRampRelease;
+		}
+		break;
+	case kRampRaise:
+		if (humanControl_->GetRampRaiseLDesired()) {
+			robot_->SetRampMotorLOutput(rampOutput_);
+		} else {
+			robot_->SetRampMotorLOutput(0.0);
+		}
+
+		if (humanControl_->GetRampRaiseRDesired()) {
+			robot_->SetRampMotorROutput(rampOutput_);
+		} else {
+			robot_->SetRampMotorROutput(0.0);
+		}
 		break;
 	}
 	currState_ = nextState_;

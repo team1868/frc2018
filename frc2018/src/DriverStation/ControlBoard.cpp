@@ -31,22 +31,26 @@ ControlBoard::ControlBoard() {
 
 	intakeButton_ = new ButtonReader(operatorJoyB_, INTAKE_BUTTON_PORT);
 	outtakeButton_ = new ButtonReader(operatorJoyB_, OUTTAKE_BUTTON_PORT);
+	intakeHoldSwitch_ = new ButtonReader(operatorJoy_, INTAKE_HOLD_SWITCH_PORT);
 	holdCubeButton_ = new ButtonReader(operatorJoyB_, HOLD_CUBE_BUTTON_PORT);
 	elevatorUpButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_UP_BUTTON_PORT);
 	elevatorDownButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_DOWN_BUTTON_PORT);
 	elevatorHoldButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_HOLD_BUTTON_PORT);
-	rampButton_ = new ButtonReader(operatorJoyB_, RAMP_BUTTON_PORT);
-	wristButton_ = new ButtonReader(operatorJoyB_, WRIST_BUTTON_PORT);
+	rampReleaseButton_ = new ButtonReader(operatorJoyB_, RAMP_RELEASE_BUTTON_PORT);
+	rampRaiseLButton_ = new ButtonReader(operatorJoy_, RAMP_RAISE_L_BUTTON_PORT);
+	rampRaiseRButton_ = new ButtonReader(operatorJoy_, RAMP_RAISE_R_BUTTON_PORT);
+	wristSwitch_ = new ButtonReader(operatorJoyB_, WRIST_BUTTON_PORT);
 
 	intakeDesired_ = false;
 	outtakeDesired_ = false;
+	intakeHoldDesired_ = false;
 	holdCubeDesired_ = false;
 	elevatorUpDesired_ = false;
 	elevatorDownDesired_ = false;
-	elevatorHeightDesired_ = false;
 	elevatorHoldDesired_ = false;
-	rampDesired_ = false;
-	wristDesired_ = false;
+	rampReleaseDesired_ = false;
+	wristUpDesired_ = false;
+	wristDownDesired_ = false;
 
 	leftAutoSwitch_ = new ButtonReader(operatorJoy_,LEFT_AUTO_SWITCH_PORT);
 	rightAutoSwitch_ = new ButtonReader(operatorJoy_, RIGHT_AUTO_SWITCH_PORT);
@@ -73,16 +77,23 @@ void ControlBoard::ReadControls() {
 
 	intakeDesired_ = intakeButton_->IsDown();
 	outtakeDesired_ = outtakeButton_->IsDown();
+	intakeHoldDesired_ = intakeHoldSwitch_->IsDown();
 	holdCubeDesired_ = holdCubeButton_->IsDown();
 	elevatorUpDesired_ = elevatorUpButton_->IsDown();
 	elevatorDownDesired_ = elevatorDownButton_->IsDown();
 	elevatorHoldDesired_ = elevatorHoldButton_->IsDown(); //testing 2/24
 
-	rampDesired_ = rampButton_->WasJustPressed();
-	if (wristButton_->WasJustPressed()) {
-		wristDesired_ = true;
+	rampReleaseDesired_ = rampReleaseButton_->WasJustPressed();
+	if (wristSwitch_->WasJustPressed()) {
+		wristUpDesired_ = true;
 	} else {
-		wristDesired_ = false;
+		wristUpDesired_ = false;
+	}
+
+	if (wristSwitch_->WasJustReleased()) {
+		wristDownDesired_ = true;
+	} else {
+		wristDownDesired_ = false;
 	}
 
 	// Reading Auto Switch vals;
@@ -145,6 +156,10 @@ bool ControlBoard::GetOuttakeDesired() {
 	return outtakeDesired_;
 }
 
+bool ControlBoard::GetIntakeHoldDesired() {
+	return intakeHoldDesired_;
+}
+
 bool ControlBoard::GetHoldCubeDesired() {
 	return holdCubeDesired_;
 }
@@ -161,14 +176,25 @@ bool ControlBoard::GetElevatorHoldDesired() {
 	return elevatorHoldDesired_;
 }
 
-bool ControlBoard::GetRampDesired() {
-	return rampDesired_;
+bool ControlBoard::GetRampReleaseDesired() {
+	return rampReleaseDesired_;
 }
 
-bool ControlBoard::GetWristDesired() {
-	return wristDesired_;
+bool ControlBoard::GetRampRaiseLDesired() {
+	return rampRaiseLDesired_;
 }
 
+bool ControlBoard::GetRampRaiseRDesired() {
+	return rampRaiseRDesired_;
+}
+
+bool ControlBoard::GetWristUpDesired() {
+	return wristUpDesired_;
+}
+
+bool ControlBoard::GetWristDownDesired() {
+	return wristDownDesired_;
+}
 
 AutoMode::AutoPositions ControlBoard::GetDesiredAutoPosition() {
 	AutoMode::AutoPositions position = AutoMode::kBlank;
@@ -208,12 +234,15 @@ void ControlBoard::ReadAllButtons() {
 
 	intakeButton_->ReadValue();
 	outtakeButton_->ReadValue();
+	intakeHoldSwitch_->ReadValue();
 	holdCubeButton_->ReadValue();
 	elevatorUpButton_->ReadValue();
 	elevatorDownButton_->ReadValue();
 	elevatorHoldButton_->ReadValue();
-	rampButton_->ReadValue();
-	wristButton_->ReadValue();
+	rampReleaseButton_->ReadValue();
+	rampRaiseLButton_->ReadValue();
+	rampRaiseRButton_->ReadValue();
+	wristSwitch_->ReadValue();
 
 	rightAutoSwitch_->ReadValue();
 	middleAutoSwitch_->ReadValue();

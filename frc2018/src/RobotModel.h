@@ -145,6 +145,15 @@ public:
 
 	bool GetWristUp();
 
+	void ReleaseRampLegs();
+
+	void ReleaseRamps();
+
+	void SetRampMotorLOutput(double output);
+
+	void SetRampMotorROutput(double output);
+
+
 	void StopCompressor();
 
 	void StartCompressor();
@@ -184,10 +193,11 @@ private:
 	PowerDistributionPanel* pdp_;
 	bool isLeftInverted_;
 
-	Victor *leftIntakeMotor_, *rightIntakeMotor_, *elevatorMotor_;
+	Victor *leftIntakeMotor_, *rightIntakeMotor_, *elevatorMotor_,  *rampLMotor_, *rampRMotor_;
 	Encoder *elevatorEncoder_;
 	DoubleSolenoid *wristSolenoid_;
 	DigitalInput *intakeSensor_;
+	Solenoid *rampLegSolenoidL_, *rampLegSolenoidR_, *rampReleaseSolenoidL_, *rampReleaseSolenoidR_;
 	bool wristUp_;
 };
 
