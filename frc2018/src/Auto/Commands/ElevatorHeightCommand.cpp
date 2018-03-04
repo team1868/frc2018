@@ -20,7 +20,7 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHe
 	GetIniValues();
 
 	elevatorHeightPID_ = new PIDController(pFac_, iFac_, dFac_, encoderPIDSource_,elevatorPIDOutput_);
-	maxOutput_ = 0.8; // TODO Test
+	maxOutput_ = 1.0; // TODO Test
 	tolerance_ = 1; // TODO CHANGE
 
 	startTime_ = robot_->GetTime();
@@ -39,7 +39,7 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot) {
 	GetIniValues();
 
 	elevatorHeightPID_ = new PIDController(pFac_, iFac_, dFac_, encoderPIDSource_,elevatorPIDOutput_);
-	maxOutput_ = 0.8; // TODO Test
+	maxOutput_ = 1.0; // TODO Test
 	tolerance_ = 1; // TODO CHANGE
 
 	startTime_ = robot_->GetTime();

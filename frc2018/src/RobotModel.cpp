@@ -87,6 +87,14 @@ RobotModel::RobotModel() {
 	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
 
+	rampLMotor_ = new Victor(RAMP_L_MOTOR_PWM_PORT);
+	rampRMotor_ = new Victor(RAMP_R_MOTOR_PWM_PORT);
+
+	rampLegSolenoidL_ = new Solenoid(RAMP_LEG_SOLENOID_L_PORT);
+	rampLegSolenoidR_ = new Solenoid(RAMP_LEG_SOLENOID_R_PORT);
+	rampReleaseSolenoidL_ = new Solenoid(RAMP_RELEASE_SOLENOID_L_PORT);
+	rampReleaseSolenoidR_ = new Solenoid(RAMP_RELEASE_SOLENOID_R_PORT);
+
 	wristSolenoid_ = new DoubleSolenoid(WRIST_UP_SOLENOID_PORT, WRIST_DOWN_SOLENOID_PORT);
 
 	intakeSensor_ = new DigitalInput(INTAKE_SENSOR_PWM_PORT);
@@ -202,6 +210,25 @@ void RobotModel::SetWristUp() {
 	wristSolenoid_->Set(DoubleSolenoid::kForward); // TODO Check if right
 	wristUp_ = true;
 }
+
+void RobotModel::ReleaseRampLegs() {
+	rampLegSolenoidL_->Set(true);
+	rampLegSolenoidR_->Set(true);
+}
+
+void RobotModel::ReleaseRamps() {
+	rampReleaseSolenoidL_->Set(true);
+	rampReleaseSolenoidR_->Set(true);
+}
+
+void RobotModel::SetRampMotorLOutput(double output) {
+	rampLMotor_->Set(output);
+}
+
+void RobotModel::SetRampMotorROutput(double output) {
+	rampRMotor_->Set(output);
+}
+
 
 void RobotModel::SetWristDown() {
 	wristSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right

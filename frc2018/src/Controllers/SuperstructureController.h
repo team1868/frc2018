@@ -19,7 +19,7 @@ public:
 	virtual ~SuperstructureController();
 
 	enum SuperstructureState {
-		kInit, kIdle, kRamp
+		kInit, kIdle, kRampRelease, kRampRaise
 	};
 
 private:
@@ -31,7 +31,8 @@ private:
 	uint32_t currState_;
 	uint32_t nextState_;
 
-	double elevatorOutput_;
+	double elevatorOutput_, rampOutput_;
+	double rampReleaseTime_, rampReleaseDiffTime_;
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */
