@@ -5,7 +5,7 @@
 
 class RightSideToRightSwitchMode : public AutoMode{
 public:
-	RightSideToRightSwitchMode();
+	RightSideToRightSwitchMode(RobotModel *robot);
 	void CreateQueue(string gameData, AutoMode::AutoPositions pos);
 	void Init();
 	virtual ~RightSideToRightSwitchMode();

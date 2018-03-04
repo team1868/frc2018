@@ -1,11 +1,11 @@
 #include <Auto/Modes/RightSideToRightSwitchMode.h>
 
-RightSideToRightSwitchMode::RightSideToRightSwitchMode() {
+RightSideToRightSwitchMode::RightSideToRightSwitchMode(RobotModel *robot) : AutoMode(robot) {
 	printf("constructing right side to right switch mode\n");
-	MPPathCommand_ = new PathCommand(robot_, PathCommand::kTestKOP, 341);
+	MPPathCommand_ = new PathCommand(robot_, PathCommand::kRightSideToRightSwitch, 341);
 }
 
-RightSideToRightSwitchMode::~RightSideToRightSwitchMode() {
+void RightSideToRightSwitchMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) {
 	printf("creating queue for right side to right switch mode\n");
 	currentCommand_ = MPPathCommand_;
 }
