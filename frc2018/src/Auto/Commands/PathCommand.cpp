@@ -124,31 +124,6 @@ void PathCommand::ReadTrajectory() {
 }
 
 void PathCommand::Init() {
-
-//	switch (path_) {
-//	case kRightSideToRightSwitch:
-//		break;
-//	case kLeftSideToLeftSwitch:
-//		break;
-////	case kLeftSwitchToRight:
-////		break;
-////	case kRightSwitchToLeft:
-////		break;
-////	case kLeftSwitchToLeftScale:
-////		break;
-////	case kLeftSwitchToRightScale:
-////		break;
-////	case kRightSwitchToRightScale:
-////		break;
-////	case kRightSwitchToLeftScale:
-////		break;
-//	default:
-//		printf("MOTION PROFILE IS NULL\n");
-//		break;
-//	}
-
-//	TrajectoryCandidate candidate;
-
 	// Arguments:
 	// Fit Function:        FIT_HERMITE_CUBIC or FIT_HERMITE_QUINTIC
 	// Sample Count:        PATHFINDER_SAMPLES_HIGH (100 000)

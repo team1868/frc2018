@@ -8,6 +8,8 @@
 //#include "Auto/Modes/InSwitchGetCubeMode.h"
 #include "Auto/Modes/TestMode.h"
 #include "Auto/Modes/KOPTestMPMode.h"
+#include "Auto/Modes/RightSideToRightSwitchMode.h"
+#include "Auto/Modes/LeftSideToLeftSwitchMode.h"
 
 class AutoController {
 public:

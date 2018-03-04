@@ -52,6 +52,7 @@ public:
 		autoChooser_.AddObject("Test Mode", new TestMode(robot_));
 
 		autoChooser_.AddObject("KOP Test", new KOPTestMPMode(robot_));
+		autoChooser_.AddObject("R Side R Switch Mode", new RightSideToRightSwitchMode(robot_));
 
 		SmartDashboard::PutData("Auto Modes", &autoChooser_);
 		//autoMode_ = autoChooser_.GetSelected();
