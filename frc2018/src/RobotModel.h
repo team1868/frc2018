@@ -164,6 +164,7 @@ public:
 	double driveTimeoutSec_, pivotTimeoutSec_;
 	double intakeMotorOutput_, outtakeMotorOutput_;
 
+	int autoPos_, autoMode_;
 	string cubeInSwitchL_, cubeInSwitchR_;
 	string testMode_;
 

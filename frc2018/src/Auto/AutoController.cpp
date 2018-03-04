@@ -20,6 +20,7 @@ void AutoController::Init(string gameData, AutoMode::AutoPositions pos) {
 	if (autoMode == NULL) {
 		printf("autoMode is null\n");
 	} else {
+		printf(gameData.c_str());
 		autoMode->CreateQueue(gameData, pos);
 		printf("Queue finished\n");
 		autoMode->Init();

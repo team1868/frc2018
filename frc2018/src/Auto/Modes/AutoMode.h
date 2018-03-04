@@ -55,6 +55,7 @@ public:
 		currentCommand_ = NULL;
 		AutoCommand *lastCommand = NULL;
 		iss.str (autoSequence);
+		cout << string ("autosequence" ) + autoSequence << endl;
 		breakDesired_ = false;
 		currAngle_ = robot_->GetNavXYaw();
 
@@ -93,6 +94,7 @@ public:
 			}
 		}
 		iss.clear();
+
 	}
 
 	/**
