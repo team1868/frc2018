@@ -171,6 +171,7 @@ public:
 		if (currentCommand_ != NULL) {
 			if (currentCommand_->IsDone()) {
 //				DO_PERIODIC(1, printf("Command complete at: %f \n", currTimeSec));
+				currentCommand_->Reset();
 				currentCommand_ = currentCommand_->GetNextCommand();
 				if (currentCommand_ != NULL) {
 //					DO_PERIODIC(1, printf("Command start at: %f \n", currTimeSec));

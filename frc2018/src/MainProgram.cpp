@@ -124,7 +124,7 @@ public:
 
 
 		//UNCOMMENT autoPosition if driverstation is set up for testing!!!
-		autoPosition_ = humanControl_->GetDesiredAutoPosition();
+		//autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		ResetTimerVariables();
 
 		robot_->SetWristUp();

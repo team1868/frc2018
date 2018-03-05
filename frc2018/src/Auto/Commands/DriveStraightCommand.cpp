@@ -78,7 +78,7 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	} else {
 		numTimesOnTarget_ = 0;
 	}
-	if((numTimesOnTarget_ > 3) || (diffDriveTime_ > driveTimeoutSec_)) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
+	if((numTimesOnTarget_ > 1) || (diffDriveTime_ > driveTimeoutSec_)) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
 		if (diffDriveTime_ > driveTimeoutSec_) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
 			printf("DRIVESTRAIGHT TIMED OUT!! :) \n");
 		}
@@ -98,9 +98,9 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		SmartDashboard::PutNumber("rOutput:", rOutput);
 		if (fabs(dOutput - lastDOutput_) > 0.8) {
 			if (dOutput > 0) {
-				dOutput = 0.8;
+				dOutput = 0.8; //0.4 for KOP
 			} else {
-				dOutput = -0.8;
+				dOutput = -0.8; //0.4 for KOP
 			}
 		}
 		rightMotorOutput_ = dOutput - rOutput;

@@ -22,20 +22,20 @@ void CubeInScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) 
 		printf("Left position: ");
 		if (scaleSide == 'L') {
 			printf("Left scale: ");
-			autoSequence = "d 21.273 t 45.0 d 1.61"; // TODO outtake
+			autoSequence = "d 25.971 t 90.0 d 1.50"; // TODO outtake
 		} else if (scaleSide == 'R') {
 			printf("Right scale: ");
-			autoSequence = "d 228.735 t 90 d 228.13 t -45 d 46.294"; // TODO outtake
+			autoSequence = "d 17.561 t 90 d 20.71 t 0.0 d 8.41 t -90 d 0.46"; // TODO outtake and test, angles should be in absolute
 		}
 		break;
 	case kFarRight:
 		printf("Far Right: ");
 		if (scaleSide == 'L') {
 			printf("Left Scale: ");
-			autoSequence = "d 228.735 t -90 d 228.13 t 45 d 46.294"; // TODO outtake
+			autoSequence = "d 17.561 t -90 d 20.71 t 0.0 d 8.41 t 90 d 0.46"; // TODO outtake and test, angles should be in absolute
 		} else if (scaleSide == 'R') {
 			printf("Right Scale: ");
-			autoSequence = "d 21.273 t -45.0 d 1.61"; // TODO outtake
+			autoSequence = "d 25.971 t -90.0 d 1.50"; // TODO outtake
 		}
 		break;
 	case kIni:
