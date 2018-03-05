@@ -39,7 +39,7 @@ ControlBoard::ControlBoard() {
 	rampReleaseButton_ = new ButtonReader(operatorJoyB_, RAMP_RELEASE_BUTTON_PORT);
 	rampRaiseLButton_ = new ButtonReader(operatorJoy_, RAMP_RAISE_L_BUTTON_PORT);
 	rampRaiseRButton_ = new ButtonReader(operatorJoy_, RAMP_RAISE_R_BUTTON_PORT);
-	wristSwitch_ = new ButtonReader(operatorJoyB_, WRIST_BUTTON_PORT);
+	wristSwitch_ = new ButtonReader(operatorJoy_, WRIST_BUTTON_PORT);
 
 	intakeDesired_ = false;
 	outtakeDesired_ = false;

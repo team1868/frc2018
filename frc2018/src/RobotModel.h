@@ -47,6 +47,10 @@ public:
 	 */
 	void SetDriveValues(Wheels wheel, double value);
 
+	void SetTalonBrakeMode();
+
+	void SetTalonCoastMode();
+
 	/**
 	 * Sets drive to high gear
 	 */
@@ -85,6 +89,8 @@ public:
 	 * @return if right encod
 	 */
 	bool GetRightEncoderStopped();
+
+	void ResetDriveEncoders();
 
 	/**
 	 * @return angle from navX
@@ -139,6 +145,8 @@ public:
 	 * Deletes the ini object and creates it again. Sets the ini values to whatever it reads
 	 */
 
+	Encoder* GetElevatorEncoder();
+
 	void SetWristUp();
 
 	void SetWristDown();
@@ -153,6 +161,9 @@ public:
 
 	void SetRampMotorROutput(double output);
 
+	void EngageBrake();
+
+	void DisengageBrake();
 
 	void StopCompressor();
 
@@ -196,9 +207,9 @@ private:
 
 	Victor *leftIntakeMotor_, *rightIntakeMotor_, *elevatorMotor_,  *rampLMotor_, *rampRMotor_;
 	Encoder *elevatorEncoder_;
-	DoubleSolenoid *wristSolenoid_;
+	DoubleSolenoid *wristSolenoid_, *rampLegSolenoidL_, *rampLegSolenoidR_, *rampReleaseSolenoidL_, *rampReleaseSolenoidR_;
 	DigitalInput *intakeSensor_;
-	Solenoid *rampLegSolenoidL_, *rampLegSolenoidR_, *rampReleaseSolenoidL_, *rampReleaseSolenoidR_;
+	Solenoid *brakeSolenoid_;
 	bool wristUp_;
 };
 

@@ -142,16 +142,19 @@ public:
 	 * 3: Far Right
 	 */
 	void AutonomousInit() override {
+		robot_->ResetTimer();
+		robot_->SetTalonBrakeMode();
 		robot_->ZeroNavXYaw();
 		robot_->SetHighGear();
-		robot_->SetWristDown();
 		robot_->StopCompressor();
+		robot_->GetElevatorEncoder()->Reset(); // START ELEVATOR AT ZERO
 		ResetTimerVariables();
 		autoModeSet_ = false;
 		gameData_ = "";
 
+		autoMode_ = new TestMode(robot_);
+		printf("hi\n");
 
-		//autoMode_ = autoChooser_.GetSelected();
 		printf("Setting autonomous mode %x \n", autoMode_);
 		autoController_->SetAutonomousMode(autoMode_);
 
@@ -167,7 +170,7 @@ public:
 	}
 
 	void AutonomousPeriodic() {
-
+		robot_->PrintState();
 		if (!GameDataSet()) {
 			GetGameMessage();
 		}
@@ -187,6 +190,7 @@ public:
 
 	void TeleopInit() {
 		robot_->ResetTimer();
+		robot_->SetTalonCoastMode();
 		ResetTimerVariables();
 		ResetControllers();
 		robot_->StartCompressor();
@@ -206,12 +210,15 @@ public:
 	void TestPeriodic() {}
 
 	void DisabledInit() {
+		robot_->SetTalonCoastMode();
 		if (autoMode_ != NULL) {
 			autoMode_->Disable();
 		}
 
 		robot_->RefreshIni();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
+		robot_->ZeroNavXYaw();
+		robot_->ResetDriveEncoders();
 	}
 	void DisabledPeriodic() {
 		humanControl_->ReadControls();

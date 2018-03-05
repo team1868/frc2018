@@ -58,7 +58,12 @@ void PivotCommand::Init() {
 
 void PivotCommand::Reset() {
 	printf("Disabling pivotcommand\n");
-	pivotPID_->Reset();
+	if (pivotPID_ != NULL) {
+		pivotPID_->Disable();
+		pivotPID_->Reset();
+		delete(pivotPID_);
+		pivotPID_ = NULL;
+	}
 	isDone_ = true;
 	printf("DONE FROM RESET \n");
 }
@@ -81,10 +86,11 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 	if ((pivotPID_->OnTarget() && numTimesOnTarget_ > 3) || timeOut) {
 		printf("Final NavX Angle: %f\n", navXSource_->PIDGet());
 		printf("Angle NavX Error %f\n", pivotPID_->GetError());
-		pivotPID_->Reset();
+		Reset();
 		isDone_ = true;
 		robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
 		robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
+		robot_->SetIntakeOutput(0.0);
 		printf("PIVOT IS DONE \n");
 		if (timeOut) {
 			printf("FROM TIME OUT\n");
@@ -94,6 +100,7 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 //		double output = 0.0;
 		robot_->SetDriveValues(RobotModel::kLeftWheels, output);
 		robot_->SetDriveValues(RobotModel::kRightWheels, -output);
+		robot_->SetIntakeOutput(0.3);
 
 //		output = talonOutput_->GetOutput();
 		SmartDashboard::PutNumber("left output", output);

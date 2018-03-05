@@ -8,7 +8,7 @@
 #ifndef SRC_AUTO_COMMANDS_ELEVATORHEIGHTCOMMAND_H_
 #define SRC_AUTO_COMMANDS_ELEVATORHEIGHTCOMMAND_H_
 
-#include <WPILib.h>
+#include "WPILib.h"
 #include "RobotModel.h"
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/PIDSource/PIDOutputSource.h"

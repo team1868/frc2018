@@ -48,10 +48,16 @@ static const int GEAR_SHIFT_REVERSE_SOLENOID_PORT		= 1;
 static const int WRIST_UP_SOLENOID_PORT					= 2;
 static const int WRIST_DOWN_SOLENOID_PORT				= 3;
 
-static const int RAMP_LEG_SOLENOID_L_PORT				= 0; // TODO CHANGE THIS
-static const int RAMP_LEG_SOLENOID_R_PORT				= 0; // TODO CHANGE THIS
-static const int RAMP_RELEASE_SOLENOID_L_PORT			= 0; // TODO CHANGE THIS
-static const int RAMP_RELEASE_SOLENOID_R_PORT			= 0; // TODO CHANGE THIS
+static const int RAMP_LEG_SOLENOID_L_PORT_A				= 0; // TODO CHANGE THIS
+static const int RAMP_LEG_SOLENOID_L_PORT_B				= 0; // TODO CHANGE THIS
+static const int RAMP_LEG_SOLENOID_R_PORT_A				= 0; // TODO CHANGE THIS
+static const int RAMP_LEG_SOLENOID_R_PORT_B				= 0; // TODO CHANGE THIS
+static const int RAMP_RELEASE_SOLENOID_L_PORT_A			= 0; // TODO CHANGE THIS
+static const int RAMP_RELEASE_SOLENOID_L_PORT_B			= 0; // TODO CHANGE THIS
+static const int RAMP_RELEASE_SOLENOID_R_PORT_A			= 0; // TODO CHANGE THIS
+static const int RAMP_RELEASE_SOLENOID_R_PORT_B			= 0; // TODO CHANGE THIS
+
+static const int BRAKE_SOLENOID_PORT					= 4;
 
 /* ************************ DRIVER STATION PORTS ************************ */
 
@@ -73,14 +79,14 @@ static const int QUICK_TURN_BUTTON_PORT					= 2;
 static const int INTAKE_BUTTON_PORT						= 2;
 static const int OUTTAKE_BUTTON_PORT					= 1;
 static const int INTAKE_HOLD_SWITCH_PORT				= 7;
-static const int HOLD_CUBE_BUTTON_PORT					= 0;	// TODO CHECK THIS
+static const int HOLD_CUBE_BUTTON_PORT					= 9;	// TODO CHECK THIS
 static const int ELEVATOR_UP_BUTTON_PORT				= 8;
 static const int ELEVATOR_DOWN_BUTTON_PORT				= 7;
 static const int ELEVATOR_HOLD_BUTTON_PORT				= 5;    //Testing 2/24
 static const int RAMP_RELEASE_BUTTON_PORT				= 6;
 static const int RAMP_RAISE_L_BUTTON_PORT				= 9;
 static const int RAMP_RAISE_R_BUTTON_PORT				= 8;
-static const int WRIST_BUTTON_PORT						= 3;
+static const int WRIST_BUTTON_PORT						= 2;
 
 // Auto mode switch ports
 static const int LEFT_AUTO_SWITCH_PORT					= 2;
