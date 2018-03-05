@@ -28,8 +28,11 @@ RobotModel::RobotModel() {
 	driveTimeoutSec_ = 0.0; // TODO add to ini file
 	pivotTimeoutSec_ = 0.0; // TODO add to ini file
 
-	string cubeInSwitchL_ = ""; // TODO add to ini file
-	string cubeInSwitchR_ = ""; // TODO add to ini file
+	string cubeInSwitchL_ = "";
+	string cubeInSwitchR_ = "";
+
+	autoPos_ = 0; //TODO add to ini file
+	autoMode_ = 0; //TODO add to ini file
 
 	intakeMotorOutput_ = 0.0;
 	outtakeMotorOutput_ = 0.0;
@@ -53,6 +56,7 @@ RobotModel::RobotModel() {
 	// Initializing Drive Talons
 	isLeftInverted_ = true;	// FOR PRACT
 //	isLeftInverted_ = false; // For KOP
+
 	leftMaster_ = new WPI_TalonSRX(LEFT_DRIVE_MASTER_ID);
 	rightMaster_ = new WPI_TalonSRX(RIGHT_DRIVE_MASTER_ID);
 	leftSlave_ = new WPI_VictorSPX(LEFT_DRIVE_SLAVE_ID);
@@ -71,8 +75,8 @@ RobotModel::RobotModel() {
 	leftSlave_->SetInverted(isLeftInverted_);
 
 	// Initializing NavX
-//	navX_ = new AHRS(SPI::kMXP);
-	navX_ = new AHRS(SerialPort::kUSB);
+	navX_ = new AHRS(SPI::kMXP);
+//	navX_ = new AHRS(SerialPort::kUSB);
 	Wait(1.0); // NavX takes a second to calibrate
 
 	// Initializing pneumatics
@@ -168,11 +172,11 @@ double RobotModel::GetRightEncoderValue() {
 }
 
 double RobotModel::GetLeftDistance() {
-	return leftDriveEncoder_->GetDistance();
+	return -leftDriveEncoder_->GetDistance();
 }
 
 double RobotModel::GetRightDistance() {
-	return rightDriveEncoder_->GetDistance();
+	return -rightDriveEncoder_->GetDistance();
 }
 
 bool RobotModel::GetLeftEncoderStopped() {
@@ -319,6 +323,10 @@ void RobotModel::RefreshIniVals() {
 	outtakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "outtakeMotorOutput", 0.0);
 
 	testMode_ = pini_->gets("AUTO TEST", "sequence", "");
+	//comment out autoPos if driver station is set up to test without ini file
+	autoPos_ = pini_->getf("AUTO TEST", "pos", 0.0);
+	autoMode_ = pini_->getf("AUTO TEST", "mode", 0.0);
+
 }
 
 void RobotModel::PrintState() {

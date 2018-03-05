@@ -42,22 +42,88 @@ public:
 		// Initializing auto controller
 		autoController_ = new AutoController();
 
+		autoMode_ = NULL;
+
+		// Setup to set automode from ini file
+		switch (robot_->autoMode_) {
+		case 0:
+			autoMode_ = new BaselineMode(robot_);
+			printf("BASELINE AUTO");
+			break;
+		case 1:
+			autoMode_  = new CubeInSwitchMode(robot_);
+			printf("CUBE IN SWITCH AUTO");
+			break;
+		case 2:
+			autoMode_ =  new TestMode(robot_);
+			printf("TEST AUTO");
+			break;
+		case 3:
+			autoMode_ = new KOPTestMPMode(robot_);
+			printf("KOP TEST MP AUTO");
+			break;
+		default:
+			autoMode_ = new BlankMode(robot_);
+			printf("BLANK AUTO");
+			break;
+		}
+
 		// Setup to chooser auto mode from SmartDashboard
+		/*
+		AutoMode *blank = new BlankMode(robot_);
+		autoChooser_.AddDefault("Blank Auto", blank);
+		printf("blank %x \n", blank);
 
-//		autoChooser_.AddDefault("Blank Auto", new BlankMode());
-
-		autoChooser_.AddDefault("Baseline Mode", new BaselineMode(robot_));
+		AutoMode *baseline = new BaselineMode(robot_);
+		autoChooser_.AddObject("Baseline Mode", baseline);
+		printf("baseline %x \n", baseline);
 
 		autoChooser_.AddObject("Switch Mode", new CubeInSwitchMode(robot_));
 		autoChooser_.AddObject("Test Mode", new TestMode(robot_));
 
 		autoChooser_.AddObject("KOP Test", new KOPTestMPMode(robot_));
+		autoChooser_.AddObject("RSideRSwitchMP", new RightSideToRightSwitchMode(robot_));
+		autoChooser_.AddObject("LSideLSwitchMP", new RightSideToRightSwitchMode(robot_));
+
 
 		SmartDashboard::PutData("Auto Modes", &autoChooser_);
-		//autoMode_ = autoChooser_.GetSelected();
-		if (autoMode_ == NULL) {
-			printf("autoMode_ is null in RobotInit\n");
+		*/
+
+//		if (autoMode_ == NULL) {
+//			printf("autoMode_ is null in RobotInit\n");
+//		}
+
+		//setting auto position from ini file
+
+		switch (robot_->autoPos_) {
+		case 0:
+			autoPosition_ = AutoMode::kLeft;
+			printf("auto position LEFT");
+			break;
+		case 1:
+			autoPosition_ = AutoMode::kMiddle;
+			printf("auto position MIDDLE");
+			break;
+		case 2:
+			autoPosition_ = AutoMode::kMiddleRight;
+			printf("auto position RIGHT");
+			break;
+		case 3:
+			autoPosition_ = AutoMode::kFarRight;
+			printf("auto position FAR RIGHT");
+			break;
+		case 4:
+			autoPosition_ = AutoMode::kBlank;
+			printf("auto position BLANK");
+			break;
+		default:
+			autoPosition_ = AutoMode::kLeft;
+			printf("auto position LEFT FROM DEFAULT");
+			break;
 		}
+
+
+		//UNCOMMENT autoPosition if driverstation is set up for testing!!!
 		autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		ResetTimerVariables();
 
@@ -83,29 +149,38 @@ public:
 		robot_->StopCompressor();
 		robot_->GetElevatorEncoder()->Reset(); // START ELEVATOR AT ZERO
 		ResetTimerVariables();
-
-		string gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
-		if(gameData == "") {
-			gameData = "LRL";
-		}
-		robot_->RefreshIni();
+		autoModeSet_ = false;
+		gameData_ = "";
 
 		autoMode_ = new TestMode(robot_);
 		printf("hi\n");
-//		autoMode_ = new CubeInSwitchMode(robot_);
-		if (autoMode_ == NULL) {
-			printf("auto mode is null from autoinit\n");
-		} else {
-			printf("Get selected\n");
-			autoController_->SetAutonomousMode(autoMode_);
-			printf("Auto mode set\n");
-			autoController_->Init(gameData, autoPosition_);
-			printf("Auto mode init\n");
+
+		printf("Setting autonomous mode %x \n", autoMode_);
+		autoController_->SetAutonomousMode(autoMode_);
+
+		if (!GameDataSet()) {
+			GetGameMessage();
 		}
+
+		if (GameDataSet()) {
+			SetAutoMode();
+		}
+
+		robot_->ResetTimer();
 	}
 
 	void AutonomousPeriodic() {
 		robot_->PrintState();
+		if (!GameDataSet()) {
+			GetGameMessage();
+		}
+
+		if (GameDataSet() && !autoModeSet_) {
+			printf("Setting autonomous mode\n");
+			autoController_->SetAutonomousMode(autoMode_);
+			SetAutoMode();
+		}
+
 		UpdateTimerVariables();
 		autoController_->Update(currTimeSec_, deltaTimeSec_);
 		if (autoController_->IsDone()) {
@@ -147,7 +222,8 @@ public:
 	}
 	void DisabledPeriodic() {
 		humanControl_->ReadControls();
-		autoPosition_ = humanControl_->GetDesiredAutoPosition();
+		//uncomment if connected to driverstation and auto switches finished!
+		//autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		robot_->PrintState();
 		SmartDashboard::PutNumber("Intake", robot_->intakeMotorOutput_);
 		SmartDashboard::PutNumber("Outtake", robot_->outtakeMotorOutput_);
@@ -164,6 +240,8 @@ private:
 	AutoMode *autoMode_;
 	frc::SendableChooser<AutoMode*> autoChooser_;
 	AutoMode::AutoPositions autoPosition_;
+	string gameData_;
+	bool autoModeSet_;
 
 	// Time setup
 	double currTimeSec_;
@@ -185,6 +263,30 @@ private:
 	void ResetControllers() {
 		driveController_->Reset();
 		superstructureController_->Reset();
+	}
+
+	void GetGameMessage() {
+		gameData_ = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+	}
+	void SetAutoMode() {
+		robot_->RefreshIni();
+
+		//autoMode_ = autoChooser_.GetSelected();
+		printf("in top of Set Auto Mode\n");
+		//		autoMode_ = new CubeInSwitchMode(robot_);
+		if (autoMode_ == NULL) {
+			printf("auto mode is null from autoinit\n");
+		} else {
+			printf("Auto mode set\n");
+			autoController_->Init(gameData_, autoPosition_);
+			printf("Auto mode init\n");
+			autoModeSet_ = true;
+		}
+
+	}
+
+	bool GameDataSet() {
+		return (gameData_.length() > 0);
 	}
 };
 

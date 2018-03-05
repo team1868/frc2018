@@ -14,7 +14,7 @@ BaselineMode::BaselineMode(RobotModel *robot) : AutoMode(robot) {
 
 void BaselineMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) {
 //	currentCommand_ = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, 10.0);
-	QueueFromString("d10.0 p90");
+	QueueFromString("d10.0");
 }
 
 void BaselineMode::Init() {

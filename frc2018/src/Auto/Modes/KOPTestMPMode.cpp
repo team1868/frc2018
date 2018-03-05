@@ -2,13 +2,12 @@
 
 KOPTestMPMode::KOPTestMPMode(RobotModel *robot) : AutoMode(robot) {
 	printf("Constructing KOP MP test\n");
-//	MPPathCommand_ = new PathCommand(robot_, PathCommand::kTestKOP, 97);
-	printf("hello\n");
+	MPPathCommand_ = new PathCommand(robot_, PathCommand::kTestKOP, 97);
 }
 
 void KOPTestMPMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) {
 	printf("creating queue for KOP MP test\n");
-//	currentCommand_ = MPPathCommand_;
+	currentCommand_ = MPPathCommand_;
 }
 
 void KOPTestMPMode::Init() {
