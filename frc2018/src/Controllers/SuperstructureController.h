@@ -33,6 +33,7 @@ private:
 
 	double elevatorOutput_, rampOutput_;
 	double rampReleaseTime_, rampReleaseDiffTime_;
+	bool elevatorMovingCurr_, elevatorMovingLast_;
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */

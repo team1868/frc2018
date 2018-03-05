@@ -20,8 +20,8 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHe
 	GetIniValues();
 
 	elevatorHeightPID_ = new PIDController(pFac_, iFac_, dFac_, encoderPIDSource_,elevatorPIDOutput_);
-	maxOutput_ = 1.0; // TODO Test
-	tolerance_ = 1; // TODO CHANGE
+	maxOutput_ = 0.5; // TODO Test
+	tolerance_ = 0.1; // TODO CHANGE
 
 	startTime_ = robot_->GetTime();
 }
@@ -33,13 +33,13 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot) {
 	isDone_ = false;
 	numTimesOnTarget_ = 0;
 
-	ElevatorEncoderPIDSource *encoderPIDSource_ = new ElevatorEncoderPIDSource(robot_);
+	Encoder *encoderPIDSource_ = robot_->GetElevatorEncoder();
 	Victor *elevatorPIDOutput_ = robot_->GetElevatorMotor();
 
 	GetIniValues();
 
 	elevatorHeightPID_ = new PIDController(pFac_, iFac_, dFac_, encoderPIDSource_,elevatorPIDOutput_);
-	maxOutput_ = 1.0; // TODO Test
+	maxOutput_ = 0.5; // TODO Test
 	tolerance_ = 1; // TODO CHANGE
 
 	startTime_ = robot_->GetTime();
@@ -58,6 +58,7 @@ void ElevatorHeightCommand::Init() {
 	numTimesOnTarget_ = 0;
 
 	startTime_ = robot_->GetTime();
+	printf("ELEVATOR PID VALUES: P: %f, I: %f, D: %f\n", pFac_, iFac_, dFac_);
 }
 
 void ElevatorHeightCommand::Reset() {
@@ -67,7 +68,11 @@ void ElevatorHeightCommand::Reset() {
 }
 
 void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
+	SmartDashboard::PutNumber("Elevator Height", robot_->GetElevatorEncoder()->GetDistance());
+	SmartDashboard::PutNumber("Elevator Height Error", elevatorHeightPID_->GetError());
+//	SmartDashboard::PutNumber("Elevator Motor Output", elevatorPIDOutput_->Get());
 	double timeDiff = robot_->GetTime() - startTime_;
+	SmartDashboard::PutNumber("Elevator Time Diff", timeDiff);
 	bool timeOut = (timeDiff > 3.5);								//test this value
 
 	if (elevatorHeightPID_->OnTarget()) {
@@ -85,6 +90,7 @@ void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		if (timeOut) {
 			printf("FROM TIME OUT\n");
 		}
+		printf("Elevator Command Done\n");
 	}
 }
 

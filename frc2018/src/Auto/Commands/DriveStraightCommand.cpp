@@ -15,6 +15,8 @@ DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncod
 	isAbsoluteAngle_ = true;
 	Initializations(navXSource, talonEncoderSource, anglePIDOutput, distancePIDOutput, robot, desiredDistance);
 	desiredAngle_ = absoluteAngle;
+	printf("drive straight desired angle: %f navX angle: %f\n", desiredAngle_, navXSource_->PIDGet());
+
 }
 
 void DriveStraightCommand::Init() {
@@ -51,6 +53,7 @@ void DriveStraightCommand::Init() {
 	distancePID_->Enable();
 
 	initialDriveTime_ = robot_->GetTime();
+	printf("Initial drive time: %f\n", initialDriveTime_);
 
 	numTimesOnTarget_ = 0;
 
@@ -71,22 +74,25 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Encoder Error Feet Graph", distancePID_->GetError());
 	SmartDashboard::PutNumber("Desired Total Feet", desiredTotalAvgDistance_);
 
-	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
+	double currTime = robot_->GetTime();
+	diffDriveTime_ = currTime - initialDriveTime_;
+
 	SmartDashboard::PutNumber("DriveStraight Time:", diffDriveTime_);
 	if (distancePID_->OnTarget()) {
 		numTimesOnTarget_++;
 	} else {
 		numTimesOnTarget_ = 0;
 	}
-	if((numTimesOnTarget_ > 3) || (diffDriveTime_ > driveTimeoutSec_)) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
-		if (diffDriveTime_ > driveTimeoutSec_) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
-			printf("DRIVESTRAIGHT TIMED OUT!! :) \n");
+	if((numTimesOnTarget_ > 1) || (diffDriveTime_ > driveTimeoutSec_)) {
+		if (diffDriveTime_ > driveTimeoutSec_) {
+			printf("DRIVESTRAIGHT TIMED OUT!! :) diffTime: %f drivetimeout: %f\n", diffDriveTime_, driveTimeoutSec_);
 		}
 		printf("Final Left Distance: %f\n", robot_->GetLeftEncoderValue());
 		printf("Final Right Distance: %f\n", robot_->GetRightEncoderValue());
 		printf("Final Average Distance: %f\n", talonEncoderSource_->PIDGet());
-		anglePID_->Reset();
-		distancePID_->Reset();
+		printf("Final Distance Error: %f\n", distancePID_->GetError());
+		printf("Final Angle Error: %f\n", anglePID_->GetError());
+		Reset();
 
 		leftMotorOutput_ = 0.0;
 		rightMotorOutput_ = 0.0;
@@ -119,11 +125,18 @@ bool DriveStraightCommand::IsDone() {
 }
 
 void DriveStraightCommand::Reset() {
-	anglePID_->Disable();
-	distancePID_->Disable();
+	if (anglePID_ != NULL && distancePID_ != NULL) {
+		anglePID_->Disable();
+		distancePID_->Disable();
 
-	anglePID_->Reset();
-	distancePID_->Reset();
+		anglePID_->Reset();
+		distancePID_->Reset();
+
+		delete(anglePID_);
+		delete(distancePID_);
+		anglePID_ = NULL;
+		distancePID_ = NULL;
+	}
 	isDone_ = true;
 }
 

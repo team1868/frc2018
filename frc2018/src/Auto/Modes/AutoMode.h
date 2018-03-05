@@ -3,11 +3,13 @@
 
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/Commands/DriveStraightCommand.h"
+#include "Auto/Commands/ElevatorHeightCommand.h"
 #include "Auto/Commands/IntakeCommand.h"
 #include "Auto/Commands/OuttakeCommand.h"
 #include "Auto/Commands/ParallelCommand.h"
 #include "Auto/Commands/PathCommand.h"
 #include "Auto/Commands/PivotCommand.h"
+#include "Auto/Commands/WristCommand.h"
 #include "Auto/PIDSource/PIDInputSource.h"
 #include "Auto/PIDSource/PIDOutputSource.h"
 #include "RobotModel.h"
@@ -107,31 +109,58 @@ public:
 			iss >> angle;
 			if(IsFailed(command)) {
 				tempCommand = NULL;
+			} else {
+				currAngle_ = angle;
+				printf("Angle: %f\n", angle);
+				tempCommand = new PivotCommand(robot_, angle, true, navX_);
 			}
-			currAngle_ = angle;
-			printf("Angle: %f\n",angle);
-			tempCommand = new PivotCommand(robot_, angle, true, navX_);
 			break;
 		case 'd':	// Drive straight
 			double distance;
 			iss >> distance;
 			if(IsFailed(command)) {
 				tempCommand = NULL;
+			} else {
+				printf("Distance: %f\n", distance);
+				tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance, currAngle_);
 			}
-			printf("Distance: %f\n", distance);
-			tempCommand = new DriveStraightCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_, distance, currAngle_);
 			break;
 		case 'i':
 			double intakeOutput;
 			iss >> intakeOutput;
 			if(IsFailed(command)) {
 				tempCommand = NULL;
+			} else {
+				tempCommand = new IntakeCommand(robot_, intakeOutput);
 			}
-			tempCommand = new IntakeCommand(robot_, intakeOutput);
 			break;
 		case 'o':   // Outtake
 			printf("Outtake Command\n");
 			tempCommand = new OuttakeCommand(robot_);
+			break;
+		case 'e':
+			printf("Elevator Command\n");
+			double height;
+			iss >> height;
+			if (IsFailed(command)) {
+				tempCommand = NULL;
+			} else {
+				tempCommand = new ElevatorHeightCommand(robot_, height);
+			}
+			break;
+		case 'w':
+			printf("Wrist Command\n");
+			int wUp; // wrist up
+			iss >> wUp;
+			if (IsFailed(command)) {
+				tempCommand = NULL;
+			} else {
+				if (wUp == 1) {
+					tempCommand = new WristCommand(robot_, true);
+				} else {
+					tempCommand = new WristCommand(robot_, false);
+				}
+			}
 			break;
 		default:	// When it's not listed, don't do anything :)
 			printf("Unexpected character %c detected. Terminating queue", command);
@@ -194,14 +223,17 @@ public:
 	void Disable(){
 		printf("Disabling\n");
 		if (!IsDone()) {
+			printf("Resetting current command\n");
 			currentCommand_->Reset();
 		}
-		currentCommand_ = firstCommand_;
-		AutoCommand* nextCommand;
-		while (currentCommand_ != NULL) {
-			nextCommand = currentCommand_->GetNextCommand();
-			delete(currentCommand_);
-			currentCommand_ = nextCommand;
+		if (firstCommand_ != NULL) {
+			currentCommand_ = firstCommand_;
+			AutoCommand* nextCommand;
+			while (currentCommand_ != NULL) {
+				nextCommand = currentCommand_->GetNextCommand();
+				delete(currentCommand_);
+				currentCommand_ = nextCommand;
+			}
 		}
 
 		printf("Successfully disabled\n");

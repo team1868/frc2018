@@ -76,10 +76,12 @@ public:
 	 * 3: Far Right
 	 */
 	void AutonomousInit() override {
+		robot_->ResetTimer();
+		robot_->SetTalonBrakeMode();
 		robot_->ZeroNavXYaw();
 		robot_->SetHighGear();
-		robot_->SetWristDown();
 		robot_->StopCompressor();
+		robot_->GetElevatorEncoder()->Reset(); // START ELEVATOR AT ZERO
 		ResetTimerVariables();
 
 		string gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
@@ -88,7 +90,7 @@ public:
 		}
 		robot_->RefreshIni();
 
-		autoMode_ = autoChooser_.GetSelected();
+		autoMode_ = new TestMode(robot_);
 		printf("hi\n");
 //		autoMode_ = new CubeInSwitchMode(robot_);
 		if (autoMode_ == NULL) {
@@ -100,10 +102,10 @@ public:
 			autoController_->Init(gameData, autoPosition_);
 			printf("Auto mode init\n");
 		}
-		robot_->ResetTimer();
 	}
 
 	void AutonomousPeriodic() {
+		robot_->PrintState();
 		UpdateTimerVariables();
 		autoController_->Update(currTimeSec_, deltaTimeSec_);
 		if (autoController_->IsDone()) {
@@ -113,6 +115,7 @@ public:
 
 	void TeleopInit() {
 		robot_->ResetTimer();
+		robot_->SetTalonCoastMode();
 		ResetTimerVariables();
 		ResetControllers();
 		robot_->StartCompressor();
@@ -132,12 +135,15 @@ public:
 	void TestPeriodic() {}
 
 	void DisabledInit() {
+		robot_->SetTalonCoastMode();
 		if (autoMode_ != NULL) {
 			autoMode_->Disable();
 		}
 
 		robot_->RefreshIni();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
+		robot_->ZeroNavXYaw();
+		robot_->ResetDriveEncoders();
 	}
 	void DisabledPeriodic() {
 		humanControl_->ReadControls();

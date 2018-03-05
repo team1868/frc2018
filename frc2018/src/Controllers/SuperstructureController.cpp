@@ -13,6 +13,8 @@ SuperstructureController::SuperstructureController(RobotModel *myRobot, ControlB
 	rampOutput_ = 0.75; // TODO test this
 	rampReleaseTime_ = 0.0;
 	rampReleaseDiffTime_ = 0.5;
+	elevatorMovingCurr_ = false;
+	elevatorMovingLast_ = false;
 }
 
 void SuperstructureController::Reset() {
@@ -30,6 +32,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		nextState_ = kIdle;
 		robot_->SetIntakeOutput(0.0);
 		robot_->SetElevatorOutput(0.0);
+		robot_->EngageBrake();
 		break;
 	case kIdle:
 		nextState_ = kIdle;
@@ -57,15 +60,26 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 
 		if (humanControl_->GetElevatorUpDesired()) { //elevator direction fixed
 			printf("elevator up\n");
-			robot_->SetElevatorOutput(-elevatorOutput_);
+			if (!elevatorMovingLast_) {
+				robot_->DisengageBrake();
+				elevatorMovingCurr_ = true;
+			}
+			robot_->SetElevatorOutput(elevatorOutput_);
 		} else if (humanControl_->GetElevatorDownDesired()) {
 			printf("elevator down\n");
-			robot_->SetElevatorOutput(elevatorOutput_);
+			if (!elevatorMovingLast_) {
+				robot_->DisengageBrake();
+				elevatorMovingCurr_ = true;
+			}
+			robot_->SetElevatorOutput(-elevatorOutput_);
 		} else if (humanControl_->GetElevatorHoldDesired()) {
 					printf("elevator down\n");
 					robot_->SetElevatorOutput(-double(elevatorOutput_)/5.0);
 		} else {
 			robot_->SetElevatorOutput(0.0);
+			if (elevatorMovingLast_) {
+				robot_->EngageBrake();
+			}
 		}
 
 		if (humanControl_->GetRampReleaseDesired()) {
@@ -73,8 +87,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			rampReleaseTime_ = robot_->GetTime();
 			robot_->ReleaseRampLegs();
 		}
-
-		printf("in kIdle\n");
 		break;
 	case kRampRelease:
 		printf("in kRampRelease\n");
@@ -99,6 +111,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		}
 		break;
 	}
+	elevatorMovingLast_ = elevatorMovingCurr_;
 	currState_ = nextState_;
 }
 

@@ -3,7 +3,10 @@
 
 NavXPIDSource::NavXPIDSource(RobotModel *robot) {
 	robot_ = robot;
-	ResetAccumulatedYaw();
+	lastYaw_ = robot_->GetNavXYaw();
+	currYaw_ = robot_->GetNavXYaw();
+	accumulatedYaw_ = currYaw_;
+	deltaYaw_ = currYaw_ - lastYaw_;
 }
 
 double NavXPIDSource::PIDGet() {
@@ -14,7 +17,6 @@ double NavXPIDSource::PIDGet() {
 }
 
 double NavXPIDSource::CalculateAccumulatedYaw() {
-	bool isLeftStopped =
 	lastYaw_ = currYaw_;
 	currYaw_ = robot_->GetNavXYaw();
 	deltaYaw_ = currYaw_ - lastYaw_;
