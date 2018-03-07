@@ -31,9 +31,14 @@ private:
 	uint32_t currState_;
 	uint32_t nextState_;
 
-	double elevatorOutput_, rampOutput_;
-	double rampReleaseTime_, rampReleaseDiffTime_;
-	bool elevatorMovingCurr_, elevatorMovingLast_;
+	double elevatorOutput_;
+	double elevatorCurrentLimit_;
+	double rampOutput_;
+	double rampReleaseTime_;
+	double rampReleaseDiffTime_;
+	bool elevatorMovingCurr_;
+	bool elevatorMovingLast_;
+	bool elevatorCurrLimitReached_;
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */

@@ -165,6 +165,8 @@ public:
 
 	void DisengageBrake();
 
+	double GetElevatorCurrent();
+
 	void StopCompressor();
 
 	void StartCompressor();
