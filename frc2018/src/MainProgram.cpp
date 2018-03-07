@@ -148,11 +148,12 @@ public:
 		robot_->SetHighGear();
 		robot_->StopCompressor();
 		robot_->GetElevatorEncoder()->Reset(); // START ELEVATOR AT ZERO
+		robot_->SetWristDown();
 		ResetTimerVariables();
 		autoModeSet_ = false;
 		gameData_ = "";
 
-		autoMode_ = new TestMode(robot_);
+//		autoMode_ = new TestMode(robot_);
 		printf("hi\n");
 
 		printf("Setting autonomous mode %x \n", autoMode_);

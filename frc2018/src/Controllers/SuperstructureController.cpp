@@ -13,8 +13,10 @@ SuperstructureController::SuperstructureController(RobotModel *myRobot, ControlB
 	rampOutput_ = 0.75; // TODO test this
 	rampReleaseTime_ = 0.0;
 	rampReleaseDiffTime_ = 0.5;
+	elevatorCurrentLimit_ = 20;
 	elevatorMovingCurr_ = false;
 	elevatorMovingLast_ = false;
+	elevatorCurrLimitReached_ = false;
 }
 
 void SuperstructureController::Reset() {
@@ -24,6 +26,10 @@ void SuperstructureController::Reset() {
 	robot_->SetIntakeOutput(0.0);
 	robot_->SetElevatorOutput(0.0);
 	rampReleaseTime_ = 0.0;
+
+	elevatorMovingCurr_ = false;
+	elevatorMovingLast_ = false;
+	elevatorCurrLimitReached_ = false;
 }
 
 void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
@@ -33,6 +39,9 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		robot_->SetIntakeOutput(0.0);
 		robot_->SetElevatorOutput(0.0);
 		robot_->EngageBrake();
+		elevatorMovingCurr_ = false;
+		elevatorMovingLast_ = false;
+		elevatorCurrLimitReached_ = false;
 		break;
 	case kIdle:
 		nextState_ = kIdle;
@@ -59,27 +68,41 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		}
 
 		if (humanControl_->GetElevatorUpDesired()) { //elevator direction fixed
-			printf("elevator up\n");
-			if (!elevatorMovingLast_) {
-				robot_->DisengageBrake();
-				elevatorMovingCurr_ = true;
+//			if (!elevatorMovingLast_) {
+//				printf("Disengage Brake\n");
+//				robot_->DisengageBrake();
+//				elevatorMovingCurr_ = true;
+//			}
+			if ((robot_->GetElevatorCurrent() > elevatorCurrentLimit_) || elevatorCurrLimitReached_) {
+				elevatorCurrLimitReached_ = true;
+				robot_->SetElevatorOutput(0.0);
+			} else {
+				robot_->SetElevatorOutput(elevatorOutput_);
+				elevatorCurrLimitReached_ = false;
 			}
-			robot_->SetElevatorOutput(elevatorOutput_);
 		} else if (humanControl_->GetElevatorDownDesired()) {
-			printf("elevator down\n");
-			if (!elevatorMovingLast_) {
-				robot_->DisengageBrake();
-				elevatorMovingCurr_ = true;
+//			if (!elevatorMovingLast_) {
+//				printf("Disengage Brake\n");
+//				robot_->DisengageBrake();
+//				elevatorMovingCurr_ = true;
+//			}
+			if ((robot_->GetElevatorCurrent() > elevatorCurrentLimit_) || elevatorCurrLimitReached_) {
+				elevatorCurrLimitReached_ = true;
+				robot_->SetElevatorOutput(0.0);
+			} else {
+				robot_->SetElevatorOutput(-elevatorOutput_);
+				elevatorCurrLimitReached_ = false;
 			}
-			robot_->SetElevatorOutput(-elevatorOutput_);
 		} else if (humanControl_->GetElevatorHoldDesired()) {
-					printf("elevator down\n");
-					robot_->SetElevatorOutput(-double(elevatorOutput_)/5.0);
+			robot_->SetElevatorOutput(-double(elevatorOutput_)/5.0);
 		} else {
 			robot_->SetElevatorOutput(0.0);
-			if (elevatorMovingLast_) {
-				robot_->EngageBrake();
-			}
+//			if (elevatorMovingLast_) {
+//				printf("Engage Brake\n");
+//				robot_->EngageBrake();
+//			}
+			elevatorMovingCurr_ = false;
+			elevatorCurrLimitReached_ = false;
 		}
 
 		if (humanControl_->GetRampReleaseDesired()) {

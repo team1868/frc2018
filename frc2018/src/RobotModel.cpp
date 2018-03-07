@@ -47,11 +47,11 @@ RobotModel::RobotModel() {
 	// Initializing Encoders
 	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_YELLOW_PWM_PORT, LEFT_DRIVE_ENCODER_RED_PWM_PORT, true);		// TODO check if true or false
 	leftDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
-	leftDriveEncoder_->SetReverseDirection(false);
+	leftDriveEncoder_->SetReverseDirection(true);
 
 	rightDriveEncoder_ = new Encoder(RIGHT_DRIVE_ENCODER_YELLOW_PWM_PORT, RIGHT_DRIVE_ENCODER_RED_PWM_PORT, false);
 	rightDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
-	rightDriveEncoder_->SetReverseDirection(true);
+	rightDriveEncoder_->SetReverseDirection(false);
 
 	// Initializing Drive Talons
 	isLeftInverted_ = true;	// FOR PRACT
@@ -271,6 +271,10 @@ void RobotModel::DisengageBrake() {
 void RobotModel::SetWristDown() {
 	wristSolenoid_->Set(DoubleSolenoid::kReverse); // TODO Check if right
 	wristUp_ = false;
+}
+
+double RobotModel::GetElevatorCurrent() {
+	return pdp_->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN);
 }
 
 bool RobotModel::GetWristUp() {
