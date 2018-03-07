@@ -6,6 +6,7 @@
  */
 
 #include <Auto/Commands/ElevatorHeightCommand.h>
+#include "WPILib.h"
 
 ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHeight) : AutoCommand(){
 	robot_ = robot;
@@ -59,6 +60,7 @@ void ElevatorHeightCommand::Init() {
 
 	startTime_ = robot_->GetTime();
 	printf("ELEVATOR PID VALUES: P: %f, I: %f, D: %f\n", pFac_, iFac_, dFac_);
+	robot_->DisengageBrake();
 }
 
 void ElevatorHeightCommand::Reset() {
@@ -85,8 +87,7 @@ void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		elevatorHeightPID_->Reset();
 		elevatorHeightPID_->Disable();
 		isDone_ = true;
-		robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
-		robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
+		robot_->EngageBrake();
 		if (timeOut) {
 			printf("FROM TIME OUT\n");
 		}

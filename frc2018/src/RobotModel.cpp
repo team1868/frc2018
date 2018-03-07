@@ -338,6 +338,7 @@ void RobotModel::PrintState() {
 	SmartDashboard::PutNumber("NavX Yaw", GetNavXYaw());
 	SmartDashboard::PutNumber("NavX Pitch", GetNavXPitch());
 	SmartDashboard::PutNumber("NavX Roll", GetNavXRoll());
+	SmartDashboard::PutNumber("Elevator Current", pdp_->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN));
 }
 
 RobotModel::~RobotModel() {

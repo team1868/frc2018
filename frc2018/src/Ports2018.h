@@ -23,6 +23,7 @@ static const int RAMP_L_MOTOR_PWM_PORT					= 0; // TODO CHANGE THIS
 static const int RAMP_R_MOTOR_PWM_PORT					= 0; // TODO CHANGE THIS
 
 /* --------------------- PDP CHANNELS ------------------- */
+static const int ELEVATOR_MOTOR_PDP_CHAN				= 3;
 
 /* ------------------ DIGITAL I/O PORTS ----------------- */
 static const int LEFT_DRIVE_ENCODER_YELLOW_PWM_PORT		= 0;
