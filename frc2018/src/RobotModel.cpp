@@ -6,6 +6,8 @@ const double ENCODER_COUNT_PER_ROTATION = 256.0;
 const int EDGES_PER_ENCODER_COUNT = 4;
 const double ELEVATOR_DISTANCE_PER_PULSE = (43.25 / 12) / 1165; // VALUE FROM PRACTICE BOT in feet
 
+#define COLLISION_THRESHOLD_DELTA_G 0.5f //TODO test this threshold
+
 RobotModel::RobotModel() {
 	// Initializing ini
 	pini_ = new Ini("home/lvuser/robot.ini");
@@ -27,6 +29,17 @@ RobotModel::RobotModel() {
 
 	driveTimeoutSec_ = 0.0; // TODO add to ini file
 	pivotTimeoutSec_ = 0.0; // TODO add to ini file
+
+	last_world_linear_accel_x_ = 0.0f;
+	last_world_linear_accel_y_ = 0.0f;
+
+	driveCurrentLimit_ = 0.0; // TODO add to ini file
+	intakeCurrentLimit_ = 0.0; // TODO add to ini file
+	totalCurrentLimit_ = 0.0; // TODO add to ini file
+	voltageFloor_ = 0.0; // TODO add to ini file
+	pressureFloor_ = 0.0; // TODO add to ini file
+	size_ = 0.0; // TODO add to ini file
+
 
 	string cubeInSwitchL_ = "";
 	string cubeInSwitchR_ = "";
@@ -55,7 +68,7 @@ RobotModel::RobotModel() {
 
 	// Initializing Drive Talons
 	isLeftInverted_ = true;	// FOR PRACT
-//	isLeftInverted_ = false; // For KOP
+	//	isLeftInverted_ = false; // For KOP
 
 	leftMaster_ = new WPI_TalonSRX(LEFT_DRIVE_MASTER_ID);
 	rightMaster_ = new WPI_TalonSRX(RIGHT_DRIVE_MASTER_ID);
@@ -76,7 +89,7 @@ RobotModel::RobotModel() {
 
 	// Initializing NavX
 	navX_ = new AHRS(SPI::kMXP);
-//	navX_ = new AHRS(SerialPort::kUSB);
+	//	navX_ = new AHRS(SerialPort::kUSB);
 	Wait(1.0); // NavX takes a second to calibrate
 
 	// Initializing pneumatics
@@ -118,26 +131,26 @@ double RobotModel::GetTime() {
 
 WPI_TalonSRX *RobotModel::GetTalon(Talons talon) {
 	switch(talon) {
-		case(kLeftMaster):
-				return leftMaster_;
-		case(kRightMaster):
-				return rightMaster_;
-		default:
-			return NULL;
+	case(kLeftMaster):
+						return leftMaster_;
+	case(kRightMaster):
+						return rightMaster_;
+	default:
+		return NULL;
 	}
 }
 
 void RobotModel::SetDriveValues(RobotModel::Wheels wheel, double value) {
 	switch(wheel) {
-		case (kLeftWheels):
-			leftMaster_->Set(value);
-			break;
-		case (kRightWheels):
-			rightMaster_->Set(value);
-			break;
-		case (kAllWheels):
-			rightMaster_->Set(value);
-			leftMaster_->Set(value);
+	case (kLeftWheels):
+					leftMaster_->Set(value);
+	break;
+	case (kRightWheels):
+					rightMaster_->Set(value);
+	break;
+	case (kAllWheels):
+					rightMaster_->Set(value);
+	leftMaster_->Set(value);
 	}
 }
 
@@ -197,9 +210,9 @@ double RobotModel::GetNavXYaw() {
 }
 
 void RobotModel::ZeroNavXYaw() {
-//	for (int i = 0; i < 4; i++) {
-		navX_->ZeroYaw();
-//	}
+	//	for (int i = 0; i < 4; i++) {
+	navX_->ZeroYaw();
+	//	}
 	printf("Zeroed Yaw\n");
 }
 
@@ -276,6 +289,25 @@ void RobotModel::SetWristDown() {
 double RobotModel::GetElevatorCurrent() {
 	return pdp_->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN);
 }
+
+bool RobotModel::CollisionDetected() {
+	bool collisionDetected = false;
+
+	double curr_world_linear_accel_x = navX_->GetWorldLinearAccelX();
+	double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x_;
+	last_world_linear_accel_x_ = curr_world_linear_accel_x;
+	double curr_world_linear_accel_y = navX_->GetWorldLinearAccelY();
+	double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y_;
+	last_world_linear_accel_y_ = curr_world_linear_accel_y;
+
+	if ( ( fabs(currentJerkX) > COLLISION_THRESHOLD_DELTA_G ) ||
+			( fabs(currentJerkY) > COLLISION_THRESHOLD_DELTA_G) ) {
+		collisionDetected = true;
+	}
+	SmartDashboard::PutBoolean(  "CollisionDetected", collisionDetected);
+	return collisionDetected;
+}
+
 
 bool RobotModel::GetWristUp() {
 	return wristUp_;
