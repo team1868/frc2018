@@ -38,6 +38,7 @@ public:
 		humanControl_ = new ControlBoard();
 		driveController_ = new DriveController(robot_, humanControl_);
 		superstructureController_ = new SuperstructureController(robot_, humanControl_);
+		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 
 		// Initializing auto controller
 		autoController_ = new AutoController();
@@ -55,16 +56,22 @@ public:
 			printf("CUBE IN SWITCH AUTO");
 			break;
 		case 2:
+			autoMode_ = new CubeInScaleMode(robot_);
+			printf("CUBE IN SCALE AUTO");
+			break;
+
+		case 3:
 			autoMode_ =  new TestMode(robot_);
 			printf("TEST AUTO");
 			break;
-		case 3:
+		case 4:
 			autoMode_ = new KOPTestMPMode(robot_);
 			printf("KOP TEST MP AUTO");
 			break;
+
 		default:
-			autoMode_ = new BlankMode(robot_);
-			printf("BLANK AUTO");
+			autoMode_ = new BaselineMode(robot_);
+			printf("BASELINE AUTO");
 			break;
 		}
 
@@ -147,13 +154,15 @@ public:
 		robot_->ZeroNavXYaw();
 		robot_->SetHighGear();
 		robot_->StopCompressor();
+		printf("resetting elevator encoder");
 		robot_->GetElevatorEncoder()->Reset(); // START ELEVATOR AT ZERO
+		printf("DONE resetting elevator encoder");
 		ResetTimerVariables();
 		autoModeSet_ = false;
 		gameData_ = "";
 
-		autoMode_ = new TestMode(robot_);
-		printf("hi\n");
+//		autoMode_ = new TestMode(robot_);
+//		printf("hi\n");
 
 		printf("Setting autonomous mode %x \n", autoMode_);
 		autoController_->SetAutonomousMode(autoMode_);
@@ -225,6 +234,8 @@ public:
 		//uncomment if connected to driverstation and auto switches finished!
 		//autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		robot_->PrintState();
+
+		SmartDashboard::PutNumber("PID get encoders", talonEncoderSource_->PIDGet());
 		SmartDashboard::PutNumber("Intake", robot_->intakeMotorOutput_);
 		SmartDashboard::PutNumber("Outtake", robot_->outtakeMotorOutput_);
 	};
@@ -234,6 +245,7 @@ private:
 	ControlBoard *humanControl_;
 	DriveController *driveController_;
 	SuperstructureController *superstructureController_;
+	TalonEncoderPIDSource *talonEncoderSource_;
 
 	// Auto setup
 	AutoController *autoController_;

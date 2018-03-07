@@ -173,6 +173,10 @@ public:
 
 	void PrintState();
 
+	bool CollisionDetected();
+
+	//double GetVoltage();
+
 
 	/* ------------------------------------------------------  */
 
@@ -183,6 +187,10 @@ public:
 	double elevatorPFac_, elevatorIFac_, elevatorDFac_;
 	double driveTimeoutSec_, pivotTimeoutSec_;
 	double intakeMotorOutput_, outtakeMotorOutput_;
+	double driveCurrentLimit_, intakeCurrentLimit_, totalCurrentLimit_, voltageFloor_, pressureFloor_, size_;
+
+	double last_world_linear_accel_x_;
+	double last_world_linear_accel_y_;
 
 	int autoPos_, autoMode_;
 	string cubeInSwitchL_, cubeInSwitchR_;
