@@ -22,7 +22,7 @@ void CubeInScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) 
 		printf("Left position: ");
 		if (scaleSide == 'L') {
 			printf("Left scale: ");
-			autoSequence = "d 25.971 t 90.0 d 1.50"; // TODO outtake
+			autoSequence = "p d 20.25 e 5.4 t 70.0 d 2.2 o"; // old stuffz: p d 25.971 e 5.4 t 90.0 d 1.50 o
 		} else if (scaleSide == 'R') {
 			printf("Right scale: ");
 			autoSequence = "d 17.561 t 90 d 20.71 t 0.0 d 8.41 t -90 d 0.46"; // TODO outtake and test, angles should be in absolute
@@ -59,13 +59,13 @@ void CubeInScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) 
 	}
 
 	printf("%s\n", autoSequence.c_str());
-	//	QueueFromString(autoSequence);	// TODO uncomment this when ready
+	QueueFromString(autoSequence);	// TODO uncomment this when ready
 	printf("In Cube In Scale Mode Queue\n");
 }
 
 void CubeInScaleMode::Init() {
 	printf("Cube In Scale Mode Init\n");
-//	currentCommand_->Init();
+	currentCommand_->Init();
 }
 
 CubeInScaleMode::~CubeInScaleMode() {

@@ -19,6 +19,7 @@ OuttakeCommand::OuttakeCommand(RobotModel *robot) : AutoCommand() {
 void OuttakeCommand::Init() {
 	isDone_ = false;
 	startTime_ = robot_->GetTime();
+
 }
 
 void OuttakeCommand::Reset() {

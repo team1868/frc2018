@@ -40,6 +40,8 @@ public:
 		superstructureController_ = new SuperstructureController(robot_, humanControl_);
 		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 
+		//CameraServer::GetInstance()->StartAutomaticCapture();
+
 		// Initializing auto controller
 		autoController_ = new AutoController();
 
@@ -153,6 +155,7 @@ public:
 		robot_->SetTalonBrakeMode();
 		robot_->ZeroNavXYaw();
 		robot_->SetHighGear();
+		robot_->SetWristUp();
 		robot_->StopCompressor();
 		printf("resetting elevator encoder");
 		robot_->GetElevatorEncoder()->Reset(); // START ELEVATOR AT ZERO
@@ -174,8 +177,6 @@ public:
 		if (GameDataSet()) {
 			SetAutoMode();
 		}
-
-		robot_->ResetTimer();
 	}
 
 	void AutonomousPeriodic() {

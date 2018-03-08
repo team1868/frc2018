@@ -18,21 +18,28 @@ DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncod
 }
 
 void DriveStraightCommand::Init() {
+	robot_->SetTalonBrakeMode();
 	isDone_ = false;
+
+	robot_->ResetDriveEncoders();  //TODO sketch!!! works but we need to fix
 
 	leftMotorOutput_ = 0.0;
 	rightMotorOutput_ = 0.0;
 
-	// Setting up PID vals again (in case they changed)
+	// Setting up PID vals
+	anglePID_ = new PIDController(rPFac_, rIFac_, rDFac_, navXSource_, anglePIDOutput_);
+	distancePID_ = new PIDController(dPFac_, dIFac_, dDFac_, talonEncoderSource_, distancePIDOutput_);
+
 	GetIniValues();
-	anglePID_->SetPID(rPFac_, rIFac_, rDFac_);
-	distancePID_->SetPID(dPFac_, dIFac_, dDFac_);
 
 	if (!isAbsoluteAngle_) {
 		desiredAngle_ = navXSource_->PIDGet();
 	}
 	initialAvgDistance_ = talonEncoderSource_->PIDGet();
 	desiredTotalAvgDistance_ = initialAvgDistance_ + desiredDistance_;
+
+	anglePID_->SetPID(rPFac_, rIFac_, rDFac_);
+	distancePID_->SetPID(dPFac_, dIFac_, dDFac_);
 
 	anglePID_->SetSetpoint(desiredAngle_);
 	distancePID_->SetSetpoint(desiredTotalAvgDistance_);
@@ -51,6 +58,7 @@ void DriveStraightCommand::Init() {
 	distancePID_->Enable();
 
 	initialDriveTime_ = robot_->GetTime();
+	printf("Start chicken tenders drivestraight time @ %f\n", initialDriveTime_);
 
 	numTimesOnTarget_ = 0;
 
@@ -58,6 +66,8 @@ void DriveStraightCommand::Init() {
 	printf("Initial Left Distance: %f\n", robot_->GetLeftEncoderValue());
 	printf("Initial Average Distance: %f\n", initialAvgDistance_);
 	printf("Desired Distance: %f\n", desiredTotalAvgDistance_);
+	printf("Initial getPID(): %f\n", talonEncoderSource_->PIDGet());
+	printf("Distance error: %f\n", distancePID_->GetError());
 
 }
 
@@ -80,13 +90,13 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	}
 	if((numTimesOnTarget_ > 1) || (diffDriveTime_ > driveTimeoutSec_)) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
 		if (diffDriveTime_ > driveTimeoutSec_) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
-			printf("DRIVESTRAIGHT TIMED OUT!! :) \n");
+			printf("DRIVESTRAIGHT TIMED OUT!! :) go get chicken tenders @ %f\n", diffDriveTime_);
 		}
 		printf("Final Left Distance: %f\n", robot_->GetLeftEncoderValue());
 		printf("Final Right Distance: %f\n", robot_->GetRightEncoderValue());
 		printf("Final Average Distance: %f\n", talonEncoderSource_->PIDGet());
-		anglePID_->Reset();
-		distancePID_->Reset();
+		printf("Final Drivestraight error: %f\n", distancePID_->GetError());
+		Reset();
 
 		leftMotorOutput_ = 0.0;
 		rightMotorOutput_ = 0.0;
@@ -119,11 +129,19 @@ bool DriveStraightCommand::IsDone() {
 }
 
 void DriveStraightCommand::Reset() {
-	anglePID_->Disable();
-	distancePID_->Disable();
+	if (anglePID_ != NULL || distancePID_ != NULL) {
+		anglePID_->Disable();
+		distancePID_->Disable();
 
-	anglePID_->Reset();
-	distancePID_->Reset();
+		anglePID_->Reset();
+		distancePID_->Reset();
+
+		delete(anglePID_);
+		delete(distancePID_);
+
+		anglePID_ = NULL;
+		distancePID_ = NULL;
+	}
 	isDone_ = true;
 }
 
@@ -165,10 +183,10 @@ void DriveStraightCommand::Initializations(NavXPIDSource* navXSource, TalonEncod
 	initialDriveTime_ = robot_->GetTime();
 	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
 
-	// Setting up the PID controllers
+	// Setting up the PID controllers to NULL
 	GetIniValues();
-	anglePID_ = new PIDController(rPFac_, rIFac_, rDFac_, navXSource_, anglePIDOutput_);
-	distancePID_ = new PIDController(dPFac_, dIFac_, dDFac_, talonEncoderSource_, distancePIDOutput_);
+	anglePID_ = NULL;
+	distancePID_ = NULL;
 
 	rTolerance_ = 1.0;
 	dTolerance_ = 1.0 / 12.0;

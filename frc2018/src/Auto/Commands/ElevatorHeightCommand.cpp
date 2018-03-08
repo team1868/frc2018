@@ -25,6 +25,8 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHe
 	tolerance_ = 0.1; // TODO CHANGE
 
 	startTime_ = robot_->GetTime();
+
+	 elevatorCurrentLimit_ = 18.0;
 }
 
 ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot) {
@@ -64,8 +66,15 @@ void ElevatorHeightCommand::Init() {
 }
 
 void ElevatorHeightCommand::Reset() {
-	elevatorHeightPID_->Reset();
-	elevatorHeightPID_->Disable();
+	if (elevatorHeightPID_ != NULL) {
+		printf("Elevator error %f\n", elevatorHeightPID_->GetError());
+
+		elevatorHeightPID_->Reset();
+		elevatorHeightPID_->Disable();
+
+		delete(elevatorHeightPID_);
+		elevatorHeightPID_ = NULL;
+	}
 	isDone_ = true;
 }
 
@@ -75,7 +84,7 @@ void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 //	SmartDashboard::PutNumber("Elevator Motor Output", elevatorPIDOutput_->Get());
 	double timeDiff = robot_->GetTime() - startTime_;
 	SmartDashboard::PutNumber("Elevator Time Diff", timeDiff);
-	bool timeOut = (timeDiff > 3.5);								//test this value
+	bool timeOut = (timeDiff > 5.0);								//test this value
 
 	if (elevatorHeightPID_->OnTarget()) {
 		numTimesOnTarget_++;
@@ -83,15 +92,15 @@ void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		numTimesOnTarget_ = 0;
 	}
 
-	if ((elevatorHeightPID_->OnTarget() && numTimesOnTarget_ > 3) || timeOut) {
-		elevatorHeightPID_->Reset();
-		elevatorHeightPID_->Disable();
+	if ((elevatorHeightPID_->OnTarget() && numTimesOnTarget_ > 3) || timeOut || robot_->GetElevatorCurrent() > elevatorCurrentLimit_) {
 		isDone_ = true;
 		robot_->EngageBrake();
 		if (timeOut) {
-			printf("FROM TIME OUT\n");
+			printf("Elevator FROM TIME OUT\n");
 		}
 		printf("Elevator Command Done\n");
+
+		Reset();
 	}
 }
 

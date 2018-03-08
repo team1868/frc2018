@@ -50,6 +50,7 @@ private:
 	double tolerance_;
 
 	double startTime_;
+	double 	elevatorCurrentLimit_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_ELEVATORHEIGHTCOMMAND_H_ */

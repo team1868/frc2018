@@ -24,7 +24,7 @@ void CubeInSwitchMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 		printf("Left position: ");
 		if (switchSide == 'L') {
 			printf("Left switch: ");
-			autoSequence = "d 12.0 t 90.0 d 1.81"; //tested on KOP
+			autoSequence = "p d 11.8 e 2.4 t 90.0 w 0 d 2.31 o"; //tested on KOP
 		} else if (switchSide == 'R') {
 			printf("Right switch: ");
 			autoSequence = "d 17.56 t 90.0 d 17.45 t 180.0 d 3.0 t -90.0"; // tested on KOP

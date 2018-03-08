@@ -54,6 +54,8 @@ void PivotCommand::Init() {
 	isDone_ = false;
 	numTimesOnTarget_ = 0;
 	pivotCommandStartTime_ = robot_->GetTime();
+
+	printf("Chicken tenders pivot time starts at %f\n", pivotCommandStartTime_);
 }
 
 void PivotCommand::Reset() {
@@ -93,7 +95,7 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 		robot_->SetIntakeOutput(0.0);
 		printf("PIVOT IS DONE \n");
 		if (timeOut) {
-			printf("FROM TIME OUT\n");
+			printf("FROM PIVOT TIME OUT GO GET CHICKEN TENDERS @ %f\n", timeDiff);
 		}
 	} else {
 		double output = talonOutput_->GetOutput();
