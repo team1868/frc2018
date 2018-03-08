@@ -147,6 +147,12 @@ public:
 
 	Encoder* GetElevatorEncoder();
 
+	double GetIntakeMotorSpeed();
+
+	double GetOuttakeMotorSpeed();
+
+	double GetWheelSpeed(RobotModel::Wheels wheel);
+
 	void SetWristUp();
 
 	void SetWristDown();
@@ -171,11 +177,31 @@ public:
 
 	void StartCompressor();
 
+	double GetPressureSensorVal(); //returns the pressure
+
 	void RefreshIni();
 
 	void PrintState();
 
 	bool CollisionDetected();
+
+	void UpdateCurrent(); //initializes variables pertaining to current
+
+	double GetVoltage(); //returns the voltage
+
+	double GetTotalEnergy(); //returns the total energy of the PDP
+
+	double GetTotalCurrent(); //returns the total current of the PDP
+
+	double GetTotalPower(); //returns the total power of the PDP
+
+	double GetCurrent(int channel); //returns the current of a given channel
+
+	double GetCompressorCurrent(); //returns the current of the compressor
+
+	double GetRIOCurrent(); //returns the current of the roboRIO
+
+
 
 	//double GetVoltage();
 
@@ -188,8 +214,12 @@ public:
 	double driveRPFac_, driveRIFac_, driveRDFac_;
 	double elevatorPFac_, elevatorIFac_, elevatorDFac_;
 	double driveTimeoutSec_, pivotTimeoutSec_;
+	double leftDriveOutput_, rightDriveOutput_;
 	double intakeMotorOutput_, outtakeMotorOutput_;
 	double driveCurrentLimit_, intakeCurrentLimit_, totalCurrentLimit_, voltageFloor_, pressureFloor_, size_;
+
+	double leftDriveACurrent_, leftDriveBCurrent_, rightDriveACurrent_, rightDriveBCurrent_,
+			roboRIOCurrent_, compressorCurrent_, intakeCurrent_;
 
 	double last_world_linear_accel_x_;
 	double last_world_linear_accel_y_;
@@ -218,6 +248,7 @@ private:
 	Victor *leftIntakeMotor_, *rightIntakeMotor_, *elevatorMotor_,  *rampLMotor_, *rampRMotor_;
 	Encoder *elevatorEncoder_;
 	DoubleSolenoid *wristSolenoid_, *rampLegSolenoidL_, *rampLegSolenoidR_, *rampReleaseSolenoidL_, *rampReleaseSolenoidR_;
+	AnalogInput *pressureSensor_; //TODO add
 	DigitalInput *intakeSensor_;
 	Solenoid *brakeSolenoid_;
 	bool wristUp_;

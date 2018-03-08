@@ -24,6 +24,12 @@ static const int RAMP_R_MOTOR_PWM_PORT					= 0; // TODO CHANGE THIS
 
 /* --------------------- PDP CHANNELS ------------------- */
 static const int ELEVATOR_MOTOR_PDP_CHAN				= 3;
+static const int LEFT_DRIVE_MOTOR_A_PDP_CHAN            = 15;
+static const int LEFT_DRIVE_MOTOR_B_PDP_CHAN            = 14;
+static const int RIGHT_DRIVE_MOTOR_A_PDP_CHAN           = 0;
+static const int RIGHT_DRIVE_MOTOR_B_PDP_CHAN           = 1;
+static const int LEFT_INTAKE_MOTOR_PDP_CHAN				= 5;
+static const int RIGHT_INTAKE_MOTOR_PDP_CHAN            = 10;
 
 /* ------------------ DIGITAL I/O PORTS ----------------- */
 static const int LEFT_DRIVE_ENCODER_YELLOW_PWM_PORT		= 0;
@@ -38,6 +44,8 @@ static const int ELEVATOR_ENCODER_RED_PWM_PORT			= 5;
 static const int INTAKE_SENSOR_PWM_PORT					= 6; // TODO CHANGE THIS
 
 /* ------------------ ANALOG IN PORTS --------------------*/
+
+static const int PRESSURE_SENSOR_PORT					= 0; // TODO CHANGE THIS
 
 /* ------------------------ MISC -------------------------*/
 static const int PNEUMATICS_CONTROL_MODULE_ID			= 0;

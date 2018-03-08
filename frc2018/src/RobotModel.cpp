@@ -27,6 +27,9 @@ RobotModel::RobotModel() {
 	elevatorIFac_ = 0.0;
 	elevatorDFac_ = 0.0;
 
+	leftDriveOutput_ = 0.0;
+	rightDriveOutput_ = 0.0;
+
 	driveTimeoutSec_ = 0.0; // TODO add to ini file
 	pivotTimeoutSec_ = 0.0; // TODO add to ini file
 
@@ -56,6 +59,18 @@ RobotModel::RobotModel() {
 
 	// Initializing pdp
 	pdp_ = new PowerDistributionPanel();
+
+
+	leftDriveACurrent_ = 0;
+	leftDriveBCurrent_ = 0;
+	rightDriveACurrent_ = 0;
+	rightDriveBCurrent_ = 0;
+	roboRIOCurrent_ = 0;
+	compressorCurrent_ = 0;
+	intakeCurrent_ = 0;
+
+	pressureSensor_ = new AnalogInput(PRESSURE_SENSOR_PORT);
+	pressureSensor_->SetAverageBits(2);
 
 	// Initializing Encoders
 	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_YELLOW_PWM_PORT, LEFT_DRIVE_ENCODER_RED_PWM_PORT, true);		// TODO check if true or false
@@ -140,7 +155,30 @@ WPI_TalonSRX *RobotModel::GetTalon(Talons talon) {
 	}
 }
 
+double RobotModel::GetIntakeMotorSpeed() {
+	return intakeMotorOutput_;
+}
+
+double RobotModel::GetOuttakeMotorSpeed() {
+	return outtakeMotorOutput_;
+}
+
+double RobotModel::GetWheelSpeed(RobotModel::Wheels wheel) {
+	switch(wheel) {
+		case (kLeftWheels):
+			return leftMaster_->Get();
+		break;
+		case (kRightWheels):
+			return rightMaster_->Get();
+		break;
+		case (kAllWheels):
+			return rightMaster_->Get();
+	}
+}
+
+
 void RobotModel::SetDriveValues(RobotModel::Wheels wheel, double value) {
+	leftDriveOutput_ = rightDriveOutput_ = value;
 	switch(wheel) {
 	case (kLeftWheels):
 					leftMaster_->Set(value);
@@ -288,6 +326,74 @@ void RobotModel::SetWristDown() {
 
 double RobotModel::GetElevatorCurrent() {
 	return pdp_->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN);
+}
+
+//initializes variables pertaining to current
+void RobotModel::UpdateCurrent() {
+	leftDriveACurrent_ = pdp_->GetCurrent(LEFT_DRIVE_MOTOR_A_PDP_CHAN);
+	leftDriveBCurrent_ = pdp_->GetCurrent(LEFT_DRIVE_MOTOR_B_PDP_CHAN);
+	rightDriveACurrent_ = pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN);
+	rightDriveBCurrent_ = pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_B_PDP_CHAN);
+	intakeCurrent_ = pdp_->GetCurrent(LEFT_INTAKE_MOTOR_PDP_CHAN);
+	compressorCurrent_ = compressor_->GetCompressorCurrent();
+	roboRIOCurrent_ = ControllerPower::GetInputCurrent();
+}
+
+//returns the voltage
+double RobotModel::GetVoltage() {
+	return pdp_->GetVoltage();
+}
+
+//returns the total energy of the PDP
+double RobotModel::GetTotalCurrent() {
+	return pdp_->GetTotalCurrent();
+}
+//returns the total current of the PDP
+double RobotModel::GetTotalEnergy() {
+	return pdp_->GetTotalEnergy();
+}
+
+//returns the total power of the PDP
+double RobotModel::GetTotalPower() {
+	return pdp_->GetTotalPower();
+}
+
+//returns the current of a given channel
+double RobotModel::GetCurrent(int channel) {
+	switch(channel) {
+	case RIGHT_DRIVE_MOTOR_A_PDP_CHAN:
+		return rightDriveACurrent_;
+		break;
+	case RIGHT_DRIVE_MOTOR_B_PDP_CHAN:
+		return rightDriveBCurrent_;
+		break;
+	case LEFT_DRIVE_MOTOR_A_PDP_CHAN:
+		return leftDriveACurrent_;
+		break;
+	case LEFT_DRIVE_MOTOR_B_PDP_CHAN:
+		return leftDriveBCurrent_;
+		break;
+	case LEFT_INTAKE_MOTOR_PDP_CHAN:
+		return intakeCurrent_;
+		break;
+	default:
+		return -1;
+	}
+}
+
+//returns the current of the compressor
+double RobotModel::GetCompressorCurrent() {
+	return compressorCurrent_;
+}
+
+//returns the current of the roboRIO
+double RobotModel::GetRIOCurrent() {
+	return roboRIOCurrent_;
+}
+
+//returns the pressure
+double RobotModel::GetPressureSensorVal() {
+	return 250 * (pressureSensor_->GetAverageVoltage() / 5) - 25;
 }
 
 bool RobotModel::CollisionDetected() {

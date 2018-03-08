@@ -152,6 +152,7 @@ void ControlBoard::SetIntakeDesired(bool desired) {
 	intakeDesired_ = desired;
 }
 
+
 bool ControlBoard::GetOuttakeDesired() {
 	return outtakeDesired_;
 }

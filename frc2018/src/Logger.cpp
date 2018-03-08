@@ -2,15 +2,65 @@
 
 std::ofstream Logger::logData;
 std::ofstream Logger::logAction;
+#define USE_NAVX = true;
 
 void Logger::LogState(RobotModel* myRobot, ControlBoard *myHumanControl) {
 	if (!logData.is_open()) {
-		logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.txt")).c_str()), std::ofstream::out | std::ofstream::app);
-		logData << "Time \r\n"; // Add headers here
+		 logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.txt")).c_str()), std::ofstream::out | std::ofstream::app);
+		    logData << "Time, Left Encoder, Right Encoder, Left Wheel Speed,"
+		        << "Right Wheel Speed, Yaw, Roll, Pitch, Voltage, Total Current, "
+		        << "Left Drive A Current, Left Drive B Current, Right Drive A Current, "
+		        << "Right Drive B Current, Left Intake Current, Right Intake Current, "
+		        << "Elevator Current, Compressor Current, "
+		        << "RoboRIO Current, Total Power, Total Energy, Pressure, "
+		        << "Outtake Encoder, Outtake Motor Speed, Intake Motor Speed, "
+		        << "Intake Down, Defense Down, Left Joy X, Left Joy Y, "
+		        << "Right Joy X, Right Joy Y, Reverse, Arcade, Defense Desired, "
+		        << "Intake Reverse Desired, Intake Forward Desired, Intake Piston Desired, "
+		        << "Low Gear Desired, Outtake Desired, Quick Turn Desired \r\n";
 	}
 
-	logData << myRobot->GetTime() << "\r\n";
-	logData.flush();
+	logData << myRobot->GetTime() << ", " <<
+	      myRobot->GetLeftEncoderValue() << ", " <<
+	      myRobot->GetRightEncoderValue() << ", " <<
+	      myRobot->GetWheelSpeed(RobotModel::kLeftWheels) << ", " <<
+	      myRobot->GetWheelSpeed(RobotModel::kRightWheels) << ", " <<
+	//#if USE_NAVX
+	      myRobot->GetNavXYaw() << ", " <<
+	      myRobot->GetNavXRoll() << ", " <<
+	      myRobot->GetNavXPitch() << ", " <<
+	/*#else
+	      0.0 << ", " <<
+	      0.0 << ", " <<
+	      0.0 << ", " <<
+	#endif*/
+	      myRobot->GetVoltage() << ", " <<
+	      myRobot->GetTotalCurrent() << ", " <<
+	      myRobot->GetCurrent(LEFT_DRIVE_MOTOR_A_PDP_CHAN) << ", " <<
+	      myRobot->GetCurrent(LEFT_DRIVE_MOTOR_B_PDP_CHAN) << ", " <<
+	      myRobot->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN) << ", " <<
+	      myRobot->GetCurrent(RIGHT_DRIVE_MOTOR_B_PDP_CHAN) << ", " <<
+	      myRobot->GetCurrent(LEFT_INTAKE_MOTOR_PDP_CHAN) << ", " <<
+		  myRobot->GetCurrent(RIGHT_INTAKE_MOTOR_PDP_CHAN) << ", " <<
+		  myRobot->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN) << ", " <<
+	      myRobot->GetCompressorCurrent() << ", " <<
+	      myRobot->GetRIOCurrent() << ", " <<
+	      myRobot->GetTotalPower() << ", " <<
+	      myRobot->GetTotalEnergy() << ", " <<
+	      myRobot->GetPressureSensorVal() << ", " <<
+	      myRobot->GetOuttakeMotorSpeed() << ", " <<
+	      myRobot->GetIntakeMotorSpeed() << ", " <<
+		  myHumanControl->GetJoystickValue(ControlBoard::kLeftJoy, ControlBoard::kX) << ", " <<
+		  myHumanControl->GetJoystickValue(ControlBoard::kLeftJoy, ControlBoard::kY) << ", " <<
+	      myHumanControl->GetJoystickValue(ControlBoard::kRightJoy, ControlBoard::kX) << ", " <<
+	      myHumanControl->GetJoystickValue(ControlBoard::kRightJoy, ControlBoard::kY) << ", " <<
+	      myHumanControl->GetReverseDriveDesired() << ", " <<
+	      myHumanControl->GetArcadeDriveDesired() << ", " <<
+//	      myHumanControl->GetGearShiftDesired() << ", " <<
+	      myHumanControl->GetOuttakeDesired()  << ", " <<
+	      myHumanControl->GetQuickTurnDesired() << "\r\n";
+//	      myHumanControl->GetPowerBudgetDesired() << "\r\n";
+	  logData.flush();
 }
 /* format:
  * robotmodel state / controlboard state
