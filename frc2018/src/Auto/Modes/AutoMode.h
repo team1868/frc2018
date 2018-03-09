@@ -10,6 +10,7 @@
 #include "Auto/Commands/PathCommand.h"
 #include "Auto/Commands/PivotCommand.h"
 #include "Auto/Commands/WristCommand.h"
+#include "Auto/Commands/WaitingCommand.h"
 #include "Auto/PIDSource/PIDInputSource.h"
 #include "Auto/PIDSource/PIDOutputSource.h"
 #include "RobotModel.h"
@@ -162,6 +163,16 @@ public:
 				} else {
 					tempCommand = new WristCommand(robot_, false);
 				}
+			}
+			break;
+		case 's':
+			printf("Wait Command\n");
+			double waitTime;
+			iss >> waitTime;
+			if (IsFailed(command)) {
+				tempCommand = NULL;
+			} else {
+				tempCommand = new WaitingCommand(waitTime);
 			}
 			break;
 		default:	// When it's not listed, don't do anything :)
