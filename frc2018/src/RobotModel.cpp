@@ -26,6 +26,7 @@ RobotModel::RobotModel() {
 	elevatorPFac_ = 0.0;
 	elevatorIFac_ = 0.0;
 	elevatorDFac_ = 0.0;
+	elevatorMaxOutput_ = 0.0;
 
 	leftDriveOutput_ = 0.0;
 	rightDriveOutput_ = 0.0;
@@ -67,7 +68,8 @@ RobotModel::RobotModel() {
 	rightDriveBCurrent_ = 0;
 	roboRIOCurrent_ = 0;
 	compressorCurrent_ = 0;
-	intakeCurrent_ = 0;
+	leftIntakeCurrent_ = 0;
+	rightIntakeCurrent_ = 0;
 
 	pressureSensor_ = new AnalogInput(PRESSURE_SENSOR_PORT);
 	pressureSensor_->SetAverageBits(2);
@@ -334,7 +336,8 @@ void RobotModel::UpdateCurrent() {
 	leftDriveBCurrent_ = pdp_->GetCurrent(LEFT_DRIVE_MOTOR_B_PDP_CHAN);
 	rightDriveACurrent_ = pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN);
 	rightDriveBCurrent_ = pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_B_PDP_CHAN);
-	intakeCurrent_ = pdp_->GetCurrent(LEFT_INTAKE_MOTOR_PDP_CHAN);
+	leftIntakeCurrent_ = pdp_->GetCurrent(LEFT_INTAKE_MOTOR_PDP_CHAN);
+	rightIntakeCurrent_ = pdp_->GetCurrent(RIGHT_INTAKE_MOTOR_PDP_CHAN);
 	compressorCurrent_ = compressor_->GetCompressorCurrent();
 	roboRIOCurrent_ = ControllerPower::GetInputCurrent();
 }
@@ -360,6 +363,7 @@ double RobotModel::GetTotalPower() {
 
 //returns the current of a given channel
 double RobotModel::GetCurrent(int channel) {
+	UpdateCurrent();
 	switch(channel) {
 	case RIGHT_DRIVE_MOTOR_A_PDP_CHAN:
 		return rightDriveACurrent_;
@@ -374,8 +378,10 @@ double RobotModel::GetCurrent(int channel) {
 		return leftDriveBCurrent_;
 		break;
 	case LEFT_INTAKE_MOTOR_PDP_CHAN:
-		return intakeCurrent_;
+		return leftIntakeCurrent_;
 		break;
+	case RIGHT_INTAKE_MOTOR_PDP_CHAN:
+		return rightIntakeCurrent_;
 	default:
 		return -1;
 	}
@@ -399,15 +405,19 @@ double RobotModel::GetPressureSensorVal() {
 bool RobotModel::CollisionDetected() {
 	bool collisionDetected = false;
 
-	double curr_world_linear_accel_x = navX_->GetWorldLinearAccelX();
-	double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x_;
-	last_world_linear_accel_x_ = curr_world_linear_accel_x;
-	double curr_world_linear_accel_y = navX_->GetWorldLinearAccelY();
-	double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y_;
-	last_world_linear_accel_y_ = curr_world_linear_accel_y;
+//	double curr_world_linear_accel_x = navX_->GetWorldLinearAccelX();
+//	double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x_;
+//	last_world_linear_accel_x_ = curr_world_linear_accel_x;
+//	double curr_world_linear_accel_y = navX_->GetWorldLinearAccelY();
+//	double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y_;
+//	last_world_linear_accel_y_ = curr_world_linear_accel_y;
+//
+//	if ( ( fabs(currentJerkX) > COLLISION_THRESHOLD_DELTA_G ) ||
+//			( fabs(currentJerkY) > COLLISION_THRESHOLD_DELTA_G) ) {
+//		collisionDetected = true;
+//	}
 
-	if ( ( fabs(currentJerkX) > COLLISION_THRESHOLD_DELTA_G ) ||
-			( fabs(currentJerkY) > COLLISION_THRESHOLD_DELTA_G) ) {
+	if(leftDriveEncoder_->GetStopped() && rightDriveEncoder_->GetStopped()) {
 		collisionDetected = true;
 	}
 	SmartDashboard::PutBoolean(  "CollisionDetected", collisionDetected);
@@ -457,6 +467,7 @@ void RobotModel::RefreshIniVals() {
 	elevatorPFac_ = pini_->getf("ELEVATOR PID", "pFac", 0.0);
 	elevatorIFac_ = pini_->getf("ELEVATOR PID", "iFac", 0.0);
 	elevatorDFac_ = pini_->getf("ELEVATOR PID", "dFac", 0.0);
+	elevatorMaxOutput_ = pini_->getf("ELEVATOR PID", "elevatorMaxOutput", 0.5);
 
 	cubeInSwitchL_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchL", "d10");
 	cubeInSwitchR_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchR", "d10");
@@ -477,10 +488,17 @@ void RobotModel::PrintState() {
 	SmartDashboard::PutNumber("Left Drive Distance", GetLeftDistance());
 	SmartDashboard::PutNumber("Right Drive Distance", GetRightDistance());
 	SmartDashboard::PutNumber("Elevator Encoder Val", elevatorEncoder_->Get());
+	SmartDashboard::PutNumber("Elevator Height", elevatorEncoder_->GetDistance());
 	SmartDashboard::PutNumber("NavX Yaw", GetNavXYaw());
 	SmartDashboard::PutNumber("NavX Pitch", GetNavXPitch());
 	SmartDashboard::PutNumber("NavX Roll", GetNavXRoll());
 	SmartDashboard::PutNumber("Elevator Current", pdp_->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN));
+	SmartDashboard::PutNumber("Intake Current Left", pdp_->GetCurrent(LEFT_INTAKE_MOTOR_PDP_CHAN));
+	SmartDashboard::PutNumber("Intake Current right", pdp_->GetCurrent(RIGHT_INTAKE_MOTOR_PDP_CHAN));
+//	SmartDashboard::PutNumber("Left Drive A Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_A_PDP_CHAN));
+//	SmartDashboard::PutNumber("Left Drive B Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_B_PDP_CHAN));
+//	SmartDashboard::PutNumber("Right Drive A Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
+//	SmartDashboard::PutNumber("Right Drive B Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
 }
 
 RobotModel::~RobotModel() {

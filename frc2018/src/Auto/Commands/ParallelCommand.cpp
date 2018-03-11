@@ -22,8 +22,10 @@ void ParallelCommand::Init() {
 void ParallelCommand::Update(double currTimeSec, double deltaTimeSec) {
 	if (!IsDone()) {
 		if (commandA_->IsDone()) {	// Keep commandB running if commandA is done
+			commandA_->Reset();
 			commandB_->Update(currTimeSec, deltaTimeSec);
 		} else if (commandB_->IsDone()) {	// Keep commandA running if commandB is done
+			commandB_->Reset();
 			commandA_->Update(currTimeSec, deltaTimeSec);
 		} else {	// If both aren't done, keep both commands updating
 			commandA_->Update(currTimeSec, deltaTimeSec);

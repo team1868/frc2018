@@ -62,7 +62,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			printf("outtaking\n");
 			robot_->SetIntakeOutput(robot_->outtakeMotorOutput_);
 		} else if (humanControl_->GetIntakeHoldDesired()) {
-			robot_->SetIntakeOutput(0.4);
+			robot_->SetIntakeOutput(0.2);
 		} else {
 			robot_->SetIntakeOutput(0.0);
 		}

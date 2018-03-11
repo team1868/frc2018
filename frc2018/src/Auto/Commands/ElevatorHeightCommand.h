@@ -47,6 +47,8 @@ private:
 	Victor *elevatorPIDOutput_;
 
 	double maxOutput_;
+	double lastElevatorOutput_;
+	double maxElevatorRate_;
 	double tolerance_;
 
 	double startTime_;

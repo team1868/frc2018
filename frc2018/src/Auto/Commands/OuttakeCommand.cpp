@@ -13,7 +13,7 @@ OuttakeCommand::OuttakeCommand(RobotModel *robot) : AutoCommand() {
 	isDone_ = false;
 	outtakeMotorOutput_ = -0.7; //TODO TEST
 	startTime_ = 0.0;
-	deltaTime_ = 2.5; //TODO TEST
+	deltaTime_ = 0.5; //TODO TEST
 }
 
 void OuttakeCommand::Init() {
@@ -27,7 +27,9 @@ void OuttakeCommand::Reset() {
 }
 
 void OuttakeCommand::Update(double currTimeSec, double deltaTimeSec) {
-	if (robot_->GetTime() - startTime_ > deltaTime_){
+	double difTime = robot_->GetTime() - startTime_;
+	SmartDashboard::PutNumber("Outtake Command Time: ", difTime);
+	if (difTime > deltaTime_){
 		robot_->SetIntakeOutput(0.0);
 		isDone_ = true;
 	} else {

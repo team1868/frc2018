@@ -21,7 +21,9 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHe
 	GetIniValues();
 
 	elevatorHeightPID_ = new PIDController(pFac_, iFac_, dFac_, encoderPIDSource_,elevatorPIDOutput_);
-	maxOutput_ = 0.5; // TODO Test
+	maxOutput_ = 0.3; // TODO Test
+	lastElevatorOutput_ = 0.0;
+	maxElevatorRate_ = 0.5;
 	tolerance_ = 0.1; // TODO CHANGE
 
 	startTime_ = robot_->GetTime();
@@ -61,7 +63,7 @@ void ElevatorHeightCommand::Init() {
 	numTimesOnTarget_ = 0;
 
 	startTime_ = robot_->GetTime();
-	printf("ELEVATOR PID VALUES: P: %f, I: %f, D: %f\n", pFac_, iFac_, dFac_);
+	printf("%f ELEVATOR PID VALUES: P: %f, I: %f, D: %f\n", robot_->GetTime(), pFac_, iFac_, dFac_);
 	robot_->DisengageBrake();
 }
 
@@ -86,6 +88,11 @@ void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Elevator Time Diff", timeDiff);
 	bool timeOut = (timeDiff > 5.0);								//test this value
 
+	if (maxOutput_ < robot_->elevatorMaxOutput_) {
+		maxOutput_ *= 1.05;
+		elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
+	}
+
 	if (elevatorHeightPID_->OnTarget()) {
 		numTimesOnTarget_++;
 	} else {
@@ -96,9 +103,9 @@ void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		isDone_ = true;
 		robot_->EngageBrake();
 		if (timeOut) {
-			printf("Elevator FROM TIME OUT\n");
+			printf("%f Elevator FROM TIME OUT\n", robot_->GetTime());
 		}
-		printf("Elevator Command Done\n");
+		printf("%f Elevator Command Done\n", robot_->GetTime());
 
 		Reset();
 	}

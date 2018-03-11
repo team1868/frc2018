@@ -58,44 +58,64 @@ void DriveStraightCommand::Init() {
 	distancePID_->Enable();
 
 	initialDriveTime_ = robot_->GetTime();
-	printf("Start chicken tenders drivestraight time @ %f\n", initialDriveTime_);
+	printf("%f Start chicken tenders drivestraight time\n", initialDriveTime_);
 
 	numTimesOnTarget_ = 0;
 
-	printf("Initial Right Distance: %f\n", robot_->GetRightEncoderValue());
-	printf("Initial Left Distance: %f\n", robot_->GetLeftEncoderValue());
-	printf("Initial Average Distance: %f\n", initialAvgDistance_);
-	printf("Desired Distance: %f\n", desiredTotalAvgDistance_);
-	printf("Initial getPID(): %f\n", talonEncoderSource_->PIDGet());
-	printf("Distance error: %f\n", distancePID_->GetError());
-
+	lastDistance_ = talonEncoderSource_->PIDGet();
+	lastDOutput_ = 0.0;
+	printf("Initial Right Distance: %f\n "
+			"Initial Left Distance: %f\n"
+			"Initial Average Distance: %f\n"
+			"Desired Distance: %f\n"
+			"Desired Angle: %f\n"
+			"Initial getPID(): %f\n"
+			"Initial angle: %f \n"
+			"Distance error: %f\n"
+			"Angle error: %f \n",
+			robot_->GetRightEncoderValue(), robot_->GetLeftEncoderValue(),
+			initialAvgDistance_, desiredTotalAvgDistance_, desiredAngle_,
+			talonEncoderSource_->PIDGet(),  navXSource_->PIDGet(),
+			distancePID_->GetError(), anglePID_->GetError());
 }
 
 void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Left Motor Output", leftMotorOutput_);
 	SmartDashboard::PutNumber("Right Motor Output", rightMotorOutput_);
 	SmartDashboard::PutNumber("Angle Error", anglePID_->GetError());
-	SmartDashboard::PutNumber("Angle Error Graph", anglePID_->GetError());
-	SmartDashboard::PutNumber("DesiredAngle", desiredAngle_);
+//	SmartDashboard::PutNumber("Angle Error Graph", anglePID_->GetError());
+//	SmartDashboard::PutNumber("DesiredAngle", desiredAngle_);
 	SmartDashboard::PutNumber("Encoder Error Feet", distancePID_->GetError());
-	SmartDashboard::PutNumber("Encoder Error Feet Graph", distancePID_->GetError());
-	SmartDashboard::PutNumber("Desired Total Feet", desiredTotalAvgDistance_);
+//	SmartDashboard::PutNumber("Encoder Error Feet Graph", distancePID_->GetError());
+//	SmartDashboard::PutNumber("Desired Total Feet", desiredTotalAvgDistance_);
 
 	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
 	SmartDashboard::PutNumber("DriveStraight Time:", diffDriveTime_);
-	if (distancePID_->OnTarget()) {
+	if (distancePID_->OnTarget() && fabs(talonEncoderSource_->PIDGet() - lastDistance_) < 0.04 ) {
 		numTimesOnTarget_++;
+		printf("%f Drivestraight error: %f\n", robot_->GetTime(), distancePID_->GetError());
 	} else {
 		numTimesOnTarget_ = 0;
 	}
-	if((numTimesOnTarget_ > 1) || (diffDriveTime_ > driveTimeoutSec_)) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
+
+	if ((fabs(distancePID_->GetError()) < 1.0) && (robot_->CollisionDetected())) {
+		numTimesStopped_++;
+		printf("%f Collision Detected \n", robot_->GetTime());
+	} else {
+		numTimesStopped_ = 0;
+	}
+
+	lastDistance_ = talonEncoderSource_->PIDGet();
+	if((numTimesOnTarget_ > 1) || (diffDriveTime_ > driveTimeoutSec_) || (numTimesStopped_ > 0)) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
 		if (diffDriveTime_ > driveTimeoutSec_) { //LEAVING AS 10.0 FOR NOW BC WE DON'T KNOW ACTUAL VALUES
-			printf("DRIVESTRAIGHT TIMED OUT!! :) go get chicken tenders @ %f\n", diffDriveTime_);
+			printf(" %f DRIVESTRAIGHT TIMED OUT!! :) go get chicken tenders %f\n", robot_->GetTime(), diffDriveTime_);
 		}
-		printf("Final Left Distance: %f\n", robot_->GetLeftEncoderValue());
-		printf("Final Right Distance: %f\n", robot_->GetRightEncoderValue());
-		printf("Final Average Distance: %f\n", talonEncoderSource_->PIDGet());
-		printf("Final Drivestraight error: %f\n", distancePID_->GetError());
+		printf("%f Final Left Distance: %f\n"
+				"Final Right Distance: %f\n"
+				"Final Average Distance: %f\n"
+				"Final Drivestraight error: %f\n",
+				robot_->GetTime(), robot_->GetLeftEncoderValue(), robot_->GetRightEncoderValue(),
+				talonEncoderSource_->PIDGet(), distancePID_->GetError());
 		Reset();
 
 		leftMotorOutput_ = 0.0;
@@ -106,12 +126,10 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		double dOutput = distancePIDOutput_->GetPIDOutput();
 		double rOutput = anglePIDOutput_->GetPIDOutput();
 		SmartDashboard::PutNumber("rOutput:", rOutput);
-		if (fabs(dOutput - lastDOutput_) > 0.8) {
-			if (dOutput > 0) {
-				dOutput = 0.8; //0.4 for KOP
-			} else {
-				dOutput = -0.8; //0.4 for KOP
-			}
+		SmartDashboard::PutNumber("dOutput:", dOutput);
+		if (dOutput - lastDOutput_ > 0.5) { // only when accelerating forward
+			dOutput = lastDOutput_ + 0.5; //0.4 for KOP
+
 		}
 		rightMotorOutput_ = dOutput - rOutput;
 		leftMotorOutput_ = dOutput + rOutput;
@@ -129,19 +147,27 @@ bool DriveStraightCommand::IsDone() {
 }
 
 void DriveStraightCommand::Reset() {
-	if (anglePID_ != NULL || distancePID_ != NULL) {
+	if (anglePID_ != NULL) {
 		anglePID_->Disable();
-		distancePID_->Disable();
-
 		anglePID_->Reset();
-		distancePID_->Reset();
 
 		delete(anglePID_);
-		delete(distancePID_);
 
 		anglePID_ = NULL;
+
+		printf("Reset DriveCommand\n");
+	}
+	if (distancePID_ != NULL) {
+		distancePID_->Disable();
+
+		distancePID_->Reset();
+
+		delete(distancePID_);
+
 		distancePID_ = NULL;
 	}
+
+	robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 	isDone_ = true;
 }
 
@@ -192,10 +218,14 @@ void DriveStraightCommand::Initializations(NavXPIDSource* navXSource, TalonEncod
 	dTolerance_ = 1.0 / 12.0;
 
 	rMaxOutput_ = 0.15;
-	dMaxOutput_ = 0.85;
+	dMaxOutput_ = 0.85; // 0.85
 
 	// initializing number of times robot is on target
 	numTimesOnTarget_ = 0;
+	numTimesStopped_ = 0;
+
+	lastDistance_ = talonEncoderSource_->PIDGet();
+	lastDOutput_ = 0.0;
 }
 
 DriveStraightCommand::~DriveStraightCommand() {

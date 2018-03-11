@@ -24,20 +24,20 @@ void CubeInSwitchMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 		printf("Left position: ");
 		if (switchSide == 'L') {
 			printf("Left switch: ");
-			autoSequence = "p d 11.8 e 2.4 t 90.0 w 0 d 2.31 o"; //tested on KOP
+			autoSequence = "p d 11.8 e 1.8 t 90.0 t 90.0 d 2.3 w 0 o";	// turn twice to get pivot on point
 		} else if (switchSide == 'R') {
 			printf("Right switch: ");
-			autoSequence = "d 17.56 t 90.0 d 17.45 t 180.0 d 3.0 t -90.0"; // tested on KOP
+			autoSequence = "d 17.56 t 90.0 t 90.0 p d 17.45 e 1.8 t 180.0 t 180.0 d 3.0 t -90.0 t -90.0 w 0 o"; // TODO test on practice
 		}
 		break;
 	case kMiddle:
 		printf("Middle Position: ");
 		if (switchSide == 'L') {
 			printf("Left Switch: ");
-			autoSequence = "d 2.58 t -90.0 d 3.31 t 0.0 d 6.08"; // TODO outtake and test KOP
+			autoSequence = "d 5.0 t -35.0 t -35.0 p e 1.8 d 4.6 w 0 o";
 		} else if (switchSide == 'R') {
 			printf("Right Switch: ");
-			autoSequence = "d 2.583 t 90.0 d 3.02 t 0.0 d 6.08"; // TODO outtake and test on KOP
+			autoSequence = "d 3.0 t 90.0 t 90.0 d 6.67 t 0.0 t 0.0 p e 1.8 d 5.8 w 0 o";
 		}
 		break;
 	case kMiddleRight:
@@ -54,10 +54,10 @@ void CubeInSwitchMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 		printf("Far Right: ");
 		if (switchSide == 'L') {
 			printf("Left Switch: ");
-			autoSequence = "d 17.56 t -90.0 d 17.45 t -180.0 d 3.0 t 90.0"; // TODO outtake, test
+			autoSequence = "d 17.56 t -90.0 p d 17.45 e 2.4 t -180.0 w 0 d 3.0 t 90.0 o"; // TODO outtake, test
 		} else if (switchSide == 'R') {
 			printf("Right Switch: ");
-			autoSequence = "d 12.5 t -90.0 d 1.81"; // TODO outtake, test
+			autoSequence = "p d 12.5 e 2.4 t -90.0 w 0 d 1.81 o"; // TODO outtake, test
 		}
 		break;
 	case kIni:

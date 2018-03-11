@@ -12,6 +12,7 @@ NavXPIDSource::NavXPIDSource(RobotModel *robot) {
 double NavXPIDSource::PIDGet() {
 //	CalculateAccumulatedYaw();
 	accumulatedYaw_ = robot_->GetNavXYaw();
+//	accumulatedYaw_ = robot_->GetNavXYaw();
 	SmartDashboard::PutNumber("Accumulated Yawwwww", accumulatedYaw_);
 	return accumulatedYaw_;
 }

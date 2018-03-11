@@ -47,36 +47,6 @@ public:
 
 		autoMode_ = NULL;
 
-		// Setup to set automode from ini file
-		switch (robot_->autoMode_) {
-		case 0:
-			autoMode_ = new BaselineMode(robot_);
-			printf("BASELINE AUTO");
-			break;
-		case 1:
-			autoMode_  = new CubeInSwitchMode(robot_);
-			printf("CUBE IN SWITCH AUTO");
-			break;
-		case 2:
-			autoMode_ = new CubeInScaleMode(robot_);
-			printf("CUBE IN SCALE AUTO");
-			break;
-
-		case 3:
-			autoMode_ =  new TestMode(robot_);
-			printf("TEST AUTO");
-			break;
-		case 4:
-			autoMode_ = new KOPTestMPMode(robot_);
-			printf("KOP TEST MP AUTO");
-			break;
-
-		default:
-			autoMode_ = new BaselineMode(robot_);
-			printf("BASELINE AUTO");
-			break;
-		}
-
 		// Setup to chooser auto mode from SmartDashboard
 		/*
 		AutoMode *blank = new BlankMode(robot_);
@@ -104,32 +74,6 @@ public:
 
 		//setting auto position from ini file
 
-		switch (robot_->autoPos_) {
-		case 0:
-			autoPosition_ = AutoMode::kLeft;
-			printf("auto position LEFT");
-			break;
-		case 1:
-			autoPosition_ = AutoMode::kMiddle;
-			printf("auto position MIDDLE");
-			break;
-		case 2:
-			autoPosition_ = AutoMode::kMiddleRight;
-			printf("auto position RIGHT");
-			break;
-		case 3:
-			autoPosition_ = AutoMode::kFarRight;
-			printf("auto position FAR RIGHT");
-			break;
-		case 4:
-			autoPosition_ = AutoMode::kBlank;
-			printf("auto position BLANK");
-			break;
-		default:
-			autoPosition_ = AutoMode::kLeft;
-			printf("auto position LEFT FROM DEFAULT");
-			break;
-		}
 
 
 		//UNCOMMENT autoPosition if driverstation is set up for testing!!!
@@ -151,21 +95,81 @@ public:
 	 * 3: Far Right
 	 */
 	void AutonomousInit() override {
+		// Initializations
+		robot_->RefreshIni();
 		robot_->ResetTimer();
 		robot_->SetTalonBrakeMode();
 		robot_->ZeroNavXYaw();
 		robot_->SetHighGear();
 		robot_->SetWristUp();
 		robot_->StopCompressor();
-		printf("resetting elevator encoder");
+//		printf("resetting elevator encoder");
 		robot_->GetElevatorEncoder()->Reset(); // START ELEVATOR AT ZERO
-		printf("DONE resetting elevator encoder");
+//		printf("DONE resetting elevator encoder");
+		robot_->ResetDriveEncoders();
 		ResetTimerVariables();
 		autoModeSet_ = false;
 		gameData_ = "";
 
 //		autoMode_ = new TestMode(robot_);
 //		printf("hi\n");
+
+		// Setup to set automode from ini file
+				switch (robot_->autoMode_) {
+				case 0:
+					autoMode_ = new BaselineMode(robot_);
+					printf("BASELINE AUTO");
+					break;
+				case 1:
+					autoMode_  = new CubeInSwitchMode(robot_);
+					printf("CUBE IN SWITCH AUTO");
+					break;
+				case 2:
+					autoMode_ = new CubeInScaleMode(robot_);
+					printf("CUBE IN SCALE AUTO");
+					break;
+
+				case 3:
+					autoMode_ =  new TestMode(robot_);
+					printf("TEST AUTO");
+					break;
+				case 4:
+					autoMode_ = new KOPTestMPMode(robot_);
+					printf("KOP TEST MP AUTO");
+					break;
+
+				default:
+					autoMode_ = new BaselineMode(robot_);
+					printf("BASELINE AUTO");
+					break;
+				}
+
+		switch (robot_->autoPos_) {
+				case 0:
+					autoPosition_ = AutoMode::kLeft;
+					printf("auto position LEFT");
+					break;
+				case 1:
+					autoPosition_ = AutoMode::kMiddle;
+					printf("auto position MIDDLE");
+					break;
+				case 2:
+					autoPosition_ = AutoMode::kMiddleRight;
+					printf("auto position RIGHT");
+					break;
+				case 3:
+					autoPosition_ = AutoMode::kFarRight;
+					printf("auto position FAR RIGHT");
+					break;
+				case 4:
+					autoPosition_ = AutoMode::kBlank;
+					printf("auto position BLANK");
+					break;
+				default:
+					autoPosition_ = AutoMode::kLeft;
+					printf("auto position LEFT FROM DEFAULT");
+					break;
+				}
 
 		printf("Setting autonomous mode %x \n", autoMode_);
 		autoController_->SetAutonomousMode(autoMode_);
@@ -220,7 +224,7 @@ public:
 	void TestPeriodic() {}
 
 	void DisabledInit() {
-		robot_->SetTalonCoastMode();
+		robot_->SetTalonBrakeMode();
 		if (autoMode_ != NULL) {
 			autoMode_->Disable();
 		}

@@ -97,6 +97,9 @@ private:
 	bool isDone_;
 	int numTimesOnTarget_;
 	double lastDOutput_;
+	double lastDistance_;
+
+	int numTimesStopped_;
 
 };
 
