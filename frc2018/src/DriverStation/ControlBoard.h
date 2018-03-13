@@ -46,6 +46,7 @@ public:
 	bool GetRampRaiseRDesired();
 	bool GetWristUpDesired();
 	bool GetWristDownDesired();
+	double GetElevatorDialOutput();
 
 	// Auto Controls
 	AutoMode::AutoPositions GetDesiredAutoPosition();
@@ -76,6 +77,8 @@ private:
 	// Variables for superstructure
 	bool intakeDesired_, outtakeDesired_, intakeHoldDesired_, holdCubeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHoldDesired_,
 		 rampReleaseDesired_, rampRaiseLDesired_, rampRaiseRDesired_, wristUpDesired_, wristDownDesired_;
+
+	double elevatorDialOutput_;
 
 	// Auto switches
 	bool leftDown_, rightDown_, middleDown_;

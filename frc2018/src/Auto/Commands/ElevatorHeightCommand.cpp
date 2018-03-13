@@ -28,7 +28,7 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHe
 
 	startTime_ = robot_->GetTime();
 
-	 elevatorCurrentLimit_ = 18.0;
+	 elevatorCurrentLimit_ = 15.0;
 }
 
 ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot) {
@@ -88,9 +88,16 @@ void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Elevator Time Diff", timeDiff);
 	bool timeOut = (timeDiff > 5.0);								//test this value
 
-	if (maxOutput_ < robot_->elevatorMaxOutput_) {
-		maxOutput_ *= 1.05;
-		elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
+	if (robot_->autoMode_ == 3) {
+		if (maxOutput_ < 0.4) {
+			maxOutput_ *= 1.02;
+			elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
+		}
+	} else {
+		if (maxOutput_ < robot_->elevatorMaxOutput_) {
+			maxOutput_ *= 1.02;
+			elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
+		}
 	}
 
 	if (elevatorHeightPID_->OnTarget()) {

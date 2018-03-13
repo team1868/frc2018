@@ -1,2 +1,2 @@
 cd "%~d0%~p0"
-psftp -b ftpgetcmds.txt lvuser@roboRIO-1868-frc.local
+psftp -b ftpgetcmds.txt admin@10.18.68.2

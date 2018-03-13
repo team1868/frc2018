@@ -51,6 +51,7 @@ ControlBoard::ControlBoard() {
 	rampReleaseDesired_ = false;
 	wristUpDesired_ = false;
 	wristDownDesired_ = false;
+	elevatorDialOutput_ = 0.0;
 
 	leftAutoSwitch_ = new ButtonReader(operatorJoy_,LEFT_AUTO_SWITCH_PORT);
 	rightAutoSwitch_ = new ButtonReader(operatorJoy_, RIGHT_AUTO_SWITCH_PORT);
@@ -82,6 +83,7 @@ void ControlBoard::ReadControls() {
 	elevatorUpDesired_ = elevatorUpButton_->IsDown();
 	elevatorDownDesired_ = elevatorDownButton_->IsDown();
 	elevatorHoldDesired_ = elevatorHoldButton_->IsDown(); //testing 2/24
+	elevatorDialOutput_ = (operatorJoy_->GetX() + 1) / 2;
 
 	rampReleaseDesired_ = rampReleaseButton_->WasJustPressed();
 	if (wristSwitch_->WasJustPressed()) {
@@ -195,6 +197,10 @@ bool ControlBoard::GetWristUpDesired() {
 
 bool ControlBoard::GetWristDownDesired() {
 	return wristDownDesired_;
+}
+
+double ControlBoard::GetElevatorDialOutput() {
+	return elevatorDialOutput_;
 }
 
 AutoMode::AutoPositions ControlBoard::GetDesiredAutoPosition() {
