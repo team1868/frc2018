@@ -1,9 +1,12 @@
 #include <Controllers/DriveController.h>
 #include "WPILib.h"
 
-DriveController::DriveController(RobotModel *robot, ControlBoard *humanControl /*, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoderSource*/) {
+DriveController::DriveController(RobotModel *robot, ControlBoard *humanControl) {
 	robot_ = robot;
 	humanControl_ = humanControl;
+
+	navXSource_ = new NavXPIDSource(robot_);
+	talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 
 // Set sensitivity to 0
 	thrustSensitivity_ = 0.0;
@@ -16,9 +19,8 @@ DriveController::DriveController(RobotModel *robot, ControlBoard *humanControl /
 
 // If using align with cube
 	alignWithCubeStarted_ = false;
-//	cubeCommand_ = NULL;
-//	navXSource_ = navX;
-//	talonEncoderSource_ = talonEncoderSource;
+	cubeCommand_ = NULL;
+
 
 	isDone_ = false;
 
@@ -65,9 +67,10 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			robot_->SetLowGear();
 		}
 
-//		if (humanControl_->GetAlignCubeDesired()) {
-//			nextState_ = kAlignWithCube;
-//		} else
+		if (humanControl_->GetAlignWithCubeDesired()) {
+			printf("align with cube desired");
+			nextState_ = kAlignWithCube;
+		} else {
 // Checks quickturn or arcade drive
 		SmartDashboard::PutBoolean("Quick turn desired", humanControl_->GetQuickTurnDesired());
 		if (humanControl_->GetQuickTurnDesired()) {
@@ -82,14 +85,29 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			nextState_ = kTeleopDrive;
 		}
 
+		}
 		break;
 
 	case (kAlignWithCube):
-//		fill in later
+		nextState_ = kAlignWithCube;
+	    printf("IN K ALIGN WITH CUBE!!!!");
+	    if (cubeCommand_ == NULL) {
+	    	cubeCommand_ = new PivotToCubeCommand(robot_, navXSource_, talonEncoderSource_, false); //no drive straight
+	    	printf("creating cube command without drive straight");
+	    	alignWithCubeStarted_ = false;
+	    } else if (!alignWithCubeStarted_) {
+	    	cubeCommand_->Init();
+	    	printf("initializing cube command");
+	    	alignWithCubeStarted_ = true;
+	    } else if (!cubeCommand_->IsDone()) {
+	    	cubeCommand_->Update(currTimeSec, deltaTimeSec);
+	    } else {
+	    	alignWithCubeStarted_ = false;
+	    	nextState_ = kTeleopDrive;
+	    }
+
 		break;
-
-	}
-
+		}
 	currState_ = nextState_;
 }
 

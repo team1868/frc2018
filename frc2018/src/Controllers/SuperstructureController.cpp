@@ -77,7 +77,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
 			} else {
-				//robot_->SetElevatorOutput(humanControl_->GetElevatorDialOutput());
 				robot_->SetElevatorOutput(elevatorOutput_);
 				elevatorCurrLimitReached_ = false;
 			}
@@ -91,12 +90,11 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
 			} else {
-				//robot_->SetElevatorOutput(-(humanControl_->GetElevatorDialOutput()));
 				robot_->SetElevatorOutput(-elevatorOutput_);
 				elevatorCurrLimitReached_ = false;
 			}
 		} else if (humanControl_->GetElevatorHoldDesired()) {
-			robot_->SetElevatorOutput(-double(humanControl_->GetElevatorDialOutput())/5.0);
+			robot_->SetElevatorOutput(-double(elevatorOutput_)/5.0);
 		} else {
 			robot_->SetElevatorOutput(0.0);
 //			if (elevatorMovingLast_) {

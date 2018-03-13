@@ -6,7 +6,7 @@ const double ENCODER_COUNT_PER_ROTATION = 256.0;
 const int EDGES_PER_ENCODER_COUNT = 4;
 const double ELEVATOR_DISTANCE_PER_PULSE = (43.25 / 12) / 1165; // VALUE FROM PRACTICE BOT in feet
 
-#define COLLISION_THRESHOLD_DELTA_G 0.3f //TODO test this threshold
+#define COLLISION_THRESHOLD_DELTA_G 0.5f //TODO test this threshold
 
 RobotModel::RobotModel() {
 	// Initializing ini
@@ -405,27 +405,21 @@ double RobotModel::GetPressureSensorVal() {
 bool RobotModel::CollisionDetected() {
 	bool collisionDetected = false;
 
-	double curr_world_linear_accel_x = navX_->GetWorldLinearAccelX();
-	double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x_;
-	last_world_linear_accel_x_ = curr_world_linear_accel_x;
-	double curr_world_linear_accel_y = navX_->GetWorldLinearAccelY();
-	double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y_;
-	last_world_linear_accel_y_ = curr_world_linear_accel_y;
-
-	SmartDashboard::PutNumber("accel y", currentJerkY);
-	SmartDashboard::PutNumber("accel x", currentJerkX);
-
-	if ( ( fabs(currentJerkX) > COLLISION_THRESHOLD_DELTA_G ) ||
-			( fabs(currentJerkY) > COLLISION_THRESHOLD_DELTA_G) ) {
-		collisionDetected = true;
-		printf("From jerk\n");
-	}
+//	double curr_world_linear_accel_x = navX_->GetWorldLinearAccelX();
+//	double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x_;
+//	last_world_linear_accel_x_ = curr_world_linear_accel_x;
+//	double curr_world_linear_accel_y = navX_->GetWorldLinearAccelY();
+//	double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y_;
+//	last_world_linear_accel_y_ = curr_world_linear_accel_y;
+//
+//	if ( ( fabs(currentJerkX) > COLLISION_THRESHOLD_DELTA_G ) ||
+//			( fabs(currentJerkY) > COLLISION_THRESHOLD_DELTA_G) ) {
+//		collisionDetected = true;
+//	}
 
 	if(leftDriveEncoder_->GetStopped() && rightDriveEncoder_->GetStopped()) {
 		collisionDetected = true;
-		printf("From encoder\n");
 	}
-
 	SmartDashboard::PutBoolean(  "CollisionDetected", collisionDetected);
 	return collisionDetected;
 }

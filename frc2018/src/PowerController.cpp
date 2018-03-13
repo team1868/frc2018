@@ -104,18 +104,18 @@ bool PowerController::IsBatteryLow() {
 
 void PowerController::LimitSingle() {
 	// linear regression model of current vs speed:
-	// current = 47.4 * speed - 4.84 changes depending on BATTERY VOLTAGE!!!!!axqwaz
+	// current = 25.743 * speed - 0.122 changes depending on BATTERY VOLTAGE!!!!!axqwaz
 	// todo scale drivecurrentlimit as voltage decreases
 	double diffCurr = avgLeftCurr_ - driveCurrentLimit_;
 	double scaledSpeed =  (robot_->GetWheelSpeed(RobotModel::kLeftWheels)
-		- (diffCurr + 4.84) / 47.4) * totalVoltage_ / 13;
+		- (diffCurr + 0.12) / 25.74) * totalVoltage_ / 13;
 	if (diffCurr >= 0) {
 		robot_->SetDriveValues(RobotModel::kLeftWheels, scaledSpeed);
 	}
 
 	diffCurr = avgRightCurr_ - driveCurrentLimit_;
 	scaledSpeed =  (robot_->GetWheelSpeed(RobotModel::kRightWheels)
-		- (diffCurr + 4.84) / 47.4) * totalVoltage_ / 13;
+		- (diffCurr + 0.122) / 25.74) * totalVoltage_ / 13;
 	if (diffCurr >= 0) {
 		robot_->SetDriveValues(RobotModel::kRightWheels, scaledSpeed);
 	}

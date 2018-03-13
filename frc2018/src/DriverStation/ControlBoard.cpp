@@ -14,6 +14,7 @@ ControlBoard::ControlBoard() {
 	highGearDesired_ = true; // TODO may want to fix this
 	arcadeDriveDesired_ = true;
 	quickTurnDesired_ = true;
+	alignWithCubeDesired_ = false;
 
 	leftJoy_ = new Joystick(LEFT_JOY_USB_PORT);
 	rightJoy_ = new Joystick(RIGHT_JOY_USB_PORT);
@@ -40,6 +41,7 @@ ControlBoard::ControlBoard() {
 	rampRaiseLButton_ = new ButtonReader(operatorJoy_, RAMP_RAISE_L_BUTTON_PORT);
 	rampRaiseRButton_ = new ButtonReader(operatorJoy_, RAMP_RAISE_R_BUTTON_PORT);
 	wristSwitch_ = new ButtonReader(operatorJoy_, WRIST_BUTTON_PORT);
+	alignWithCubeButton_ = new ButtonReader(rightJoy_, ALIGN_WITH_CUBE_BUTTON_PORT);
 
 	intakeDesired_ = false;
 	outtakeDesired_ = false;
@@ -51,7 +53,6 @@ ControlBoard::ControlBoard() {
 	rampReleaseDesired_ = false;
 	wristUpDesired_ = false;
 	wristDownDesired_ = false;
-	elevatorDialOutput_ = 0.0;
 
 	leftAutoSwitch_ = new ButtonReader(operatorJoy_,LEFT_AUTO_SWITCH_PORT);
 	rightAutoSwitch_ = new ButtonReader(operatorJoy_, RIGHT_AUTO_SWITCH_PORT);
@@ -75,6 +76,7 @@ void ControlBoard::ReadControls() {
 	highGearDesired_ = gearShiftButton_->IsDown();
 	arcadeDriveDesired_ = arcadeDriveButton_->IsDown();
 	quickTurnDesired_ = quickTurnButton_->IsDown();
+	alignWithCubeDesired_ = alignWithCubeButton_->WasJustPressed();
 
 	intakeDesired_ = intakeButton_->IsDown();
 	outtakeDesired_ = outtakeButton_->IsDown();
@@ -83,7 +85,6 @@ void ControlBoard::ReadControls() {
 	elevatorUpDesired_ = elevatorUpButton_->IsDown();
 	elevatorDownDesired_ = elevatorDownButton_->IsDown();
 	elevatorHoldDesired_ = elevatorHoldButton_->IsDown(); //testing 2/24
-	elevatorDialOutput_ = (operatorJoy_->GetX() + 1) / 2;
 
 	rampReleaseDesired_ = rampReleaseButton_->WasJustPressed();
 	if (wristSwitch_->WasJustPressed()) {
@@ -146,6 +147,10 @@ bool ControlBoard::GetQuickTurnDesired() {
 	return quickTurnDesired_;
 }
 
+bool ControlBoard::GetAlignWithCubeDesired() {
+	return alignWithCubeDesired_;
+}
+
 bool ControlBoard::GetIntakeDesired() {
 	return intakeDesired_;
 }
@@ -199,10 +204,14 @@ bool ControlBoard::GetWristDownDesired() {
 	return wristDownDesired_;
 }
 
+<<<<<<< master
+
 double ControlBoard::GetElevatorDialOutput() {
 	return elevatorDialOutput_;
 }
 
+=======
+>>>>>>> 683c166 Further changes for auto
 AutoMode::AutoPositions ControlBoard::GetDesiredAutoPosition() {
 	AutoMode::AutoPositions position = AutoMode::kBlank;
 
@@ -238,6 +247,7 @@ void ControlBoard::ReadAllButtons() {
 	gearShiftButton_->ReadValue();
 	arcadeDriveButton_->ReadValue();
 	quickTurnButton_->ReadValue();
+	alignWithCubeButton_->ReadValue();
 
 	intakeButton_->ReadValue();
 	outtakeButton_->ReadValue();

@@ -6,7 +6,7 @@
 #include "DriverStation/ControlBoard.h"
 #include "Auto/PIDSource/PIDInputSource.h"
 #include "Auto/PIDSource/PIDOutputSource.h"
-//#include "Auto/Commands/AlignWithCubeCommand.h"
+#include "Auto/Commands/PivotToCubeCommand.h"
 
 class DriveController {
 public:
@@ -14,7 +14,7 @@ public:
 	 * Initializes all variables
 	 * takes in RobotModel and ControlBoard
 	 */
-	DriveController(RobotModel *robot, ControlBoard *humanControl /*, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoderSource*/);
+	DriveController(RobotModel *robot, ControlBoard *humanControl);
 
 	/**
 	 * Destructor
@@ -77,9 +77,9 @@ private:
 
 	double thrustSensitivity_, rotateSensitivity_, quickTurnSensitivity_;
 
-//	NavXPIDSource *navXSource_;
-//	TalonEncoderPIDSource *talonEncoderSource_;
-//	AlignWithCubeCommand *cubeCommand_;
+	NavXPIDSource *navXSource_;
+	TalonEncoderPIDSource *talonEncoderSource_;
+	PivotToCubeCommand *cubeCommand_;
 	bool alignWithCubeStarted_;
 
 	bool isDone_;
