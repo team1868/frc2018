@@ -77,39 +77,11 @@ public:
 			if (command == 'p') {
 				char charA, charB;
 				iss >> charA;
-				// original parallel
 				printf("CommandA %c ", charA);
-				AutoCommand* commandA = GetStringCommand(charA);	// Superstructure command
+				AutoCommand* commandA = GetStringCommand(charA);
 				iss >> charB;
 				printf("CommandB %c ", charB);
-				AutoCommand* commandB = GetStringCommand(charB);	// Drive command
-
-				// NEW CODE
-//				iss >> charA;
-//				AutoCommand* lastCommandA = commandA;
-//				AutoCommand* lastCommandB = commandB;
-//				while (charA != ')') {
-//					if (charA != 'n') { // if command is null
-//						printf("Next command A %c ", charA);
-//						lastCommandA->SetNextCommand(GetStringCommand(charA));
-//						lastCommandA = lastCommandA->GetNextCommand();
-//					} else {
-//						printf("Next command A null");
-//					}
-//
-//					iss >> charB;
-//					if (charB != 'n') {
-//						printf("Next command B %c ", charB);
-//						lastCommandB->SetNextCommand(GetStringCommand(charB));
-//
-//						lastCommandB = lastCommandB->GetNextCommand();
-//					} else {
-//						printf("Next command B null");
-//					}
-//					iss >> charA;
-//				}
-
-				// OLD CODE
+				AutoCommand* commandB = GetStringCommand(charB);
 				tempCommand = new ParallelCommand(commandA, commandB);
 			} else {
 				tempCommand = GetStringCommand(command);

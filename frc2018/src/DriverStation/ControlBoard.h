@@ -29,6 +29,7 @@ public:
 	bool GetHighGearDesired();
 	bool GetArcadeDriveDesired();
 	bool GetQuickTurnDesired();
+	bool GetAlignWithCubeDesired();
 
 	/**
 	 * Returns desired values for superstructure controls
@@ -46,7 +47,11 @@ public:
 	bool GetRampRaiseRDesired();
 	bool GetWristUpDesired();
 	bool GetWristDownDesired();
+<<<<<<< master
+
 	double GetElevatorDialOutput();
+=======
+>>>>>>> 683c166 Further changes for auto
 
 	// Auto Controls
 	AutoMode::AutoPositions GetDesiredAutoPosition();
@@ -59,7 +64,7 @@ private:
 	double leftJoyX_, leftJoyY_, leftJoyZ_, rightJoyX_, rightJoyY_, rightJoyZ_;
 
 	// Drive Modes
-	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_;
+	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_, alignWithCubeDesired_;
 
 	// Joysticks for drive
 	Joystick *leftJoy_, *rightJoy_;
@@ -72,13 +77,11 @@ private:
 
 	// Buttons for superstructure
 	ButtonReader *intakeButton_, *outtakeButton_, *intakeHoldSwitch_, *holdCubeButton_, *elevatorUpButton_, *elevatorDownButton_, *elevatorHoldButton_,
-				 *rampReleaseButton_, *rampRaiseLButton_, *rampRaiseRButton_, *wristSwitch_;
+				 *rampReleaseButton_, *rampRaiseLButton_, *rampRaiseRButton_, *wristSwitch_, *alignWithCubeButton_;
 
 	// Variables for superstructure
 	bool intakeDesired_, outtakeDesired_, intakeHoldDesired_, holdCubeDesired_, elevatorUpDesired_, elevatorDownDesired_, elevatorHoldDesired_,
 		 rampReleaseDesired_, rampRaiseLDesired_, rampRaiseRDesired_, wristUpDesired_, wristDownDesired_;
-
-	double elevatorDialOutput_;
 
 	// Auto switches
 	bool leftDown_, rightDown_, middleDown_;
