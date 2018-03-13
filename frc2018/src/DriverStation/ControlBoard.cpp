@@ -203,15 +203,29 @@ bool ControlBoard::GetWristUpDesired() {
 bool ControlBoard::GetWristDownDesired() {
 	return wristDownDesired_;
 }
+<<<<<<< HEAD
+
+=======
 
 <<<<<<< master
+<<<<<<< HEAD
+>>>>>>> 44f66b1d26f1d615dddebc149ab932fff2fbd5fb
+=======
+>>>>>>> 44f66b1d26f1d615dddebc149ab932fff2fbd5fb
 
 double ControlBoard::GetElevatorDialOutput() {
-	return elevatorDialOutput_;
+	return 0.0;
 }
+<<<<<<< HEAD
+
+=======
 
 =======
 >>>>>>> 683c166 Further changes for auto
+<<<<<<< HEAD
+>>>>>>> 44f66b1d26f1d615dddebc149ab932fff2fbd5fb
+=======
+>>>>>>> 44f66b1d26f1d615dddebc149ab932fff2fbd5fb
 AutoMode::AutoPositions ControlBoard::GetDesiredAutoPosition() {
 	AutoMode::AutoPositions position = AutoMode::kBlank;
 
