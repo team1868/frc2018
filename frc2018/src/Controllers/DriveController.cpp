@@ -69,7 +69,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 
 		if (humanControl_->GetAlignWithCubeDesired()) {
 			printf("align with cube desired");
-			nextState_ = kAlignWithCube;
+			nextState_ = kTeleopDrive;
 		} else {
 // Checks quickturn or arcade drive
 		SmartDashboard::PutBoolean("Quick turn desired", humanControl_->GetQuickTurnDesired());
