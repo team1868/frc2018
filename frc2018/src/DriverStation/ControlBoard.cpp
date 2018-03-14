@@ -204,14 +204,10 @@ bool ControlBoard::GetWristDownDesired() {
 	return wristDownDesired_;
 }
 
-<<<<<<< master
-
 double ControlBoard::GetElevatorDialOutput() {
-	return elevatorDialOutput_;
+	return 0.0;
 }
 
-=======
->>>>>>> 683c166 Further changes for auto
 AutoMode::AutoPositions ControlBoard::GetDesiredAutoPosition() {
 	AutoMode::AutoPositions position = AutoMode::kBlank;
 

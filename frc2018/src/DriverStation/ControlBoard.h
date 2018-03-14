@@ -47,11 +47,8 @@ public:
 	bool GetRampRaiseRDesired();
 	bool GetWristUpDesired();
 	bool GetWristDownDesired();
-<<<<<<< master
 
 	double GetElevatorDialOutput();
-=======
->>>>>>> 683c166 Further changes for auto
 
 	// Auto Controls
 	AutoMode::AutoPositions GetDesiredAutoPosition();
