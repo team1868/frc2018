@@ -16,8 +16,8 @@ static const int RIGHT_DRIVE_SLAVE_ID 					= 2;
 /* ---------------------- PWM PORTS --------------------- */
 
 // Superstructure PWM Ports
-static const int LEFT_INTAKE_MOTOR_PWM_PORT				= 8;
-static const int RIGHT_INTAKE_MOTOR_PWM_PORT			= 9;
+static const int LEFT_INTAKE_MOTOR_PWM_PORT				= 9;
+static const int RIGHT_INTAKE_MOTOR_PWM_PORT			= 8;
 static const int ELEVATOR_MOTOR_PWM_PORT				= 7;
 static const int RAMP_L_MOTOR_PWM_PORT					= 0; // TODO CHANGE THIS
 static const int RAMP_R_MOTOR_PWM_PORT					= 0; // TODO CHANGE THIS
@@ -28,8 +28,8 @@ static const int LEFT_DRIVE_MOTOR_A_PDP_CHAN            = 15;
 static const int LEFT_DRIVE_MOTOR_B_PDP_CHAN            = 14;
 static const int RIGHT_DRIVE_MOTOR_A_PDP_CHAN           = 0;
 static const int RIGHT_DRIVE_MOTOR_B_PDP_CHAN           = 1;
-static const int LEFT_INTAKE_MOTOR_PDP_CHAN				= 5;
-static const int RIGHT_INTAKE_MOTOR_PDP_CHAN            = 10;
+static const int LEFT_INTAKE_MOTOR_PDP_CHAN				= 10;
+static const int RIGHT_INTAKE_MOTOR_PDP_CHAN            = 5;
 
 /* ------------------ DIGITAL I/O PORTS ----------------- */
 static const int LEFT_DRIVE_ENCODER_YELLOW_PWM_PORT		= 0;
@@ -88,6 +88,7 @@ static const int ALIGN_WITH_CUBE_BUTTON_PORT			= 2;
 // Superstructure controller button ports
 static const int INTAKE_BUTTON_PORT						= 2;
 static const int OUTTAKE_BUTTON_PORT					= 1;
+static const int OUTTAKE_FAST_BUTTON_PORT				= 3;	// TODO CHECK THIS
 static const int INTAKE_HOLD_SWITCH_PORT				= 7;
 static const int HOLD_CUBE_BUTTON_PORT					= 9;	// TODO CHECK THIS
 static const int ELEVATOR_UP_BUTTON_PORT				= 8;

@@ -31,6 +31,7 @@ ControlBoard::ControlBoard() {
 	middleAutoSwitch_ = new ButtonReader(operatorJoyB_, MIDDLE_AUTO_SWITCH_PORT);
 
 	intakeButton_ = new ButtonReader(operatorJoyB_, INTAKE_BUTTON_PORT);
+	outtakeFastButton_ = new ButtonReader(operatorJoyB_, OUTTAKE_FAST_BUTTON_PORT);
 	outtakeButton_ = new ButtonReader(operatorJoyB_, OUTTAKE_BUTTON_PORT);
 	intakeHoldSwitch_ = new ButtonReader(operatorJoy_, INTAKE_HOLD_SWITCH_PORT);
 	holdCubeButton_ = new ButtonReader(operatorJoyB_, HOLD_CUBE_BUTTON_PORT);
@@ -45,6 +46,7 @@ ControlBoard::ControlBoard() {
 
 	intakeDesired_ = false;
 	outtakeDesired_ = false;
+	outtakeFastDesired_ = false;
 	intakeHoldDesired_ = false;
 	holdCubeDesired_ = false;
 	elevatorUpDesired_ = false;
@@ -80,6 +82,7 @@ void ControlBoard::ReadControls() {
 
 	intakeDesired_ = intakeButton_->IsDown();
 	outtakeDesired_ = outtakeButton_->IsDown();
+	outtakeFastDesired_ = outtakeFastButton_->IsDown();
 	intakeHoldDesired_ = intakeHoldSwitch_->IsDown();
 	holdCubeDesired_ = holdCubeButton_->IsDown();
 	elevatorUpDesired_ = elevatorUpButton_->IsDown();
@@ -162,6 +165,10 @@ void ControlBoard::SetIntakeDesired(bool desired) {
 
 bool ControlBoard::GetOuttakeDesired() {
 	return outtakeDesired_;
+}
+
+bool ControlBoard::GetOuttakeFastDesired() {
+	return outtakeFastDesired_;
 }
 
 bool ControlBoard::GetIntakeHoldDesired() {
@@ -247,6 +254,7 @@ void ControlBoard::ReadAllButtons() {
 
 	intakeButton_->ReadValue();
 	outtakeButton_->ReadValue();
+	outtakeFastButton_->ReadValue();
 	intakeHoldSwitch_->ReadValue();
 	holdCubeButton_->ReadValue();
 	elevatorUpButton_->ReadValue();

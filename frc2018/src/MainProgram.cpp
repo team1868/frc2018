@@ -40,7 +40,7 @@ public:
 		superstructureController_ = new SuperstructureController(robot_, humanControl_);
 		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 
-		//CameraServer::GetInstance()->StartAutomaticCapture();
+		CameraServer::GetInstance()->StartAutomaticCapture();	// put in lower
 
 		// Initializing auto controller
 		autoController_ = new AutoController();
@@ -196,9 +196,12 @@ public:
 		}
 
 		UpdateTimerVariables();
-		autoController_->Update(currTimeSec_, deltaTimeSec_);
-		if (autoController_->IsDone()) {
-			robot_->StartCompressor();
+
+		if (autoModeSet_) {
+			autoController_->Update(currTimeSec_, deltaTimeSec_);
+			if (autoController_->IsDone()) {
+				robot_->StartCompressor();
+			}
 		}
 	}
 
@@ -227,6 +230,8 @@ public:
 		robot_->SetTalonBrakeMode();
 		if (autoMode_ != NULL) {
 			autoMode_->Disable();
+			delete(autoMode_);
+			autoMode_ = NULL;
 		}
 
 		robot_->RefreshIni();

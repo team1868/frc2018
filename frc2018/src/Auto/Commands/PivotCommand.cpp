@@ -27,7 +27,7 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, talonOutput_);
 
 	maxOutput_ = 0.9;
-	tolerance_ = 4.0;
+	tolerance_ = 3.0;
 
 	numTimesOnTarget_ = 0;
 
@@ -55,7 +55,7 @@ void PivotCommand::Init() {
 	printf("Initial NavX Angle: %f\n"
 			"Desired NavX Angle: %f\n"
 			"Chicken tenders pivot time starts at %f\n",
-			initYaw_, initYaw_ + desiredAngle_, pivotCommandStartTime_);
+			initYaw_, desiredAngle_, pivotCommandStartTime_);
 }
 
 void PivotCommand::Reset() {
@@ -68,7 +68,8 @@ void PivotCommand::Reset() {
 	}
 	isDone_ = true;
 
-	robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
+	robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
+	robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
 	printf("DONE FROM RESET \n");
 }
 

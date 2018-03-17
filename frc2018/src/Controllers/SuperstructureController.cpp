@@ -9,11 +9,12 @@ SuperstructureController::SuperstructureController(RobotModel *myRobot, ControlB
 	currState_ = kInit;
 	nextState_ = kIdle;
 
-	elevatorOutput_ = 0.5; // TODO test this
+	//elevatorOutput_ = 0.5; // TODO test this	// 0.7 is sad with cube :( no chicken tenders sry
+	elevatorOutput_ = robot_->elevatorOutput_;
 	rampOutput_ = 0.75; // TODO test this
 	rampReleaseTime_ = 0.0;
 	rampReleaseDiffTime_ = 0.5;
-	elevatorCurrentLimit_ = 20;
+	elevatorCurrentLimit_ = 50;
 	elevatorMovingCurr_ = false;
 	elevatorMovingLast_ = false;
 	elevatorCurrLimitReached_ = false;
@@ -27,6 +28,7 @@ void SuperstructureController::Reset() {
 	robot_->SetElevatorOutput(0.0);
 	rampReleaseTime_ = 0.0;
 
+	elevatorOutput_ = robot_->elevatorOutput_;
 	elevatorMovingCurr_ = false;
 	elevatorMovingLast_ = false;
 	elevatorCurrLimitReached_ = false;
@@ -61,8 +63,11 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		} else if (humanControl_->GetOuttakeDesired()) {
 			printf("outtaking\n");
 			robot_->SetIntakeOutput(robot_->outtakeMotorOutput_);
+		} else if (humanControl_->GetOuttakeFastDesired()) {
+			printf("outtaking fast\n");
+			robot_->SetIntakeOutput(robot_->outtakeFastMotorOutput_);
 		} else if (humanControl_->GetIntakeHoldDesired()) {
-			robot_->SetIntakeOutput(0.2);
+			robot_->SetIntakeOutput(0.3);
 		} else {
 			robot_->SetIntakeOutput(0.0);
 		}

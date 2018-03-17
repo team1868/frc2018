@@ -27,6 +27,7 @@ RobotModel::RobotModel() {
 	elevatorIFac_ = 0.0;
 	elevatorDFac_ = 0.0;
 	elevatorMaxOutput_ = 0.0;
+	elevatorOutput_ = 0.0;
 
 	leftDriveOutput_ = 0.0;
 	rightDriveOutput_ = 0.0;
@@ -53,6 +54,7 @@ RobotModel::RobotModel() {
 
 	intakeMotorOutput_ = 0.0;
 	outtakeMotorOutput_ = 0.0;
+	outtakeFastMotorOutput_ = -0.8;
 
 	// Initializing timer
 	timer_= new Timer();
@@ -84,7 +86,7 @@ RobotModel::RobotModel() {
 	rightDriveEncoder_->SetReverseDirection(false);
 
 	// Initializing Drive Talons
-	isLeftInverted_ = true;	// FOR PRACT
+	isLeftInverted_ = true;	// FOR PRACT & COMP
 	//	isLeftInverted_ = false; // For KOP
 
 	leftMaster_ = new WPI_TalonSRX(LEFT_DRIVE_MASTER_ID);
@@ -105,7 +107,8 @@ RobotModel::RobotModel() {
 	leftSlave_->SetInverted(isLeftInverted_);
 
 	// Initializing NavX
-	navX_ = new AHRS(SPI::kMXP);
+	navXSpeed_ = 200;
+	navX_ = new AHRS(SPI::kMXP, navXSpeed_);
 	//	navX_ = new AHRS(SerialPort::kUSB);
 	Wait(1.0); // NavX takes a second to calibrate
 
@@ -115,8 +118,10 @@ RobotModel::RobotModel() {
 
 	leftIntakeMotor_ = new Victor(LEFT_INTAKE_MOTOR_PWM_PORT);
 	rightIntakeMotor_ = new Victor(RIGHT_INTAKE_MOTOR_PWM_PORT);
+	leftIntakeMotor_->SetInverted(true);	// True for comp; false for pract
+	rightIntakeMotor_->SetInverted(true);	// True for comp; false for pract
 	elevatorMotor_ = new Victor(ELEVATOR_MOTOR_PWM_PORT);
-	elevatorMotor_->SetInverted(true);
+	elevatorMotor_->SetInverted(false);	// False for comp; true for pract
 
 	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
@@ -170,31 +175,31 @@ double RobotModel::GetWheelSpeed(RobotModel::Wheels wheel) {
 		case (kLeftWheels):
 			return leftMaster_->Get();
 		break;
-		case (kRightWheels):
-			return rightMaster_->Get();
+	case (kRightWheels):
+		return rightMaster_->Get();
 		break;
-		case (kAllWheels):
-			return rightMaster_->Get();
+	case (kAllWheels):
+		return rightMaster_->Get();
 	}
 }
 
-
 void RobotModel::SetDriveValues(RobotModel::Wheels wheel, double value) {
 	leftDriveOutput_ = rightDriveOutput_ = value;
-	switch(wheel) {
+	switch (wheel) {
 	case (kLeftWheels):
-					leftMaster_->Set(value);
-	break;
+		leftMaster_->Set(value);
+		break;
 	case (kRightWheels):
-					rightMaster_->Set(value);
-	break;
+		rightMaster_->Set(value);
+		break;
 	case (kAllWheels):
-					rightMaster_->Set(value);
-	leftMaster_->Set(value);
+		rightMaster_->Set(value);
+		leftMaster_->Set(value);
 	}
 }
 
 void RobotModel::SetTalonBrakeMode() {
+	printf("In Brake Mode\n");
 	rightMaster_->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 	leftMaster_->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 	rightSlave_->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
@@ -202,6 +207,7 @@ void RobotModel::SetTalonBrakeMode() {
 }
 
 void RobotModel::SetTalonCoastMode() {
+	printf("In Coast Mode\n");
 	rightMaster_->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
 	leftMaster_->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
 	rightSlave_->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
@@ -405,21 +411,26 @@ double RobotModel::GetPressureSensorVal() {
 bool RobotModel::CollisionDetected() {
 	bool collisionDetected = false;
 
-//	double curr_world_linear_accel_x = navX_->GetWorldLinearAccelX();
-//	double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x_;
-//	last_world_linear_accel_x_ = curr_world_linear_accel_x;
-//	double curr_world_linear_accel_y = navX_->GetWorldLinearAccelY();
-//	double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y_;
-//	last_world_linear_accel_y_ = curr_world_linear_accel_y;
-//
-//	if ( ( fabs(currentJerkX) > COLLISION_THRESHOLD_DELTA_G ) ||
-//			( fabs(currentJerkY) > COLLISION_THRESHOLD_DELTA_G) ) {
-//		collisionDetected = true;
-//	}
+	double curr_world_linear_accel_x = navX_->GetWorldLinearAccelX();
+	double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x_;
+	last_world_linear_accel_x_ = curr_world_linear_accel_x;
+	double curr_world_linear_accel_y = navX_->GetWorldLinearAccelY();
+	double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y_;
+	last_world_linear_accel_y_ = curr_world_linear_accel_y;
+
+	if ( ( fabs(currentJerkX) > COLLISION_THRESHOLD_DELTA_G ) ||
+			( fabs(currentJerkY) > COLLISION_THRESHOLD_DELTA_G) ) {
+		collisionDetected = true;
+		printf("From JERK\n");
+	}
 
 	if(leftDriveEncoder_->GetStopped() && rightDriveEncoder_->GetStopped()) {
 		collisionDetected = true;
+		printf("From ENCODER\n");
 	}
+	SmartDashboard::PutNumber("Jerk Y", last_world_linear_accel_y_);
+	SmartDashboard::PutNumber("Jerk X", last_world_linear_accel_x_);
+
 	SmartDashboard::PutBoolean(  "CollisionDetected", collisionDetected);
 	return collisionDetected;
 }
@@ -474,6 +485,7 @@ void RobotModel::RefreshIniVals() {
 
 	intakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutput", 0.0);
 	outtakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "outtakeMotorOutput", 0.0);
+	elevatorOutput_ = pini_->getf("SUPERSTRUCTURE", "elevatorOutput", 0.5);
 
 	testMode_ = pini_->gets("AUTO TEST", "sequence", "");
 	//comment out autoPos if driver station is set up to test without ini file
@@ -483,6 +495,7 @@ void RobotModel::RefreshIniVals() {
 }
 
 void RobotModel::PrintState() {
+
 	SmartDashboard::PutNumber("Left Drive Output", leftMaster_->Get());
 	SmartDashboard::PutNumber("Right Drive Output", rightMaster_->Get());
 	SmartDashboard::PutNumber("Left Drive Distance", GetLeftDistance());
@@ -495,10 +508,12 @@ void RobotModel::PrintState() {
 	SmartDashboard::PutNumber("Elevator Current", pdp_->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN));
 	SmartDashboard::PutNumber("Intake Current Left", pdp_->GetCurrent(LEFT_INTAKE_MOTOR_PDP_CHAN));
 	SmartDashboard::PutNumber("Intake Current right", pdp_->GetCurrent(RIGHT_INTAKE_MOTOR_PDP_CHAN));
-//	SmartDashboard::PutNumber("Left Drive A Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_A_PDP_CHAN));
-//	SmartDashboard::PutNumber("Left Drive B Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_B_PDP_CHAN));
-//	SmartDashboard::PutNumber("Right Drive A Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
-//	SmartDashboard::PutNumber("Right Drive B Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
+	SmartDashboard::PutNumber("Jerk Y", last_world_linear_accel_y_);
+	SmartDashboard::PutNumber("Jerk X", last_world_linear_accel_x_);
+	SmartDashboard::PutNumber("Left Drive A Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_A_PDP_CHAN));
+	SmartDashboard::PutNumber("Left Drive B Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_B_PDP_CHAN));
+	SmartDashboard::PutNumber("Right Drive A Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
+	SmartDashboard::PutNumber("Right Drive B Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
 }
 
 RobotModel::~RobotModel() {

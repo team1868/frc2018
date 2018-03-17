@@ -212,10 +212,10 @@ public:
 	double pivotPFac_, pivotIFac_, pivotDFac_;
 	double driveDPFac_, driveDIFac_, driveDDFac_;
 	double driveRPFac_, driveRIFac_, driveRDFac_;
-	double elevatorPFac_, elevatorIFac_, elevatorDFac_, elevatorMaxOutput_;
+	double elevatorPFac_, elevatorIFac_, elevatorDFac_, elevatorMaxOutput_, elevatorOutput_;
 	double driveTimeoutSec_, pivotTimeoutSec_;
 	double leftDriveOutput_, rightDriveOutput_;
-	double intakeMotorOutput_, outtakeMotorOutput_;
+	double intakeMotorOutput_, outtakeMotorOutput_, outtakeFastMotorOutput_;
 	double driveCurrentLimit_, intakeCurrentLimit_, totalCurrentLimit_, voltageFloor_, pressureFloor_, size_;
 
 	double leftDriveACurrent_, leftDriveBCurrent_, rightDriveACurrent_, rightDriveBCurrent_,
@@ -238,6 +238,7 @@ private:
 
 	Timer *timer_;
 	AHRS *navX_;
+	int navXSpeed_; // In Hz
 
 	Compressor *compressor_;
 	DoubleSolenoid *gearShiftSolenoid_;

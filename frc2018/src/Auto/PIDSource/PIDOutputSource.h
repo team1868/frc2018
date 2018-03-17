@@ -19,6 +19,7 @@ public:
 	 * @return pidOutput_
 	 */
 	double GetPIDOutput();
+
 	/**
 	 * Destructor
 	 */

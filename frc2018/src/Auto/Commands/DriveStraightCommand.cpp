@@ -167,7 +167,8 @@ void DriveStraightCommand::Reset() {
 		distancePID_ = NULL;
 	}
 
-	robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
+	robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
+	robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
 	isDone_ = true;
 }
 
@@ -215,7 +216,7 @@ void DriveStraightCommand::Initializations(NavXPIDSource* navXSource, TalonEncod
 	distancePID_ = NULL;
 
 	rTolerance_ = 1.0;
-	dTolerance_ = 1.0 / 12.0;
+	dTolerance_ = 3.0 / 12.0;
 
 	rMaxOutput_ = 0.15;
 	dMaxOutput_ = 0.85; // 0.85
