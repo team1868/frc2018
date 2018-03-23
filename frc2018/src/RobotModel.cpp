@@ -55,6 +55,7 @@ RobotModel::RobotModel() {
 	intakeMotorOutput_ = 0.0;
 	outtakeMotorOutput_ = 0.0;
 	outtakeFastMotorOutput_ = -0.8;
+	intakeMotorOutputSubtract_ = 0.0;
 
 	// Initializing timer
 	timer_= new Timer();
@@ -118,10 +119,10 @@ RobotModel::RobotModel() {
 
 	leftIntakeMotor_ = new Victor(LEFT_INTAKE_MOTOR_PWM_PORT);
 	rightIntakeMotor_ = new Victor(RIGHT_INTAKE_MOTOR_PWM_PORT);
-	leftIntakeMotor_->SetInverted(true);	// True for comp; false for pract
-	rightIntakeMotor_->SetInverted(true);	// True for comp; false for pract
+	leftIntakeMotor_->SetInverted(true);	// True for comp; true for pract
+	rightIntakeMotor_->SetInverted(true);	// True for comp; true for pract
 	elevatorMotor_ = new Victor(ELEVATOR_MOTOR_PWM_PORT);
-	elevatorMotor_->SetInverted(false);	// False for comp; true for pract
+	elevatorMotor_->SetInverted(true);	// False for comp; true for pract
 
 	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
@@ -273,6 +274,11 @@ double RobotModel::GetNavXRoll() {
 void RobotModel::SetIntakeOutput(double output) {
 	leftIntakeMotor_->Set(output);
 	rightIntakeMotor_->Set(-output);
+}
+
+void RobotModel::SetIntakeOutput(double leftOutput, double rightOutput) {
+	leftIntakeMotor_->Set(leftOutput);
+	rightIntakeMotor_->Set(-rightOutput);
 }
 
 void RobotModel::SetElevatorOutput(double output) {
@@ -484,8 +490,10 @@ void RobotModel::RefreshIniVals() {
 	cubeInSwitchR_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchR", "d10");
 
 	intakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutput", 0.0);
+	intakeMotorOutputSubtract_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutputSubtract_", 0.0);
 	outtakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "outtakeMotorOutput", 0.0);
 	elevatorOutput_ = pini_->getf("SUPERSTRUCTURE", "elevatorOutput", 0.5);
+
 
 	testMode_ = pini_->gets("AUTO TEST", "sequence", "");
 	//comment out autoPos if driver station is set up to test without ini file
@@ -495,7 +503,6 @@ void RobotModel::RefreshIniVals() {
 }
 
 void RobotModel::PrintState() {
-
 	SmartDashboard::PutNumber("Left Drive Output", leftMaster_->Get());
 	SmartDashboard::PutNumber("Right Drive Output", rightMaster_->Get());
 	SmartDashboard::PutNumber("Left Drive Distance", GetLeftDistance());
@@ -514,6 +521,7 @@ void RobotModel::PrintState() {
 	SmartDashboard::PutNumber("Left Drive B Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_B_PDP_CHAN));
 	SmartDashboard::PutNumber("Right Drive A Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
 	SmartDashboard::PutNumber("Right Drive B Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
+	SmartDashboard::PutNumber("Pressure", GetPressureSensorVal());
 }
 
 RobotModel::~RobotModel() {

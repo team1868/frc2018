@@ -119,6 +119,8 @@ public:
 	 * @param output
 	 */
 	void SetIntakeOutput(double output);
+	void SetIntakeOutput(double leftOutput, double rightOutput);
+
 
 	/**
 	 * Sets elevator output
@@ -217,6 +219,7 @@ public:
 	double leftDriveOutput_, rightDriveOutput_;
 	double intakeMotorOutput_, outtakeMotorOutput_, outtakeFastMotorOutput_;
 	double driveCurrentLimit_, intakeCurrentLimit_, totalCurrentLimit_, voltageFloor_, pressureFloor_, size_;
+	double intakeMotorOutputSubtract_;
 
 	double leftDriveACurrent_, leftDriveBCurrent_, rightDriveACurrent_, rightDriveBCurrent_,
 			roboRIOCurrent_, compressorCurrent_, leftIntakeCurrent_, rightIntakeCurrent_;
