@@ -34,10 +34,8 @@ ControlBoard::ControlBoard() {
 	outtakeFastButton_ = new ButtonReader(operatorJoyB_, OUTTAKE_FAST_BUTTON_PORT);
 	outtakeButton_ = new ButtonReader(operatorJoyB_, OUTTAKE_BUTTON_PORT);
 	intakeHoldSwitch_ = new ButtonReader(operatorJoy_, INTAKE_HOLD_SWITCH_PORT);
-	holdCubeButton_ = new ButtonReader(operatorJoyB_, HOLD_CUBE_BUTTON_PORT);
 	elevatorUpButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_UP_BUTTON_PORT);
 	elevatorDownButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_DOWN_BUTTON_PORT);
-	elevatorHoldButton_ = new ButtonReader(operatorJoyB_, ELEVATOR_HOLD_BUTTON_PORT);
 	rampReleaseButton_ = new ButtonReader(operatorJoyB_, RAMP_RELEASE_BUTTON_PORT);
 	rampRaiseLButton_ = new ButtonReader(operatorJoy_, RAMP_RAISE_L_BUTTON_PORT);
 	rampRaiseRButton_ = new ButtonReader(operatorJoy_, RAMP_RAISE_R_BUTTON_PORT);
@@ -48,10 +46,8 @@ ControlBoard::ControlBoard() {
 	outtakeDesired_ = false;
 	outtakeFastDesired_ = false;
 	intakeHoldDesired_ = false;
-	holdCubeDesired_ = false;
 	elevatorUpDesired_ = false;
 	elevatorDownDesired_ = false;
-	elevatorHoldDesired_ = false;
 	rampReleaseDesired_ = false;
 	wristUpDesired_ = false;
 	wristDownDesired_ = false;
@@ -84,10 +80,8 @@ void ControlBoard::ReadControls() {
 	outtakeDesired_ = outtakeButton_->IsDown();
 	outtakeFastDesired_ = outtakeFastButton_->IsDown();
 	intakeHoldDesired_ = intakeHoldSwitch_->IsDown();
-	holdCubeDesired_ = holdCubeButton_->IsDown();
 	elevatorUpDesired_ = elevatorUpButton_->IsDown();
 	elevatorDownDesired_ = elevatorDownButton_->IsDown();
-	elevatorHoldDesired_ = elevatorHoldButton_->IsDown(); //testing 2/24
 
 	rampReleaseDesired_ = rampReleaseButton_->WasJustPressed();
 	if (wristSwitch_->WasJustPressed()) {
@@ -175,20 +169,12 @@ bool ControlBoard::GetIntakeHoldDesired() {
 	return intakeHoldDesired_;
 }
 
-bool ControlBoard::GetHoldCubeDesired() {
-	return holdCubeDesired_;
-}
-
 bool ControlBoard::GetElevatorUpDesired() {
 	return elevatorUpDesired_;
 }
 
 bool ControlBoard::GetElevatorDownDesired() {
 	return elevatorDownDesired_;
-}
-
-bool ControlBoard::GetElevatorHoldDesired() {
-	return elevatorHoldDesired_;
 }
 
 bool ControlBoard::GetRampReleaseDesired() {
@@ -256,10 +242,8 @@ void ControlBoard::ReadAllButtons() {
 	outtakeButton_->ReadValue();
 	outtakeFastButton_->ReadValue();
 	intakeHoldSwitch_->ReadValue();
-	holdCubeButton_->ReadValue();
 	elevatorUpButton_->ReadValue();
 	elevatorDownButton_->ReadValue();
-	elevatorHoldButton_->ReadValue();
 	rampReleaseButton_->ReadValue();
 	rampRaiseLButton_->ReadValue();
 	rampRaiseRButton_->ReadValue();

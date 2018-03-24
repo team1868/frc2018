@@ -254,7 +254,6 @@ private:
 	DoubleSolenoid *wristSolenoid_, *rampLegSolenoidL_, *rampLegSolenoidR_, *rampReleaseSolenoidL_, *rampReleaseSolenoidR_;
 	AnalogInput *pressureSensor_; //TODO add
 	DigitalInput *intakeSensor_;
-	Solenoid *brakeSolenoid_;
 	bool wristUp_;
 };
 

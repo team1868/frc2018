@@ -130,7 +130,6 @@ RobotModel::RobotModel() {
 	rampLMotor_ = new Victor(RAMP_L_MOTOR_PWM_PORT);
 	rampRMotor_ = new Victor(RAMP_R_MOTOR_PWM_PORT);
 
-	brakeSolenoid_ = new Solenoid(BRAKE_SOLENOID_PORT);
 	rampLegSolenoidL_ = new DoubleSolenoid(RAMP_LEG_SOLENOID_L_PORT_A, RAMP_LEG_SOLENOID_L_PORT_B);
 	rampLegSolenoidR_ = new DoubleSolenoid(RAMP_LEG_SOLENOID_R_PORT_A, RAMP_LEG_SOLENOID_R_PORT_B);
 	rampReleaseSolenoidL_ = new DoubleSolenoid(RAMP_RELEASE_SOLENOID_L_PORT_A, RAMP_RELEASE_SOLENOID_L_PORT_B);
@@ -326,11 +325,11 @@ void RobotModel::SetRampMotorROutput(double output) {
 }
 
 void RobotModel::EngageBrake() {
-	brakeSolenoid_->Set(false);
+
 }
 
 void RobotModel::DisengageBrake() {
-	brakeSolenoid_->Set(true);
+
 }
 
 void RobotModel::SetWristDown() {
