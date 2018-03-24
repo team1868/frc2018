@@ -13,6 +13,10 @@ DriveController::DriveController(RobotModel *robot, ControlBoard *humanControl) 
 	rotateSensitivity_ = 0.0;
 	quickTurnSensitivity_ = 0.0;
 
+	LOW_THRUST_SENSITIVITY= 0.3; // TODO tune this
+	LOW_ROTATE_SENSITIVITY = 0.7; // TODO tune this
+	MAX_ELEVATOR_HEIGHT_THRESHOLD = 5.0; // TODO tune this
+
 // Default state Teleop Drive
 	currState_ = kTeleopDrive;
 	nextState_ = kTeleopDrive;
@@ -50,6 +54,11 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 		rightJoyZ = humanControl_->GetJoystickValue(ControlBoard::kRightJoy, ControlBoard::kZ);
 
 		// so leftJoyZ and rightJoyZ are from -1 to 1
+		if (robot_->GetElevatorEncoder()->GetDistance() > MAX_ELEVATOR_HEIGHT_THRESHOLD) {	//TODO fix this, fix threshold
+			thrustSensitivity_= LOW_THRUST_SENSITIVITY;
+			rotateSensitivity_ = LOW_ROTATE_SENSITIVITY;
+		}
+
 		thrustSensitivity_ = (leftJoyZ + 1.0) / 2.0;
 		rotateSensitivity_ = (rightJoyZ + 1.0) / 2.0;
 
