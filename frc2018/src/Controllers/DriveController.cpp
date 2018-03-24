@@ -54,13 +54,13 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 		rightJoyZ = humanControl_->GetJoystickValue(ControlBoard::kRightJoy, ControlBoard::kZ);
 
 		// so leftJoyZ and rightJoyZ are from -1 to 1
+		thrustSensitivity_ = (leftJoyZ + 1.0) / 2.0;
+		rotateSensitivity_ = (rightJoyZ + 1.0) / 2.0;
+
 		if (robot_->GetElevatorEncoder()->GetDistance() > MAX_ELEVATOR_HEIGHT_THRESHOLD) {	//TODO fix this, fix threshold
 			thrustSensitivity_= LOW_THRUST_SENSITIVITY;
 			rotateSensitivity_ = LOW_ROTATE_SENSITIVITY;
 		}
-
-		thrustSensitivity_ = (leftJoyZ + 1.0) / 2.0;
-		rotateSensitivity_ = (rightJoyZ + 1.0) / 2.0;
 
 		SmartDashboard::PutNumber("Thrust z", thrustSensitivity_);
 		SmartDashboard::PutNumber("Rotate z", rotateSensitivity_);
