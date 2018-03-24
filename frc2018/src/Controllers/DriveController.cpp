@@ -68,7 +68,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 // Checks quickturn or arcade drive
 		SmartDashboard::PutBoolean("Quick turn desired", humanControl_->GetQuickTurnDesired());
 		if (humanControl_->GetQuickTurnDesired()) {
-			QuickTurn(rightJoyX, 0.0);
+			QuickTurn(rightJoyX, rotateSensitivity_);
 			nextState_ = kTeleopDrive;
 		} else {
 			if (humanControl_->GetArcadeDriveDesired()) {
