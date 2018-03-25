@@ -74,18 +74,7 @@ public:
 			iss >> command;
 			printf("Command: %c, ", command);
 
-			if (command == 'p') {
-				char charA, charB;
-				iss >> charA;
-				printf("CommandA %c ", charA);
-				AutoCommand* commandA = GetStringCommand(charA);
-				iss >> charB;
-				printf("CommandB %c ", charB);
-				AutoCommand* commandB = GetStringCommand(charB);
-				tempCommand = new ParallelCommand(commandA, commandB);
-			} else {
-				tempCommand = GetStringCommand(command);
-			}
+			tempCommand = GetStringCommand(command);
 
 			if (firstCommand_ == NULL) {
 				firstCommand_ = tempCommand;
@@ -107,6 +96,17 @@ public:
 		AutoCommand* tempCommand = NULL;
 
 		switch(command) {
+		case 'p': {
+			char charA, charB;
+			iss >> charA;
+			printf("CommandA %c ", charA);
+			AutoCommand* commandA = GetStringCommand(charA);
+			iss >> charB;
+			printf("CommandB %c ", charB);
+			AutoCommand* commandB = GetStringCommand(charB);
+			tempCommand = new ParallelCommand(commandA, commandB);
+			break;
+		}
 		case 't':	// Pivots with absolute position
 			double angle;
 			iss >> angle;

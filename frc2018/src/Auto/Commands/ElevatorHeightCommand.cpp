@@ -23,12 +23,12 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHe
 	elevatorHeightPID_ = new PIDController(pFac_, iFac_, dFac_, encoderPIDSource_,elevatorPIDOutput_);
 	maxOutput_ = 0.3; // TODO Test
 	lastElevatorOutput_ = 0.0;
-	maxElevatorRate_ = 0.5;
+	maxElevatorRate_ = robot_->elevatorRampRate_;
 	tolerance_ = 0.1; // TODO CHANGE
 
 	startTime_ = robot_->GetTime();
 
-	 elevatorCurrentLimit_ = 18.0;
+	 elevatorCurrentLimit_ = 40.0;
 }
 
 ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot) {
@@ -83,13 +83,14 @@ void ElevatorHeightCommand::Reset() {
 void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Elevator Height", robot_->GetElevatorEncoder()->GetDistance());
 	SmartDashboard::PutNumber("Elevator Height Error", elevatorHeightPID_->GetError());
+	SmartDashboard::PutNumber("Elevator Current", robot_->GetElevatorCurrent());
 //	SmartDashboard::PutNumber("Elevator Motor Output", elevatorPIDOutput_->Get());
 	double timeDiff = robot_->GetTime() - startTime_;
 	SmartDashboard::PutNumber("Elevator Time Diff", timeDiff);
 	bool timeOut = (timeDiff > 5.0);								//test this value
 
 	if (maxOutput_ < robot_->elevatorMaxOutput_) {
-		maxOutput_ *= 1.05;
+		maxOutput_ *= maxElevatorRate_;
 		elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
 	}
 

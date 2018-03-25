@@ -59,17 +59,18 @@ void PivotCommand::Init() {
 }
 
 void PivotCommand::Reset() {
-	printf("Disabling pivotcommand\n");
+	robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
+	robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
+
 	if (pivotPID_ != NULL) {
 		pivotPID_->Disable();
-		pivotPID_->Reset();
 		delete(pivotPID_);
 		pivotPID_ = NULL;
+		printf("Disabling pivotcommand %f \n", robot_->GetNavXYaw());
+
 	}
 	isDone_ = true;
 
-	robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
-	robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
 	printf("DONE FROM RESET \n");
 }
 
@@ -89,9 +90,10 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 		numTimesOnTarget_ = 0;
 	}
 	if ((pivotPID_->OnTarget() && numTimesOnTarget_ > 1) || timeOut) {
-		printf("%f Final NavX Angle: %f\n"
+		printf("%f Final NavX Angle from PID Source: %f\n"
+				"Final NavX Angle from robot: %f \n"
 				"%f Angle NavX Error %f\n",
-				robot_->GetTime(), navXSource_->PIDGet(), robot_->GetTime(), pivotPID_->GetError());
+				robot_->GetTime(), navXSource_->PIDGet(), robot_->GetNavXYaw(), robot_->GetTime(), pivotPID_->GetError());
 		Reset();
 		isDone_ = true;
 		robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);

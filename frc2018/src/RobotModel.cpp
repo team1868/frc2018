@@ -11,29 +11,10 @@ const double ELEVATOR_DISTANCE_PER_PULSE = (43.25 / 12) / 1165; // VALUE FROM PR
 RobotModel::RobotModel() {
 	// Initializing ini
 	pini_ = new Ini("home/lvuser/robot.ini");
-	// Initializing Pivot PID vals
-	pivotPFac_ = 0.0;
-	pivotIFac_ = 0.0;
-	pivotDFac_ = 0.0;
-	// Initializing DriveStraight PID vals
-	driveDPFac_ = 0.0;
-	driveDIFac_ = 0.0;
-	driveDDFac_ = 0.0;
-	driveRPFac_ = 0.0;
-	driveRIFac_ = 0.0;
-	driveRDFac_ = 0.0;
-	// Initializing Elevator PID vals
-	elevatorPFac_ = 0.0;
-	elevatorIFac_ = 0.0;
-	elevatorDFac_ = 0.0;
-	elevatorMaxOutput_ = 0.0;
-	elevatorOutput_ = 0.0;
+	RefreshIni();
 
 	leftDriveOutput_ = 0.0;
 	rightDriveOutput_ = 0.0;
-
-	driveTimeoutSec_ = 0.0; // TODO add to ini file
-	pivotTimeoutSec_ = 0.0; // TODO add to ini file
 
 	last_world_linear_accel_x_ = 0.0f;
 	last_world_linear_accel_y_ = 0.0f;
@@ -49,13 +30,7 @@ RobotModel::RobotModel() {
 	string cubeInSwitchL_ = "";
 	string cubeInSwitchR_ = "";
 
-	autoPos_ = 0; //TODO add to ini file
-	autoMode_ = 0; //TODO add to ini file
-
-	intakeMotorOutput_ = 0.0;
-	outtakeMotorOutput_ = 0.0;
 	outtakeFastMotorOutput_ = -0.8;
-	intakeMotorOutputSubtract_ = 0.0;
 
 	// Initializing timer
 	timer_= new Timer();
@@ -468,11 +443,13 @@ void RobotModel::RefreshIni() {
 }
 
 void RobotModel::RefreshIniVals() {
+	// Pivot PID's
 	pivotPFac_ = pini_->getf("PIVOT PID", "pFac", 0.0);
 	pivotIFac_ = pini_->getf("PIVOT PID", "iFac", 0.0);
 	pivotDFac_ = pini_->getf("PIVOT PID", "dFac", 0.0);
 	pivotTimeoutSec_ = pini_->getf("PIVOT PID", "pivotTimeoutSec", 3.5);
 
+	// Drive PID's
 	driveRPFac_ = pini_->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
 	driveRIFac_ = pini_->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
 	driveRDFac_ = pini_->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
@@ -481,22 +458,25 @@ void RobotModel::RefreshIniVals() {
 	driveDDFac_ = pini_->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
 	driveTimeoutSec_ = pini_->getf("DRIVESTRAIGHT PID", "driveTimeoutSec", 2.5);
 
+	// Elevator PID's
 	elevatorPFac_ = pini_->getf("ELEVATOR PID", "pFac", 0.0);
 	elevatorIFac_ = pini_->getf("ELEVATOR PID", "iFac", 0.0);
 	elevatorDFac_ = pini_->getf("ELEVATOR PID", "dFac", 0.0);
 	elevatorMaxOutput_ = pini_->getf("ELEVATOR PID", "elevatorMaxOutput", 0.5);
+	elevatorRampRate_ = pini_->getf("ELEVATOR PID", "elevatorRamp", 1.07);
 
+	// String for cube in switch
 	cubeInSwitchL_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchL", "d10");
 	cubeInSwitchR_ = pini_->gets("CUBE IN SWITCH", "cubeInSwitchR", "d10");
 
+	// Superstructure teleop stuff
 	intakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutput", 0.0);
 	intakeMotorOutputSubtract_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutputSubtract_", 0.0);
 	outtakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "outtakeMotorOutput", 0.0);
 	elevatorOutput_ = pini_->getf("SUPERSTRUCTURE", "elevatorOutput", 0.5);
 
-
+	// Auto stuff
 	testMode_ = pini_->gets("AUTO TEST", "sequence", "");
-	//comment out autoPos if driver station is set up to test without ini file
 	autoPos_ = pini_->getf("AUTO TEST", "pos", 0.0);
 	autoMode_ = pini_->getf("AUTO TEST", "mode", 0.0);
 

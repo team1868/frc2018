@@ -40,44 +40,14 @@ public:
 		superstructureController_ = new SuperstructureController(robot_, humanControl_);
 		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 
-		CameraServer::GetInstance()->StartAutomaticCapture();	// put in lower
+//		CameraServer::GetInstance()->StartAutomaticCapture();	// put in lower
 
 		// Initializing auto controller
 		autoController_ = new AutoController();
 
 		autoMode_ = NULL;
+		autoModeSet_ = false;
 
-		// Setup to chooser auto mode from SmartDashboard
-		/*
-		AutoMode *blank = new BlankMode(robot_);
-		autoChooser_.AddDefault("Blank Auto", blank);
-		printf("blank %x \n", blank);
-
-		AutoMode *baseline = new BaselineMode(robot_);
-		autoChooser_.AddObject("Baseline Mode", baseline);
-		printf("baseline %x \n", baseline);
-
-		autoChooser_.AddObject("Switch Mode", new CubeInSwitchMode(robot_));
-		autoChooser_.AddObject("Test Mode", new TestMode(robot_));
-
-		autoChooser_.AddObject("KOP Test", new KOPTestMPMode(robot_));
-		autoChooser_.AddObject("RSideRSwitchMP", new RightSideToRightSwitchMode(robot_));
-		autoChooser_.AddObject("LSideLSwitchMP", new RightSideToRightSwitchMode(robot_));
-
-
-		SmartDashboard::PutData("Auto Modes", &autoChooser_);
-		*/
-
-//		if (autoMode_ == NULL) {
-//			printf("autoMode_ is null in RobotInit\n");
-//		}
-
-		//setting auto position from ini file
-
-
-
-		//UNCOMMENT autoPosition if driverstation is set up for testing!!!
-		//autoPosition_ = humanControl_->GetDesiredAutoPosition();
 		ResetTimerVariables();
 
 		robot_->SetWristUp();
@@ -232,6 +202,7 @@ public:
 			autoMode_->Disable();
 			delete(autoMode_);
 			autoMode_ = NULL;
+			autoModeSet_ = false;
 		}
 
 		robot_->RefreshIni();

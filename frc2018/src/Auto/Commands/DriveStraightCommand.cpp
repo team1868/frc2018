@@ -57,8 +57,9 @@ void DriveStraightCommand::Init() {
 	anglePID_->Enable();
 	distancePID_->Enable();
 
+	driveTimeoutSec_ = desiredDistance_ / 3.0; // Assuming 5.0 ft / sec from the low gear speed
 	initialDriveTime_ = robot_->GetTime();
-	printf("%f Start chicken tenders drivestraight time\n", initialDriveTime_);
+	printf("%f Start chicken tenders drivestraight time driveTimeoutSec is %f\n", initialDriveTime_, driveTimeoutSec_);
 
 	numTimesOnTarget_ = 0;
 
@@ -147,28 +148,27 @@ bool DriveStraightCommand::IsDone() {
 }
 
 void DriveStraightCommand::Reset() {
+	robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
+	robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
+
 	if (anglePID_ != NULL) {
 		anglePID_->Disable();
-		anglePID_->Reset();
 
 		delete(anglePID_);
 
 		anglePID_ = NULL;
 
-		printf("Reset DriveCommand\n");
+		printf("Reset Angle PID %f \n", robot_->GetNavXYaw());
 	}
 	if (distancePID_ != NULL) {
 		distancePID_->Disable();
 
-		distancePID_->Reset();
-
 		delete(distancePID_);
 
 		distancePID_ = NULL;
-	}
+//		printf("Reset Distance PID");
 
-	robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
-	robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
+	}
 	isDone_ = true;
 }
 
@@ -181,7 +181,7 @@ void DriveStraightCommand::GetIniValues() { // Ini values are refreshed at the s
 	rIFac_ = robot_->driveRIFac_;
 	rDFac_ = robot_->driveRDFac_;
 
-	driveTimeoutSec_ = robot_->driveTimeoutSec_;
+	//driveTimeoutSec_ = robot_->driveTimeoutSec_;
 
 	printf("DRIVESTRAIGHT COMMAND DRIVE p: %f, i: %f, d: %f\n", dPFac_, dIFac_, dDFac_);
 	printf("DRIVESTRAIGHT COMMAND ANGLE p: %f, i: %f, d: %f\n", rPFac_, rIFac_, rDFac_);

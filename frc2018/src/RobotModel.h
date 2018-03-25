@@ -214,12 +214,13 @@ public:
 	double pivotPFac_, pivotIFac_, pivotDFac_;
 	double driveDPFac_, driveDIFac_, driveDDFac_;
 	double driveRPFac_, driveRIFac_, driveRDFac_;
-	double elevatorPFac_, elevatorIFac_, elevatorDFac_, elevatorMaxOutput_, elevatorOutput_;
+	double elevatorPFac_, elevatorIFac_, elevatorDFac_, elevatorMaxOutput_, elevatorRampRate_;
 	double driveTimeoutSec_, pivotTimeoutSec_;
+
+	double elevatorOutput_;
 	double leftDriveOutput_, rightDriveOutput_;
-	double intakeMotorOutput_, outtakeMotorOutput_, outtakeFastMotorOutput_;
+	double intakeMotorOutput_, outtakeMotorOutput_, outtakeFastMotorOutput_, intakeMotorOutputSubtract_;;
 	double driveCurrentLimit_, intakeCurrentLimit_, totalCurrentLimit_, voltageFloor_, pressureFloor_, size_;
-	double intakeMotorOutputSubtract_;
 
 	double leftDriveACurrent_, leftDriveBCurrent_, rightDriveACurrent_, rightDriveBCurrent_,
 			roboRIOCurrent_, compressorCurrent_, leftIntakeCurrent_, rightIntakeCurrent_;
