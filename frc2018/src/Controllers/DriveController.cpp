@@ -13,6 +13,10 @@ DriveController::DriveController(RobotModel *robot, ControlBoard *humanControl) 
 	rotateSensitivity_ = 0.0;
 	quickTurnSensitivity_ = 0.0;
 
+	LOW_THRUST_SENSITIVITY= 0.3; // TODO tune this
+	LOW_ROTATE_SENSITIVITY = 0.7; // TODO tune this
+	MAX_ELEVATOR_HEIGHT_THRESHOLD = 5.0; // TODO tune this
+
 // Default state Teleop Drive
 	currState_ = kTeleopDrive;
 	nextState_ = kTeleopDrive;
@@ -53,6 +57,11 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 		thrustSensitivity_ = (leftJoyZ + 1.0) / 2.0;
 		rotateSensitivity_ = (rightJoyZ + 1.0) / 2.0;
 
+		if (robot_->GetElevatorEncoder()->GetDistance() > MAX_ELEVATOR_HEIGHT_THRESHOLD) {	//TODO fix this, fix threshold
+			thrustSensitivity_= LOW_THRUST_SENSITIVITY;
+			rotateSensitivity_ = LOW_ROTATE_SENSITIVITY;
+		}
+
 		SmartDashboard::PutNumber("Thrust z", thrustSensitivity_);
 		SmartDashboard::PutNumber("Rotate z", rotateSensitivity_);
 
@@ -68,7 +77,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 // Checks quickturn or arcade drive
 		SmartDashboard::PutBoolean("Quick turn desired", humanControl_->GetQuickTurnDesired());
 		if (humanControl_->GetQuickTurnDesired()) {
-			QuickTurn(rightJoyX, 0.0);
+			QuickTurn(rightJoyX, rotateSensitivity_);
 			nextState_ = kTeleopDrive;
 		} else {
 			if (humanControl_->GetArcadeDriveDesired()) {

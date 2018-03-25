@@ -40,7 +40,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		nextState_ = kIdle;
 		robot_->SetIntakeOutput(0.0);
 		robot_->SetElevatorOutput(0.0);
-		robot_->EngageBrake();
 		elevatorMovingCurr_ = false;
 		elevatorMovingLast_ = false;
 		elevatorCurrLimitReached_ = false;
@@ -51,10 +50,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			robot_->SetWristUp();
 		} else if (humanControl_->GetWristDownDesired()) {
 			robot_->SetWristDown();
-		}
-
-		if (humanControl_->GetHoldCubeDesired()) {
-			HoldCube();
 		}
 
 		if (humanControl_->GetIntakeDesired()) {
@@ -74,11 +69,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		}
 
 		if (humanControl_->GetElevatorUpDesired()) { //elevator direction fixed
-//			if (!elevatorMovingLast_) {
-//				printf("Disengage Brake\n");
-//				robot_->DisengageBrake();
-//				elevatorMovingCurr_ = true;
-//			}
 			if ((robot_->GetElevatorCurrent() > elevatorCurrentLimit_) || elevatorCurrLimitReached_) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
@@ -87,11 +77,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				elevatorCurrLimitReached_ = false;
 			}
 		} else if (humanControl_->GetElevatorDownDesired()) {
-//			if (!elevatorMovingLast_) {
-//				printf("Disengage Brake\n");
-//				robot_->DisengageBrake();
-//				elevatorMovingCurr_ = true;
-//			}
 			if ((robot_->GetElevatorCurrent() > elevatorCurrentLimit_) || elevatorCurrLimitReached_) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
@@ -99,14 +84,8 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				robot_->SetElevatorOutput(-elevatorOutput_);
 				elevatorCurrLimitReached_ = false;
 			}
-		} else if (humanControl_->GetElevatorHoldDesired()) {
-			robot_->SetElevatorOutput(-double(elevatorOutput_)/5.0);
 		} else {
 			robot_->SetElevatorOutput(0.0);
-//			if (elevatorMovingLast_) {
-//				printf("Engage Brake\n");
-//				robot_->EngageBrake();
-//			}
 			elevatorMovingCurr_ = false;
 			elevatorCurrLimitReached_ = false;
 		}
@@ -146,14 +125,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 
 void SuperstructureController::RefreshIni() {
 
-}
-
-void SuperstructureController::HoldCube() {
-	if (robot_->GetCubeInIntake()) {
-		robot_->SetIntakeOutput(0.0);
-	} else {
-		robot_->SetIntakeOutput(robot_->intakeMotorOutput_);
-	}
 }
 
 SuperstructureController::~SuperstructureController() {

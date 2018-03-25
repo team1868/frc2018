@@ -75,6 +75,9 @@ private:
 	uint32_t nextState_;
 
 	double thrustSensitivity_, rotateSensitivity_, quickTurnSensitivity_;
+	double LOW_THRUST_SENSITIVITY;
+	double LOW_ROTATE_SENSITIVITY;
+	double MAX_ELEVATOR_HEIGHT_THRESHOLD;
 
 	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonEncoderSource_;

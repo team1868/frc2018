@@ -66,8 +66,6 @@ static const int RAMP_RELEASE_SOLENOID_L_PORT_B			= 0; // TODO CHANGE THIS
 static const int RAMP_RELEASE_SOLENOID_R_PORT_A			= 0; // TODO CHANGE THIS
 static const int RAMP_RELEASE_SOLENOID_R_PORT_B			= 0; // TODO CHANGE THIS
 
-static const int BRAKE_SOLENOID_PORT					= 4;
-
 /* ************************ DRIVER STATION PORTS ************************ */
 
 /* ----------------- JOYSTICK USB PORTS ----------------- */
@@ -90,10 +88,8 @@ static const int INTAKE_BUTTON_PORT						= 2;
 static const int OUTTAKE_BUTTON_PORT					= 1;
 static const int OUTTAKE_FAST_BUTTON_PORT				= 3;	// TODO CHECK THIS
 static const int INTAKE_HOLD_SWITCH_PORT				= 7;
-static const int HOLD_CUBE_BUTTON_PORT					= 10;	// TODO CHECK THIS
 static const int ELEVATOR_UP_BUTTON_PORT				= 8;
 static const int ELEVATOR_DOWN_BUTTON_PORT				= 7;
-static const int ELEVATOR_HOLD_BUTTON_PORT				= 5;    //Testing 2/24
 static const int RAMP_RELEASE_BUTTON_PORT				= 6;
 static const int RAMP_RAISE_L_BUTTON_PORT				= 2;
 static const int RAMP_RAISE_R_BUTTON_PORT				= 8;
