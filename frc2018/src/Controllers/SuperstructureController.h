@@ -31,8 +31,11 @@ private:
 	uint32_t currState_;
 	uint32_t nextState_;
 
-	double elevatorOutput_;
+	double elevatorUpOutput_;
+	double elevatorDownOutput_;
 	double elevatorCurrentLimit_;
+	double elevatorRamp_;
+	double elevatorMaxOutput_;
 	double rampOutput_;
 	double rampReleaseTime_;
 	double rampReleaseDiffTime_;

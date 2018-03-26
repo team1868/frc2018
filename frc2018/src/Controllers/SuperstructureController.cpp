@@ -10,7 +10,11 @@ SuperstructureController::SuperstructureController(RobotModel *myRobot, ControlB
 	nextState_ = kIdle;
 
 	//elevatorOutput_ = 0.5; // TODO test this	// 0.7 is sad with cube :( no chicken tenders sry
-	elevatorOutput_ = robot_->elevatorOutput_;
+	elevatorUpOutput_ = robot_->elevatorOutput_;
+	elevatorDownOutput_ = robot_->elevatorOutput_;
+	elevatorMaxOutput_ = robot_->elevatorMaxOutput_;
+	elevatorRamp_ = robot_->elevatorRampRate_;
+
 	rampOutput_ = 0.75; // TODO test this
 	rampReleaseTime_ = 0.0;
 	rampReleaseDiffTime_ = 0.5;
@@ -28,7 +32,8 @@ void SuperstructureController::Reset() {
 	robot_->SetElevatorOutput(0.0);
 	rampReleaseTime_ = 0.0;
 
-	elevatorOutput_ = robot_->elevatorOutput_;
+	elevatorUpOutput_ = robot_->elevatorOutput_;
+	elevatorDownOutput_ = robot_->elevatorOutput_;
 	elevatorMovingCurr_ = false;
 	elevatorMovingLast_ = false;
 	elevatorCurrLimitReached_ = false;
@@ -73,7 +78,10 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
 			} else {
-				robot_->SetElevatorOutput(elevatorOutput_);
+				if (elevatorUpOutput_ < elevatorMaxOutput_) {
+					elevatorUpOutput_ *= elevatorRamp_;
+				}
+				robot_->SetElevatorOutput(elevatorUpOutput_);
 				elevatorCurrLimitReached_ = false;
 			}
 		} else if (humanControl_->GetElevatorDownDesired()) {
@@ -81,11 +89,12 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
 			} else {
-				robot_->SetElevatorOutput(-elevatorOutput_);
+				robot_->SetElevatorOutput(-elevatorDownOutput_);
 				elevatorCurrLimitReached_ = false;
 			}
 		} else {
 			robot_->SetElevatorOutput(0.0);
+			elevatorUpOutput_ = robot_->elevatorOutput_;
 			elevatorMovingCurr_ = false;
 			elevatorCurrLimitReached_ = false;
 		}
