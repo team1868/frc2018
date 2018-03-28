@@ -6,6 +6,7 @@
 #include "DriverStation/ControlBoard.h"
 #include "Auto/PIDSource/PIDInputSource.h"
 #include "Auto/PIDSource/PIDOutputSource.h"
+#include "Auto/Commands/PivotToCubeCommand.h"
 
 class DriveController {
 public:
@@ -81,6 +82,7 @@ private:
 
 	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonEncoderSource_;
+	PivotToCubeCommand *cubeCommand_;
 	bool alignWithCubeStarted_;
 
 	bool isDone_;
