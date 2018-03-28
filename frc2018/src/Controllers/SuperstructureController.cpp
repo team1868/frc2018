@@ -62,10 +62,10 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 //			robot_->SetIntakeOutput(robot_->intakeMotorOutput_);
 			robot_->SetIntakeOutput((robot_->intakeMotorOutput_), (robot_->intakeMotorOutput_ - robot_->intakeMotorOutputSubtract_));
 		} else if (humanControl_->GetOuttakeDesired()) {
-			printf("outtaking\n");
+//			printf("outtaking\n");
 			robot_->SetIntakeOutput(robot_->outtakeMotorOutput_);
 		} else if (humanControl_->GetOuttakeFastDesired()) {
-			printf("outtaking fast\n");
+//			printf("outtaking fast\n");
 			robot_->SetIntakeOutput(robot_->outtakeFastMotorOutput_);
 		} else if (humanControl_->GetIntakeHoldDesired()) {
 			robot_->SetIntakeOutput(0.3);
@@ -89,12 +89,16 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
 			} else {
+				if (elevatorDownOutput_ < elevatorMaxOutput_) {
+					elevatorDownOutput_ *= elevatorRamp_;
+				}
 				robot_->SetElevatorOutput(-elevatorDownOutput_);
 				elevatorCurrLimitReached_ = false;
 			}
 		} else {
 			robot_->SetElevatorOutput(0.0);
 			elevatorUpOutput_ = robot_->elevatorOutput_;
+			elevatorDownOutput_ = robot_->elevatorOutput_;
 			elevatorMovingCurr_ = false;
 			elevatorCurrLimitReached_ = false;
 		}

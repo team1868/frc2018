@@ -17,19 +17,22 @@ DriveController::DriveController(RobotModel *robot, ControlBoard *humanControl) 
 	LOW_ROTATE_SENSITIVITY = 0.7; // TODO tune this
 	MAX_ELEVATOR_HEIGHT_THRESHOLD = 5.0; // TODO tune this
 
+
 // Default state Teleop Drive
 	currState_ = kTeleopDrive;
 	nextState_ = kTeleopDrive;
 
 // If using align with cube
 	alignWithCubeStarted_ = false;
+	cubeCommand_ = NULL;
+
 
 	isDone_ = false;
 
 }
 
 void DriveController::Reset() {
-//	robot_->SetPercentVBusDriveMode(); // check robotmodel
+//	robot_->SetPercentVBusDriveMode(); check robotmodel
 
 //	thrustSensitivity_ = robot_->pini_->getf("TELEOP DRIVING", "thrustSensitivity", 0.3);
 //	rotateSensitivity_ = robot_->pini_->getf("TELEOP DRIVING", "rotateSensitivity", 0.5);
@@ -57,11 +60,6 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 		thrustSensitivity_ = (leftJoyZ + 1.0) / 2.0;
 		rotateSensitivity_ = (rightJoyZ + 1.0) / 2.0;
 
-		if (robot_->GetElevatorEncoder()->GetDistance() > MAX_ELEVATOR_HEIGHT_THRESHOLD) {	//TODO fix this, fix threshold
-			thrustSensitivity_= LOW_THRUST_SENSITIVITY;
-			rotateSensitivity_ = LOW_ROTATE_SENSITIVITY;
-		}
-
 		SmartDashboard::PutNumber("Thrust z", thrustSensitivity_);
 		SmartDashboard::PutNumber("Rotate z", rotateSensitivity_);
 
@@ -74,10 +72,14 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			robot_->SetLowGear();
 		}
 
+		if (humanControl_->GetAlignWithCubeDesired()) {
+			printf("align with cube desired");
+			nextState_ = kAlignWithCube;
+		} else {
 // Checks quickturn or arcade drive
 		SmartDashboard::PutBoolean("Quick turn desired", humanControl_->GetQuickTurnDesired());
 		if (humanControl_->GetQuickTurnDesired()) {
-			QuickTurn(rightJoyX, rotateSensitivity_);
+			QuickTurn(rightJoyX, 0.0);
 			nextState_ = kTeleopDrive;
 		} else {
 			if (humanControl_->GetArcadeDriveDesired()) {
@@ -87,6 +89,28 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			}
 			nextState_ = kTeleopDrive;
 		}
+
+		}
+		break;
+
+	case (kAlignWithCube):
+		nextState_ = kAlignWithCube;
+	    printf("IN K ALIGN WITH CUBE!!!!");
+	    if (cubeCommand_ == NULL) {
+	    	cubeCommand_ = new PivotToCubeCommand(robot_, navXSource_, talonEncoderSource_, false); //no drive straight
+	    	printf("creating cube command without drive straight");
+	    	alignWithCubeStarted_ = false;
+	    } else if (!alignWithCubeStarted_) {
+	    	cubeCommand_->Init();
+	    	printf("initializing cube command");
+	    	alignWithCubeStarted_ = true;
+	    } else if (!cubeCommand_->IsDone()) {
+	    	cubeCommand_->Update(currTimeSec, deltaTimeSec);
+	    } else {
+	    	alignWithCubeStarted_ = false;
+	    	nextState_ = kTeleopDrive;
+	    }
+
 		break;
 		}
 	currState_ = nextState_;

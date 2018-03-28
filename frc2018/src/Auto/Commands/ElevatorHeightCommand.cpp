@@ -89,7 +89,12 @@ void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Elevator Time Diff", timeDiff);
 	bool timeOut = (timeDiff > 5.0);								//test this value
 
-	if (maxOutput_ < robot_->elevatorMaxOutput_) {
+	if (robot_->autoMode_ == 2) {
+		if (maxOutput_ < 0.5) {
+			maxOutput_ *= maxElevatorRate_;
+			elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
+		}
+	} else if (maxOutput_ < robot_->elevatorMaxOutput_) {
 		maxOutput_ *= maxElevatorRate_;
 		elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
 	}
