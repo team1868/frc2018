@@ -80,7 +80,7 @@ private:
 
 	double pivotCommandStartTime_;
 
-	double pivotTimeoutSec_;
+	double pivotTimeoutSec_, actualTimeoutSec_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_PIVOTCOMMAND_H_ */

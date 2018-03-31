@@ -7,7 +7,7 @@
 #include <AHRS.h>
 #include <ctre/Phoenix.h>
 #include "Ports2018.h"
- #include "../ext/ini/ini.h"
+#include "../ext/ini/ini.h"
 
 using namespace std;
 
@@ -214,7 +214,7 @@ public:
 	double pivotPFac_, pivotIFac_, pivotDFac_;
 	double driveDPFac_, driveDIFac_, driveDDFac_;
 	double driveRPFac_, driveRIFac_, driveRDFac_;
-	double elevatorPFac_, elevatorIFac_, elevatorDFac_, elevatorMaxOutput_, elevatorRampRate_;
+	double elevatorPFac_, elevatorIFac_, elevatorDFac_, elevatorMaxOutput_, elevatorTallMaxOutput_, elevatorRampRate_;
 	double driveTimeoutSec_, pivotTimeoutSec_;
 
 	double elevatorOutput_;

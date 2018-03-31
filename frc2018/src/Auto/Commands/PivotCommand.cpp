@@ -24,6 +24,7 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 	pivotCommandStartTime_ = robot_->GetTime();
 	pivotTimeoutSec_ = 0.0;
 	GetIniValues();
+//	actualTimeoutSec_ = fabs(desiredAngle) * pivotTimeoutSec_ / 90.0;
 	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, talonOutput_);
 
 	maxOutput_ = 0.9;
@@ -52,6 +53,8 @@ void PivotCommand::Init() {
 	isDone_ = false;
 	numTimesOnTarget_ = 0;
 	pivotCommandStartTime_ = robot_->GetTime();
+	actualTimeoutSec_ = fabs(pivotPID_->GetError()) * pivotTimeoutSec_ / 90.0;
+
 	printf("Initial NavX Angle: %f\n"
 			"Desired NavX Angle: %f\n"
 			"Chicken tenders pivot time starts at %f\n",

@@ -6,7 +6,7 @@ const double ENCODER_COUNT_PER_ROTATION = 256.0;
 const int EDGES_PER_ENCODER_COUNT = 4;
 const double ELEVATOR_DISTANCE_PER_PULSE = (43.25 / 12) / 1165; // VALUE FROM PRACTICE BOT in feet
 
-#define COLLISION_THRESHOLD_DELTA_G 0.5f //TODO test this threshold
+#define COLLISION_THRESHOLD_DELTA_G 0.6f //TODO test this threshold
 
 RobotModel::RobotModel() {
 	// Initializing ini
@@ -97,7 +97,7 @@ RobotModel::RobotModel() {
 	leftIntakeMotor_->SetInverted(true);	// True for comp; true for pract
 	rightIntakeMotor_->SetInverted(true);	// True for comp; true for pract
 	elevatorMotor_ = new Victor(ELEVATOR_MOTOR_PWM_PORT);
-	elevatorMotor_->SetInverted(true);	// False for comp; true for pract
+	elevatorMotor_->SetInverted(false);	// False for comp; true for pract
 
 	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
@@ -461,7 +461,8 @@ void RobotModel::RefreshIniVals() {
 	elevatorPFac_ = pini_->getf("ELEVATOR PID", "pFac", 0.0);
 	elevatorIFac_ = pini_->getf("ELEVATOR PID", "iFac", 0.0);
 	elevatorDFac_ = pini_->getf("ELEVATOR PID", "dFac", 0.0);
-	elevatorMaxOutput_ = pini_->getf("ELEVATOR PID", "elevatorMaxOutput", 0.5);
+	elevatorMaxOutput_ = pini_->getf("ELEVATOR PID", "elevatorMaxOutput", 0.8);
+	elevatorTallMaxOutput_ = pini_->getf("ELEVATOR PID", "elevatorTallMaxOutput", 0.45);
 	elevatorRampRate_ = pini_->getf("ELEVATOR PID", "elevatorRamp", 1.07);
 
 	// String for cube in switch

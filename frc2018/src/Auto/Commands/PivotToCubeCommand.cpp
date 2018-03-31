@@ -55,7 +55,7 @@ void PivotToCubeCommand::Init() {
 
 	try {
 		subscriber_ = new zmq::socket_t(*context_, ZMQ_SUB);
-		subscriber_->connect("tcp://10.18.68.12:5563");	// MAKE SURE RIGHT IP
+		subscriber_->connect("tcp://10.18.68.12:5801");	// ports have to be from 5800-5810 to be not blocked by FMS
 		int confl = 1;
 		subscriber_->setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
 		subscriber_->setsockopt(ZMQ_RCVTIMEO, 1000);
