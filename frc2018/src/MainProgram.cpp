@@ -40,7 +40,9 @@ public:
 		superstructureController_ = new SuperstructureController(robot_, humanControl_);
 		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 
-//		CameraServer::GetInstance()->StartAutomaticCapture();	// put in lower
+		if (!CameraServer::GetInstance()->StatusIsFatal()) {
+			CameraServer::GetInstance()->StartAutomaticCapture();	// put in lower
+		}
 
 		// Initializing auto controller
 		autoController_ = new AutoController();
