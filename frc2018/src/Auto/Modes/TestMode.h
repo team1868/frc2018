@@ -19,9 +19,9 @@ public:
 	virtual ~TestMode();
 
 private:
-//	DriveStraightCommand* driveStraightFirst_;
-//	ElevatorHeightCommand* elevatorCommand_;
-//	PivotCommand* pivot_;
+	DriveStraightCommand* driveStraightFirst_;
+	ElevatorHeightCommand* elevatorCommand_;
+	PivotCommand* pivot_;
 //	DriveStraightCommand* driveStraightSecond_;
 //	PivotCommand* pivotSecond_;
 //	DriveStraightCommand* driveStraightThird_;

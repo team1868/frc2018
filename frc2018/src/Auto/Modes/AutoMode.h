@@ -3,7 +3,7 @@
 
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/Commands/DriveStraightCommand.h"
-#include "Auto/Commands/DriveIntakeCubeCommand.h"
+#include "Auto/Commands/DriveToCubeCommand.h"
 #include "Auto/Commands/ElevatorHeightCommand.h"
 #include "Auto/Commands/IntakeCommand.h"
 #include "Auto/Commands/OuttakeCommand.h"
@@ -105,7 +105,30 @@ public:
 			iss >> charB;
 			printf("CommandB %c ", charB);
 			AutoCommand* commandB = GetStringCommand(charB);
-			tempCommand = new ParallelCommand(commandA, commandB);
+
+			AutoCommand* firstCommandA = commandA;
+			AutoCommand* firstCommandB = commandB;
+
+			// UNTESTED
+//			char charNextA, charNextB;
+//			iss >> charNextA;
+//			while (charNextA != "|") {
+//				if (charNextA != 'n') {
+//					printf("NextCommandA %c ", charA);
+//					AutoCommand* nextCommandA = GetStringCommand(charA);
+//					commandA->SetNextCommand(nextCommandA);
+//					commandA = commandA->GetNextCommand();
+//				}
+//				iss >>charNextB;
+//				if (charNextB != 'n') {
+//					printf("NextCommandB %c ", charB);
+//					AutoCommand* nextCommandB = GetStringCommand(charB);
+//					commandB->SetNextCommand(nextCommandB);
+//					commandB = commandB->GetNextCommand();
+//				}
+//			}
+
+			tempCommand = new ParallelCommand(firstCommandA, firstCommandB);
 			break;
 		}
 		case 't':	// Pivots with absolute position
@@ -177,13 +200,13 @@ public:
 			}
 			break;
 		case 'z':
-			printf("Drive to Intake Cube Command\n");
+			printf("Drive to Cube Command\n");
 			double num;
 			iss >> num;	// Can be any arbitrary value. Apparently without this it'll run the command twice. Might want to fix this someday
 			if (IsFailed(command)) {
 				tempCommand = NULL;
 			} else {
-				tempCommand = new DriveIntakeCubeCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_);
+				tempCommand = new DriveToCubeCommand(robot_, navX_, talonEncoder_, angleOutput_, distanceOutput_);
 			}
 			break;
 		default:	// When it's not listed, don't do anything :)
