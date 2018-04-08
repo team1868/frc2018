@@ -220,6 +220,7 @@ public:
 	 */
 	void Update(double currTimeSec, double deltaTimeSec) {
 		if (currentCommand_ != NULL) {
+//			printf("Update in automode running\n");
 			if (currentCommand_->IsDone()) {
 //				DO_PERIODIC(1, printf("Command complete at: %f \n", currTimeSec));
 				currentCommand_->Reset();
@@ -230,6 +231,7 @@ public:
 					printf("Initializing current commmand\n");
 				}
 			} else {
+//				printf("Update current command\n");
 				currentCommand_->Update(currTimeSec, deltaTimeSec);
 			}
 		} else {

@@ -18,9 +18,20 @@ public:
 	bool IsDone();
 	void Reset();
 	virtual ~ParallelCommand();
+
+	enum AutoStates {
+		kBoth, kCommandA, kCommandB, kIsDone
+	};
+
 private:
+	uint32_t currState_;
+	uint32_t nextState_;
+
 	AutoCommand *commandA_;
 	AutoCommand *commandB_;
+
+	AutoCommand *firstCommandA_;
+	AutoCommand *firstCommandB_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_PARALLELCOMMAND_H_ */

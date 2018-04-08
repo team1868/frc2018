@@ -29,6 +29,7 @@ void AutoController::Init(string gameData, AutoMode::AutoPositions pos) {
 }
 
 void AutoController::Update(double currTimeSec, double deltaTimeSec) {
+//	printf("Auto controller update\n");
 	autoMode->Update(currTimeSec, deltaTimeSec);
 }
 

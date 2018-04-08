@@ -20,6 +20,7 @@ public:
 
 private:
 //	DriveStraightCommand* driveStraightFirst_;
+//	ElevatorHeightCommand* elevatorCommand_;
 //	PivotCommand* pivot_;
 //	DriveStraightCommand* driveStraightSecond_;
 //	PivotCommand* pivotSecond_;

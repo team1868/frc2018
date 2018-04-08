@@ -8,7 +8,7 @@
 #include <Auto/Commands/DriveIntakeCubeCommand.h>
 
 DriveIntakeCubeCommand::DriveIntakeCubeCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
-		AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot) {
+		AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot) : AutoCommand() {
 	printf("In DriveIntakeCubeCommand Constructor\n");
 	robot_ = robot;
 	firstCommand_ = NULL;
@@ -73,8 +73,10 @@ void DriveIntakeCubeCommand::Reset() {
 		while (currentCommand_ != NULL) {
 			nextCommand = currentCommand_->GetNextCommand();
 			delete(currentCommand_);
+			currentCommand_ = NULL;
 			currentCommand_ = nextCommand;
 		}
+		firstCommand_ = NULL;
 	}
 
 }
