@@ -57,7 +57,7 @@ void DriveStraightCommand::Init() {
 	anglePID_->Enable();
 	distancePID_->Enable();
 
-	driveTimeoutSec_ = desiredDistance_ / 3.0; // Assuming 5.0 ft / sec from the low gear speed
+	driveTimeoutSec_ = fabs(desiredDistance_ / 3.0); // Assuming 5.0 ft / sec from the low gear speed
 	initialDriveTime_ = robot_->GetTime();
 	printf("%f Start chicken tenders drivestraight time driveTimeoutSec is %f\n", initialDriveTime_, driveTimeoutSec_);
 
@@ -126,6 +126,7 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	} else {
 		double dOutput = distancePIDOutput_->GetPIDOutput();
 		double rOutput = anglePIDOutput_->GetPIDOutput();
+
 		SmartDashboard::PutNumber("rOutput:", rOutput);
 		SmartDashboard::PutNumber("dOutput:", dOutput);
 		if (dOutput - lastDOutput_ > 0.5) { // only when accelerating forward
@@ -215,7 +216,7 @@ void DriveStraightCommand::Initializations(NavXPIDSource* navXSource, TalonEncod
 	anglePID_ = NULL;
 	distancePID_ = NULL;
 
-	rTolerance_ = 1.0;
+	rTolerance_ = 0.5;
 	dTolerance_ = 3.0 / 12.0;
 
 	rMaxOutput_ = 0.15;

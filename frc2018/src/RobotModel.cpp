@@ -97,7 +97,7 @@ RobotModel::RobotModel() {
 	leftIntakeMotor_->SetInverted(true);	// True for comp; true for pract
 	rightIntakeMotor_->SetInverted(true);	// True for comp; true for pract
 	elevatorMotor_ = new Victor(ELEVATOR_MOTOR_PWM_PORT);
-	elevatorMotor_->SetInverted(false);	// False for comp; true for pract
+	elevatorMotor_->SetInverted(true);	// False for comp; true for pract
 
 	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
@@ -502,6 +502,7 @@ void RobotModel::PrintState() {
 	SmartDashboard::PutNumber("Right Drive A Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
 	SmartDashboard::PutNumber("Right Drive B Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
 	SmartDashboard::PutNumber("Pressure", GetPressureSensorVal());
+	SmartDashboard::PutNumber("CubeIntakeSensor", GetCubeInIntake());
 }
 
 RobotModel::~RobotModel() {

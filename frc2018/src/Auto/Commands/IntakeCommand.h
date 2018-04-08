@@ -31,6 +31,9 @@ private:
 	RobotModel *robot_;
 
 	double intakeMotorOutput_;
+	double startTime_;
+	double timeDiff_;
+	bool wasJustRunning_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_INTAKECOMMAND_H_ */

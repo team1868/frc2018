@@ -22,7 +22,7 @@ void CubeInScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) 
 		printf("Left position: ");
 		if (scaleSide == 'L') {
 			printf("Left scale: ");
-			autoSequence = "p d 21.5 e 5.2 t 70.0 o";
+			autoSequence = "p d 21.25 e 5.2 t 70.0 o";
 					//"p d 20.2 e 5.4 t 70.0 d 1.5 o";
 					//"p d 21.25 e 5.4 t 70.0 t 70.0 d 1.5 o"; // old stuffz: p d 25.971 e 5.4 t 90.0 d 1.50 o
 		} else if (scaleSide == 'R') {
@@ -47,7 +47,7 @@ void CubeInScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) 
 			}
 		} else if (scaleSide == 'R') {
 			printf("Right Scale: ");
-			autoSequence = "p d 21.5 e 5.2 t -70.0 o";
+			autoSequence = "p d 21.25 e 5.2 t -70.0 o";
 			//"p d 21.5 e 5.2 t -70.0 o";
 			//"p d 20.2 e 5.4 t -70.0 d 1.5 o";
 			//			autoSequence = "p d 21.25 e 5.4 t -70.0 t -70.0 d 1.50 o"; // TODO test

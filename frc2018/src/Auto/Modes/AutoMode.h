@@ -3,6 +3,7 @@
 
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/Commands/DriveStraightCommand.h"
+#include "Auto/Commands/DriveIntakeCubeCommand.h"
 #include "Auto/Commands/ElevatorHeightCommand.h"
 #include "Auto/Commands/IntakeCommand.h"
 #include "Auto/Commands/OuttakeCommand.h"
@@ -173,6 +174,16 @@ public:
 				tempCommand = NULL;
 			} else {
 				tempCommand = new WaitingCommand(waitTime);
+			}
+			break;
+		case 'z':
+			printf("Drive to Intake Cube Command\n");
+			double num;
+			iss >> num;	// Can be any arbitrary value. Apparently without this it'll run the command twice. Might want to fix this someday
+			if (IsFailed(command)) {
+				tempCommand = NULL;
+			} else {
+				tempCommand = new DriveIntakeCubeCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_);
 			}
 			break;
 		default:	// When it's not listed, don't do anything :)

@@ -13,9 +13,16 @@ IntakeCommand::IntakeCommand(RobotModel *robot, double intakeMotorOutput) : Auto
 	robot_ = robot;
 	intakeMotorOutput_ = intakeMotorOutput;
 
+	startTime_ = robot_->GetTime();
+	timeDiff_ = robot_->GetTime() - startTime_;
+	wasJustRunning_ = true;
 }
 
 void IntakeCommand::Init() {
+	startTime_ = robot_->GetTime();
+	timeDiff_ = robot_->GetTime() - startTime_;
+	wasJustRunning_ = true;
+
 	isDone_ = false;
 }
 
@@ -25,13 +32,31 @@ void IntakeCommand::Reset() {
 }
 
 void IntakeCommand::Update(double currTimeSec, double deltaTimeSec) {
-//	if (robot_->GetCubeInIntake()){
-//		robot_->SetIntakeOutput(0.0);
-//		isDone_ = true;
-//	} else {
-//		robot_->SetIntakeOutput(intakeMotorOutput_);
-//	}
-	robot_->SetIntakeOutput(intakeMotorOutput_);
+	timeDiff_ = robot_->GetTime() - startTime_;
+	if (robot_->GetCubeInIntake()){
+		robot_->SetIntakeOutput(0.0);
+		isDone_ = true;
+		printf("Intake Done!\n");
+	} else {
+		if (timeDiff_ <= 1.0) {
+			robot_->SetIntakeOutput(intakeMotorOutput_);
+		} else {
+			if (wasJustRunning_ && timeDiff_ <= 1.2) {
+				robot_->SetIntakeOutput(0.0);
+				wasJustRunning_ = false;
+			} else {
+				if (timeDiff_ <= 1.3) {
+					robot_->SetIntakeOutput(intakeMotorOutput_);
+					wasJustRunning_ = true;
+				} else {
+					robot_->SetIntakeOutput(0.0);
+					isDone_ = true;
+					printf("Intake Done from TIMEOUT!\n");
+				}
+			}
+		}
+	}
+//	robot_->SetIntakeOutput(intakeMotorOutput_);
 }
 
 bool IntakeCommand::IsDone() {
