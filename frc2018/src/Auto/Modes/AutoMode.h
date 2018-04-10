@@ -110,23 +110,23 @@ public:
 			AutoCommand* firstCommandB = commandB;
 
 			// UNTESTED
-//			char charNextA, charNextB;
-//			iss >> charNextA;
-//			while (charNextA != "|") {
-//				if (charNextA != 'n') {
-//					printf("NextCommandA %c ", charA);
-//					AutoCommand* nextCommandA = GetStringCommand(charA);
-//					commandA->SetNextCommand(nextCommandA);
-//					commandA = commandA->GetNextCommand();
-//				}
-//				iss >>charNextB;
-//				if (charNextB != 'n') {
-//					printf("NextCommandB %c ", charB);
-//					AutoCommand* nextCommandB = GetStringCommand(charB);
-//					commandB->SetNextCommand(nextCommandB);
-//					commandB = commandB->GetNextCommand();
-//				}
-//			}
+			//			char charNextA, charNextB;
+			//			iss >> charNextA;
+			//			while (charNextA != "|") {
+			//				if (charNextA != 'n') {
+			//					printf("NextCommandA %c ", charA);
+			//					AutoCommand* nextCommandA = GetStringCommand(charA);
+			//					commandA->SetNextCommand(nextCommandA);
+			//					commandA = commandA->GetNextCommand();
+			//				}
+			//				iss >>charNextB;
+			//				if (charNextB != 'n') {
+			//					printf("NextCommandB %c ", charB);
+			//					AutoCommand* nextCommandB = GetStringCommand(charB);
+			//					commandB->SetNextCommand(nextCommandB);
+			//					commandB = commandB->GetNextCommand();
+			//				}
+			//			}
 
 			tempCommand = new ParallelCommand(firstCommandA, firstCommandB);
 			break;
@@ -200,6 +200,7 @@ public:
 			}
 			break;
 		case 'z':
+		{
 			printf("Drive to Cube Command\n");
 			double num;
 			iss >> num;	// Can be any arbitrary value. Apparently without this it'll run the command twice. Might want to fix this someday
@@ -209,6 +210,19 @@ public:
 				tempCommand = new DriveToCubeCommand(robot_, navX_, talonEncoder_, angleOutput_, distanceOutput_);
 			}
 			break;
+		}
+		case 'b':
+		{
+			printf("Intake Drive to Cube Command\n");
+			double num = 0;
+			iss >> num;	// Can be any arbitrary value. Apparently without this it'll run the command twice. Might want to fix this someday
+			if (IsFailed(command)) {
+				tempCommand = NULL;
+			} else {
+				tempCommand = new DriveIntakeCubeCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_);
+			}
+			break;
+		}
 		default:	// When it's not listed, don't do anything :)
 			printf("Unexpected character %c detected. Terminating queue", command);
 			firstCommand_ = NULL;
@@ -243,22 +257,22 @@ public:
 	 */
 	void Update(double currTimeSec, double deltaTimeSec) {
 		if (currentCommand_ != NULL) {
-//			printf("Update in automode running\n");
+			//			printf("Update in automode running\n");
 			if (currentCommand_->IsDone()) {
-//				DO_PERIODIC(1, printf("Command complete at: %f \n", currTimeSec));
+				//				DO_PERIODIC(1, printf("Command complete at: %f \n", currTimeSec));
 				currentCommand_->Reset();
 				currentCommand_ = currentCommand_->GetNextCommand();
 				if (currentCommand_ != NULL) {
-//					DO_PERIODIC(1, printf("Command start at: %f \n", currTimeSec));
+					//					DO_PERIODIC(1, printf("Command start at: %f \n", currTimeSec));
 					currentCommand_->Init();
 					printf("Initializing current commmand\n");
 				}
 			} else {
-//				printf("Update current command\n");
+				//				printf("Update current command\n");
 				currentCommand_->Update(currTimeSec, deltaTimeSec);
 			}
 		} else {
-//			printf("Done with auto mode update\n");
+			//			printf("Done with auto mode update\n");
 		}
 	}
 

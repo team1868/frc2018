@@ -16,7 +16,6 @@ void CubeInScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) 
 	char scaleSide = gameData[1];
 	string autoSequence = "";
 
-	// TODO fill in the auto sequence, add superstructure commands
 	switch(autoPos) {
 	case kLeft:
 		printf("Left position: ");
@@ -57,10 +56,10 @@ void CubeInScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) 
 		printf("Reading from Ini: ");
 		if (scaleSide == 'L') {
 			printf("Left Switch: ");
-			autoSequence = robot_->cubeInSwitchL_; //TODO add scale to Ini
+			autoSequence = robot_->cubeInSwitchL_;
 		} else if (scaleSide == 'R') {
 			printf("Right Switch: ");
-			autoSequence = robot_->cubeInSwitchR_; //TODO add scale to Ini
+			autoSequence = robot_->cubeInSwitchR_;
 		}
 		break;
 	case kBlank:
@@ -74,7 +73,7 @@ void CubeInScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) 
 	}
 
 	printf("%s\n", autoSequence.c_str());
-	QueueFromString(autoSequence);	// TODO uncomment this when ready
+	QueueFromString(autoSequence);
 	printf("In Cube In Scale Mode Queue\n");
 }
 

@@ -14,17 +14,17 @@ DriveIntakeCubeCommand::DriveIntakeCubeCommand(NavXPIDSource* navXSource, TalonE
 	firstCommand_ = NULL;
 	currentCommand_ = NULL;
 
-	forwardCommand_ = new DriveStraightCommand(navXSource, talonEncoderSource, anglePIDOutput, distancePIDOutput, robot_, 2.0);
+	forwardCommand_ = new DriveStraightCommand(navXSource, talonEncoderSource, anglePIDOutput, distancePIDOutput, robot_, 2.5);
 	intakeFirst_ = new IntakeCommand(robot_, 0.8);
 	parallel1A_ = new ParallelCommand(forwardCommand_, intakeFirst_);
 
-	backwardCommand_ = new DriveStraightCommand(navXSource, talonEncoderSource, anglePIDOutput, distancePIDOutput, robot_, -2.0);
+	backwardCommand_ = new DriveStraightCommand(navXSource, talonEncoderSource, anglePIDOutput, distancePIDOutput, robot_, -1.0);
 	elevatorCommand_ = new ElevatorHeightCommand(robot_, 1.0);
-	intakeLast_ = new IntakeCommand(robot_, 0.4);
+	intakeLast_ = new IntakeCommand(robot_, 0.6);
 	parallel2A_ = new ParallelCommand(backwardCommand_, elevatorCommand_);
 	parallel2B_ = new ParallelCommand(parallel2A_, intakeLast_);
 
-	wristUp_ = new WristCommand(robot_, 1.0);
+	wristUp_ = new WristCommand(robot_, 0.0);
 
 	isDone_ = false;
 }

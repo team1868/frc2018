@@ -109,7 +109,10 @@ public:
 					autoMode_ = new KOPTestMPMode(robot_);
 					printf("KOP TEST MP AUTO");
 					break;
-
+				case 5:
+					autoMode_ = new TwoCubeScaleMode(robot_);
+					printf("2 CUBE IN SCALE AUTO");
+					break;
 				default:
 					autoMode_ = new BaselineMode(robot_);
 					printf("BASELINE AUTO");

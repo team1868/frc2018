@@ -45,7 +45,7 @@ void IntakeCommand::Update(double currTimeSec, double deltaTimeSec) {
 				robot_->SetIntakeOutput(0.0);
 				wasJustRunning_ = false;
 			} else {
-				if (timeDiff_ <= 1.3) {
+				if (timeDiff_ <= 2.5) {
 					robot_->SetIntakeOutput(intakeMotorOutput_);
 					wasJustRunning_ = true;
 				} else {

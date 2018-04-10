@@ -32,6 +32,7 @@ void DriveToCubeCommand::Init() {
 	printf("in DRIVE to cube command init\n");
 	currentCommand_ = driveToCubeCommand_;
 	driveToCubeCommand_->SetNextCommand(intakingCommand_);
+	currentCommand_->Init();
 }
 
 void DriveToCubeCommand::Update(double currTimeSec, double deltaTimeSec) {

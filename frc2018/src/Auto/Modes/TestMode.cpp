@@ -16,12 +16,12 @@ TestMode::TestMode(RobotModel *robot) : AutoMode(robot){
 
 void TestMode::CreateQueue(string gameData, AutoMode::AutoPositions pos) {
 	string autoSequence = robot_->testMode_;
-//	QueueFromString(autoSequence);
-	driveStraightFirst_->SetNextCommand(pivot_);
+	QueueFromString(autoSequence);
+//	driveStraightFirst_->SetNextCommand(pivot_);
 //	pivot_->SetNextCommand(new WristCommand(robot_, 0.0));
-	firstCommand_ = new ParallelCommand(driveStraightFirst_, elevatorCommand_);
+//	firstCommand_ = new ParallelCommand(driveStraightFirst_, elevatorCommand_);
 //	firstCommand_->SetNextCommand(new DriveIntakeCubeCommand(navX_, talonEncoder_, angleOutput_, distanceOutput_, robot_));
-	currentCommand_ = firstCommand_;
+//	currentCommand_ = firstCommand_;
 }
 
 void TestMode::Init() {
