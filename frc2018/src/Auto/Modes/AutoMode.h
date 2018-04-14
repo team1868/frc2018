@@ -97,7 +97,30 @@ public:
 		AutoCommand* tempCommand = NULL;
 
 		switch(command) {
-		case 'p': {
+		case '[': {
+			char charA;
+			iss >> charA;
+			printf("Command %c ", charA);
+			AutoCommand* commandA = GetStringCommand(charA);
+			tempCommand = commandA;
+
+			charA = NULL;
+			iss >> charA;
+			while (charA != ']') {
+				printf("bleh %c\n", charA);
+				AutoCommand* memeCommand  = GetStringCommand(charA);
+
+				commandA->SetNextCommand(memeCommand);
+				commandA = commandA->GetNextCommand();
+				charA = NULL;
+				iss >> charA;
+			}
+
+			double rand;
+			iss >> rand;
+			break;
+		}
+		case 'p': {	// parallel
 			char charA, charB;
 			iss >> charA;
 			printf("CommandA %c ", charA);
@@ -106,29 +129,7 @@ public:
 			printf("CommandB %c ", charB);
 			AutoCommand* commandB = GetStringCommand(charB);
 
-			AutoCommand* firstCommandA = commandA;
-			AutoCommand* firstCommandB = commandB;
-
-			// UNTESTED
-			//			char charNextA, charNextB;
-			//			iss >> charNextA;
-			//			while (charNextA != "|") {
-			//				if (charNextA != 'n') {
-			//					printf("NextCommandA %c ", charA);
-			//					AutoCommand* nextCommandA = GetStringCommand(charA);
-			//					commandA->SetNextCommand(nextCommandA);
-			//					commandA = commandA->GetNextCommand();
-			//				}
-			//				iss >>charNextB;
-			//				if (charNextB != 'n') {
-			//					printf("NextCommandB %c ", charB);
-			//					AutoCommand* nextCommandB = GetStringCommand(charB);
-			//					commandB->SetNextCommand(nextCommandB);
-			//					commandB = commandB->GetNextCommand();
-			//				}
-			//			}
-
-			tempCommand = new ParallelCommand(firstCommandA, firstCommandB);
+			tempCommand = new ParallelCommand(commandA, commandB);
 			break;
 		}
 		case 't':	// Pivots with absolute position

@@ -74,7 +74,8 @@ private:
 
 	// Buttons for superstructure
 	ButtonReader *intakeButton_, *outtakeFastButton_, *outtakeButton_, *intakeHoldSwitch_, *elevatorUpButton_, *elevatorDownButton_,
-				 *rampReleaseButton_, *rampRaiseLButton_, *rampRaiseRButton_, *wristSwitch_, *alignWithCubeButton_;
+				 *rampReleaseButton_, *rampRaiseLButton_, *rampRaiseRButton_, *wristSwitch_, *alignWithCubeButton_, *wristUpButton_,
+				 *wristDownButton_, *wristStallButton_;
 
 	// Variables for superstructure
 	bool intakeDesired_, outtakeDesired_, outtakeFastDesired_, intakeHoldDesired_, elevatorUpDesired_, elevatorDownDesired_,

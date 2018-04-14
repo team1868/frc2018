@@ -8,6 +8,7 @@
 #include "Auto/Modes/CubeInScaleMode.h"
 //#include "Auto/Modes/InSwitchGetCubeMode.h"
 #include "Auto/Modes/TestMode.h"
+#include "Auto/Modes/TwoCubeScaleMode.h"
 #include "Auto/Modes/KOPTestMPMode.h"
 #include "Auto/Modes/RightSideToRightSwitchMode.h"
 #include "Auto/Modes/LeftSideToLeftSwitchMode.h"

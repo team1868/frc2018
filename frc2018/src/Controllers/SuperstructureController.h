@@ -42,6 +42,11 @@ private:
 	bool elevatorMovingCurr_;
 	bool elevatorMovingLast_;
 	bool elevatorCurrLimitReached_;
+	double wristCurrentLimit_;
+	double wristOutput_;
+	bool wristCurrLimitReached_;
+	bool wristMovingCurr_;
+	bool wristMovingLast_;
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */

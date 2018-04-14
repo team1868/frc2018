@@ -121,6 +121,7 @@ public:
 	void SetIntakeOutput(double output);
 	void SetIntakeOutput(double leftOutput, double rightOutput);
 
+	void SetWristOutput(double output);
 
 	/**
 	 * Sets elevator output
@@ -175,6 +176,8 @@ public:
 
 	double GetElevatorCurrent();
 
+	double GetWristCurrent();
+
 	void StopCompressor();
 
 	void StartCompressor();
@@ -219,7 +222,9 @@ public:
 
 	double elevatorOutput_;
 	double leftDriveOutput_, rightDriveOutput_;
-	double intakeMotorOutput_, outtakeMotorOutput_, outtakeFastMotorOutput_, intakeMotorOutputSubtract_;;
+	double intakeMotorOutput_, outtakeMotorOutput_, outtakeFastMotorOutput_, intakeMotorOutputSubtract_;
+	double wristMotorOutput_;
+	double wristPFac_;
 	double driveCurrentLimit_, intakeCurrentLimit_, totalCurrentLimit_, voltageFloor_, pressureFloor_, size_;
 
 	double leftDriveACurrent_, leftDriveBCurrent_, rightDriveACurrent_, rightDriveBCurrent_,
@@ -251,11 +256,13 @@ private:
 	bool isLeftInverted_;
 
 	Victor *leftIntakeMotor_, *rightIntakeMotor_, *elevatorMotor_,  *rampLMotor_, *rampRMotor_;
+	Victor *wristMotor_;
 	Encoder *elevatorEncoder_;
 	DoubleSolenoid *wristSolenoid_, *rampLegSolenoidL_, *rampLegSolenoidR_, *rampReleaseSolenoidL_, *rampReleaseSolenoidR_;
 	AnalogInput *pressureSensor_; //TODO add
 	DigitalInput *intakeSensor_;
 	bool wristUp_;
+	AnalogPotentiometer *wristPot_;
 };
 
 

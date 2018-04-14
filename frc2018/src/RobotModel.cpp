@@ -6,7 +6,7 @@ const double ENCODER_COUNT_PER_ROTATION = 256.0;
 const int EDGES_PER_ENCODER_COUNT = 4;
 const double ELEVATOR_DISTANCE_PER_PULSE = (43.25 / 12) / 1165; // VALUE FROM PRACTICE BOT in feet
 
-#define COLLISION_THRESHOLD_DELTA_G 0.6f //TODO test this threshold
+#define COLLISION_THRESHOLD_DELTA_G 0.8f //TODO test this threshold
 
 RobotModel::RobotModel() {
 	// Initializing ini
@@ -97,10 +97,12 @@ RobotModel::RobotModel() {
 	leftIntakeMotor_->SetInverted(true);	// True for comp; true for pract
 	rightIntakeMotor_->SetInverted(true);	// True for comp; true for pract
 	elevatorMotor_ = new Victor(ELEVATOR_MOTOR_PWM_PORT);
-	elevatorMotor_->SetInverted(true);	// False for comp; true for pract
+	elevatorMotor_->SetInverted(false);	// False for comp; false for pract
 
 	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
+
+	wristMotor_ = new Victor(WRIST_MOTOR_PWM_PORT);
 
 	rampLMotor_ = new Victor(RAMP_L_MOTOR_PWM_PORT);
 	rampRMotor_ = new Victor(RAMP_R_MOTOR_PWM_PORT);
@@ -115,7 +117,7 @@ RobotModel::RobotModel() {
 	intakeSensor_ = new DigitalInput(INTAKE_SENSOR_PWM_PORT);
 
 	wristUp_ = true;
-
+	wristPot_ = new AnalogPotentiometer(WRIST_POT_PORT);
 }
 
 void RobotModel::ResetTimer() {
@@ -255,6 +257,10 @@ void RobotModel::SetIntakeOutput(double leftOutput, double rightOutput) {
 	rightIntakeMotor_->Set(-rightOutput);
 }
 
+void RobotModel::SetWristOutput(double output) {
+	wristMotor_->Set(output);
+}
+
 void RobotModel::SetElevatorOutput(double output) {
 	elevatorMotor_->Set(output);
 }
@@ -314,6 +320,10 @@ void RobotModel::SetWristDown() {
 
 double RobotModel::GetElevatorCurrent() {
 	return pdp_->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN);
+}
+
+double RobotModel::GetWristCurrent() {
+	return pdp_->GetCurrent(WRIST_MOTOR_PDP_CHAN);
 }
 
 //initializes variables pertaining to current
@@ -397,12 +407,12 @@ bool RobotModel::CollisionDetected() {
 	double curr_world_linear_accel_y = navX_->GetWorldLinearAccelY();
 	double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y_;
 	last_world_linear_accel_y_ = curr_world_linear_accel_y;
-
-	if ( ( fabs(currentJerkX) > COLLISION_THRESHOLD_DELTA_G ) ||
-			( fabs(currentJerkY) > COLLISION_THRESHOLD_DELTA_G) ) {
-		collisionDetected = true;
-		printf("From JERK\n");
-	}
+//
+//	if ( ( fabs(currentJerkX) > COLLISION_THRESHOLD_DELTA_G ) ||
+//			( fabs(currentJerkY) > COLLISION_THRESHOLD_DELTA_G) ) {
+//		collisionDetected = true;
+//		printf("From JERK %f \n", currentJerkX);
+//	}
 
 	if(leftDriveEncoder_->GetStopped() && rightDriveEncoder_->GetStopped()) {
 		collisionDetected = true;
@@ -474,6 +484,8 @@ void RobotModel::RefreshIniVals() {
 	intakeMotorOutputSubtract_ = pini_->getf("SUPERSTRUCTURE", "intakeMotorOutputSubtract_", 0.0);
 	outtakeMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "outtakeMotorOutput", 0.0);
 	elevatorOutput_ = pini_->getf("SUPERSTRUCTURE", "elevatorOutput", 0.5);
+	wristMotorOutput_ = pini_->getf("SUPERSTRUCTURE", "wristMotorOutput", 0.3); //TODO ADD TO INI
+	wristPFac_ = pini_->getf("WRIST FAKE PID", "pFac", 0.0);
 
 	// Auto stuff
 	testMode_ = pini_->gets("AUTO TEST", "sequence", "");
@@ -503,6 +515,8 @@ void RobotModel::PrintState() {
 	SmartDashboard::PutNumber("Right Drive B Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
 	SmartDashboard::PutNumber("Pressure", GetPressureSensorVal());
 	SmartDashboard::PutNumber("CubeIntakeSensor", GetCubeInIntake());
+	SmartDashboard::PutNumber("WristCurrent", pdp_->GetCurrent(WRIST_MOTOR_PDP_CHAN));
+	SmartDashboard::PutNumber("Wrist pot val", wristPot_->Get());
 }
 
 RobotModel::~RobotModel() {

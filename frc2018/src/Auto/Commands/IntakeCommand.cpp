@@ -24,6 +24,7 @@ void IntakeCommand::Init() {
 	wasJustRunning_ = true;
 
 	isDone_ = false;
+	printf("%f Starting chicken tenders timeout with intake\n", startTime_);
 }
 
 void IntakeCommand::Reset() {
@@ -36,25 +37,26 @@ void IntakeCommand::Update(double currTimeSec, double deltaTimeSec) {
 	if (robot_->GetCubeInIntake()){
 		robot_->SetIntakeOutput(0.0);
 		isDone_ = true;
-		printf("Intake Done!\n");
+		printf("%f Intake Done! time diff: %f\n", robot_->GetTime(), timeDiff_);
 	} else {
-		if (timeDiff_ <= 1.0) {
-			robot_->SetIntakeOutput(intakeMotorOutput_);
-		} else {
-			if (wasJustRunning_ && timeDiff_ <= 1.2) {
-				robot_->SetIntakeOutput(0.0);
-				wasJustRunning_ = false;
-			} else {
-				if (timeDiff_ <= 2.5) {
-					robot_->SetIntakeOutput(intakeMotorOutput_);
-					wasJustRunning_ = true;
-				} else {
-					robot_->SetIntakeOutput(0.0);
-					isDone_ = true;
-					printf("Intake Done from TIMEOUT!\n");
-				}
-			}
-		}
+		robot_->SetIntakeOutput(intakeMotorOutput_);
+//		if (timeDiff_ <= 1.0) {
+//			robot_->SetIntakeOutput(intakeMotorOutput_);
+//		} else {
+//			if (wasJustRunning_ && timeDiff_ <= 1.2) {
+//				robot_->SetIntakeOutput(0.0);
+//				wasJustRunning_ = false;
+//			} else {
+//				if (timeDiff_ <= 2.5) {
+//					robot_->SetIntakeOutput(intakeMotorOutput_);
+//					wasJustRunning_ = true;
+//				} else {
+//					robot_->SetIntakeOutput(0.0);
+//					isDone_ = true;
+//					printf("Intake Done from TIMEOUT! with time diff %f\n", timeDiff_);
+//				}
+//			}
+//		}
 	}
 //	robot_->SetIntakeOutput(intakeMotorOutput_);
 }

@@ -22,6 +22,12 @@ SuperstructureController::SuperstructureController(RobotModel *myRobot, ControlB
 	elevatorMovingCurr_ = false;
 	elevatorMovingLast_ = false;
 	elevatorCurrLimitReached_ = false;
+
+	wristCurrentLimit_ = 40; //TODO AS;LKDFJLA;KSDJF FIX NOW
+	wristCurrLimitReached_ = false;
+	wristMovingCurr_ = false;
+	wristMovingLast_ = false;
+	wristOutput_ = robot_->wristMotorOutput_;
 }
 
 void SuperstructureController::Reset() {
@@ -30,13 +36,18 @@ void SuperstructureController::Reset() {
 
 	robot_->SetIntakeOutput(0.0);
 	robot_->SetElevatorOutput(0.0);
+	robot_->SetWristOutput(0.0);
 	rampReleaseTime_ = 0.0;
 
 	elevatorUpOutput_ = robot_->elevatorOutput_;
 	elevatorDownOutput_ = robot_->elevatorOutput_;
+	wristOutput_ = robot_->wristMotorOutput_;
 	elevatorMovingCurr_ = false;
 	elevatorMovingLast_ = false;
 	elevatorCurrLimitReached_ = false;
+	wristMovingCurr_ = false;
+	wristMovingLast_ = false;
+	wristCurrLimitReached_ = false;
 }
 
 void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
@@ -45,16 +56,44 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		nextState_ = kIdle;
 		robot_->SetIntakeOutput(0.0);
 		robot_->SetElevatorOutput(0.0);
+		robot_->SetWristOutput(0.0);
 		elevatorMovingCurr_ = false;
 		elevatorMovingLast_ = false;
 		elevatorCurrLimitReached_ = false;
+		wristMovingCurr_ = false;
+		wristMovingLast_ = false;
+		wristCurrLimitReached_ = false;
 		break;
 	case kIdle:
 		nextState_ = kIdle;
 		if (humanControl_->GetWristUpDesired()) {
-			robot_->SetWristUp();
+			if (IS_WRIST_MOTORIZED) {
+				if ((robot_->GetWristCurrent() > wristCurrentLimit_) || wristCurrLimitReached_) {
+					wristCurrLimitReached_ = true;
+					robot_->SetWristOutput(0.0);
+				} else {
+					robot_->SetWristOutput(wristOutput_);
+					wristCurrLimitReached_ = false;
+				}
+			} else {
+				robot_->SetWristUp();
+			}
 		} else if (humanControl_->GetWristDownDesired()) {
-			robot_->SetWristDown();
+			if (IS_WRIST_MOTORIZED) {
+				if ((robot_->GetWristCurrent() > wristCurrentLimit_) || wristCurrLimitReached_) {
+					wristCurrLimitReached_ = true;
+					robot_->SetWristOutput(0.0);
+				} else {
+					robot_->SetWristOutput(-wristOutput_);
+					wristCurrLimitReached_ = false;
+				}
+			} else {
+				robot_->SetWristDown();
+			}
+		} else {
+			if (IS_WRIST_MOTORIZED) {
+				robot_->SetWristOutput(0.0);
+			}
 		}
 
 		if (humanControl_->GetIntakeDesired()) {
@@ -103,11 +142,11 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			elevatorCurrLimitReached_ = false;
 		}
 
-		if (humanControl_->GetRampReleaseDesired()) {
-			nextState_ = kRampRelease;
-			rampReleaseTime_ = robot_->GetTime();
-			robot_->ReleaseRampLegs();
-		}
+//		if (humanControl_->GetRampReleaseDesired()) {
+//			nextState_ = kRampRelease;
+//			rampReleaseTime_ = robot_->GetTime();
+//			robot_->ReleaseRampLegs();
+//		}
 		break;
 	case kRampRelease:
 		printf("in kRampRelease\n");
@@ -127,12 +166,14 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 
 		if (humanControl_->GetRampRaiseRDesired()) {
 			robot_->SetRampMotorROutput(rampOutput_);
+//			robot_->SetRampMotorLOutput(-rampOutput_);
 		} else {
-			robot_->SetRampMotorROutput(0.0);
+			robot_->SetRampMotorLOutput(0.0);
 		}
 		break;
 	}
 	elevatorMovingLast_ = elevatorMovingCurr_;
+	wristMovingLast_ = wristMovingCurr_;
 	currState_ = nextState_;
 }
 

@@ -23,8 +23,9 @@ DriveIntakeCubeCommand::DriveIntakeCubeCommand(NavXPIDSource* navXSource, TalonE
 	intakeLast_ = new IntakeCommand(robot_, 0.6);
 	parallel2A_ = new ParallelCommand(backwardCommand_, elevatorCommand_);
 	parallel2B_ = new ParallelCommand(parallel2A_, intakeLast_);
+//	parallel2B_ = new ParallelCommand(backwardCommand_, intakeLast_);
 
-	wristUp_ = new WristCommand(robot_, 0.0);
+	wristUp_ = new WristCommand(robot_, 1.0);
 
 	isDone_ = false;
 }
