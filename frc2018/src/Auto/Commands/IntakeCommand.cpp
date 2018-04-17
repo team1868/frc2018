@@ -39,24 +39,24 @@ void IntakeCommand::Update(double currTimeSec, double deltaTimeSec) {
 		isDone_ = true;
 		printf("%f Intake Done! time diff: %f\n", robot_->GetTime(), timeDiff_);
 	} else {
-		robot_->SetIntakeOutput(intakeMotorOutput_);
-//		if (timeDiff_ <= 1.0) {
-//			robot_->SetIntakeOutput(intakeMotorOutput_);
-//		} else {
-//			if (wasJustRunning_ && timeDiff_ <= 1.2) {
-//				robot_->SetIntakeOutput(0.0);
-//				wasJustRunning_ = false;
-//			} else {
-//				if (timeDiff_ <= 2.5) {
-//					robot_->SetIntakeOutput(intakeMotorOutput_);
-//					wasJustRunning_ = true;
-//				} else {
-//					robot_->SetIntakeOutput(0.0);
-//					isDone_ = true;
-//					printf("Intake Done from TIMEOUT! with time diff %f\n", timeDiff_);
-//				}
-//			}
-//		}
+//		robot_->SetIntakeOutput(intakeMotorOutput_);
+		if (timeDiff_ <= 0.7) {
+			robot_->SetIntakeOutput(intakeMotorOutput_);
+		} else {
+			if (wasJustRunning_ && timeDiff_ <= 1.2) {
+				robot_->SetIntakeOutput(-intakeMotorOutput_);
+				wasJustRunning_ = false;
+			} else {
+				if (timeDiff_ <= 1.8) {
+					robot_->SetIntakeOutput(intakeMotorOutput_);
+					wasJustRunning_ = true;
+				} else {
+					robot_->SetIntakeOutput(0.0);
+					isDone_ = true;
+					printf("Intake Done from TIMEOUT! with time diff %f\n", timeDiff_);
+				}
+			}
+		}
 	}
 //	robot_->SetIntakeOutput(intakeMotorOutput_);
 }

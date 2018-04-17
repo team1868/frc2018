@@ -14,15 +14,18 @@ DriveIntakeCubeCommand::DriveIntakeCubeCommand(NavXPIDSource* navXSource, TalonE
 	firstCommand_ = NULL;
 	currentCommand_ = NULL;
 
-	forwardCommand_ = new DriveStraightCommand(navXSource, talonEncoderSource, anglePIDOutput, distancePIDOutput, robot_, 2.5);
+	forwardCommand_ = new DriveStraightCommand(navXSource, talonEncoderSource, anglePIDOutput, distancePIDOutput, robot_, 2.0);
+	backwardCommand_ = new DriveStraightCommand(navXSource, talonEncoderSource, anglePIDOutput, distancePIDOutput, robot_, -1.5);
+	elevatorCommand_ = new ElevatorHeightCommand(robot_, 1.0);
+	parallel2A_ = new ParallelCommand(backwardCommand_, elevatorCommand_);
 	intakeFirst_ = new IntakeCommand(robot_, 0.8);
+	forwardCommand_->SetNextCommand(parallel2A_);
+
 	parallel1A_ = new ParallelCommand(forwardCommand_, intakeFirst_);
 
-	backwardCommand_ = new DriveStraightCommand(navXSource, talonEncoderSource, anglePIDOutput, distancePIDOutput, robot_, -1.0);
-	elevatorCommand_ = new ElevatorHeightCommand(robot_, 1.0);
-	intakeLast_ = new IntakeCommand(robot_, 0.6);
-	parallel2A_ = new ParallelCommand(backwardCommand_, elevatorCommand_);
-	parallel2B_ = new ParallelCommand(parallel2A_, intakeLast_);
+
+//	parallel2A_ = new ParallelCommand(backwardCommand_, elevatorCommand_);
+//	parallel2B_ = new ParallelCommand(parallel2A_, intakeLast_);
 //	parallel2B_ = new ParallelCommand(backwardCommand_, intakeLast_);
 
 	wristUp_ = new WristCommand(robot_, 1.0);
@@ -33,10 +36,11 @@ DriveIntakeCubeCommand::DriveIntakeCubeCommand(NavXPIDSource* navXSource, TalonE
 void DriveIntakeCubeCommand::Init() {
 	printf("In DriveIntakeCubeCommand Init\n");
 
-	parallel1A_->SetNextCommand(parallel2B_);
-	parallel2B_->SetNextCommand(wristUp_);
+//	parallel1A_->SetNextCommand(parallel2B_);
+//	parallel2B_->SetNextCommand(wristUp_);
 
 	firstCommand_ = parallel1A_;
+	parallel1A_->SetNextCommand(wristUp_);
 	currentCommand_ = firstCommand_;
 	currentCommand_->Init();
 	isDone_ = false;
