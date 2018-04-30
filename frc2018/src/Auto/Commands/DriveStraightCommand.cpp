@@ -81,17 +81,17 @@ void DriveStraightCommand::Init() {
 }
 
 void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
-	SmartDashboard::PutNumber("Left Motor Output", leftMotorOutput_);
-	SmartDashboard::PutNumber("Right Motor Output", rightMotorOutput_);
-	SmartDashboard::PutNumber("Angle Error", anglePID_->GetError());
+//	SmartDashboard::PutNumber("Left Motor Output", leftMotorOutput_);
+//	SmartDashboard::PutNumber("Right Motor Output", rightMotorOutput_);
+//	SmartDashboard::PutNumber("Angle Error", anglePID_->GetError());
 //	SmartDashboard::PutNumber("Angle Error Graph", anglePID_->GetError());
 //	SmartDashboard::PutNumber("DesiredAngle", desiredAngle_);
-	SmartDashboard::PutNumber("Encoder Error Feet", distancePID_->GetError());
+//	SmartDashboard::PutNumber("Encoder Error Feet", distancePID_->GetError());
 //	SmartDashboard::PutNumber("Encoder Error Feet Graph", distancePID_->GetError());
 //	SmartDashboard::PutNumber("Desired Total Feet", desiredTotalAvgDistance_);
 
 	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
-	SmartDashboard::PutNumber("DriveStraight Time:", diffDriveTime_);
+//	SmartDashboard::PutNumber("DriveStraight Time:", diffDriveTime_);
 	if (distancePID_->OnTarget() && fabs(talonEncoderSource_->PIDGet() - lastDistance_) < 0.04 ) {
 		numTimesOnTarget_++;
 		printf("%f Drivestraight error: %f\n", robot_->GetTime(), distancePID_->GetError());
@@ -127,8 +127,8 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		double dOutput = distancePIDOutput_->GetPIDOutput();
 		double rOutput = anglePIDOutput_->GetPIDOutput();
 
-		SmartDashboard::PutNumber("rOutput:", rOutput);
-		SmartDashboard::PutNumber("dOutput:", dOutput);
+//		SmartDashboard::PutNumber("rOutput:", rOutput);
+//		SmartDashboard::PutNumber("dOutput:", dOutput);
 		if (dOutput - lastDOutput_ > 0.5) { // only when accelerating forward
 			dOutput = lastDOutput_ + 0.5; //0.4 for KOP
 

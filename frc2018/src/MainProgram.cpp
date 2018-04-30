@@ -113,6 +113,10 @@ public:
 					autoMode_ = new TwoCubeScaleMode(robot_);
 					printf("2 CUBE IN SCALE AUTO");
 					break;
+				case 6:
+					autoMode_ = new TwoCubeSwitchMode(robot_);
+					printf("TWO CUBE IN SWITCH MODE\n");
+					break;
 				default:
 					autoMode_ = new BaselineMode(robot_);
 					printf("BASELINE AUTO");

@@ -24,7 +24,10 @@ void TwoCubeScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 			if (scaleSide == 'L') {
 				printf("Left scale: ");
 				//autoSequence = "p d 21.25 e 5.2 t 70.0 o"; //last tested in competition
-				autoSequence = "p d 21 e 5.4 t 80.0 o e -5.4 w 0 t 150 z 0.0"; //tested on KOP
+				autoSequence = "p d 21.75 e 2.15 p t 50.0 e 5.2 o p p e -0.5 w 0 t 170 z 0.0 p t 5 e 5.2 d 2.0 o p e 0.0 d -2.0";
+
+						//"p d 21.75 e 5.2 t 60.0 o p p e -1.0 w 0 t 170 z 0.0 p t 10 e 5.2 d 2.0 o";
+						//"p d 21 e 5.4 t 70.0 o e -5.4 w 0 t 180 z 0.0"; //tested on KOP
 
 			} else if (scaleSide == 'R') {
 				printf("Right scale: ");
@@ -32,7 +35,7 @@ void TwoCubeScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 				if (gameData[0] == 'L') {
 					autoSequence = "p d 12.4 e 1.8 t 90.0 d 2.3 w 0 o";
 				} else {
-					autoSequence = "d 17.5 t 90.0 t 90.0 d 17.0";
+					autoSequence = "d 17.5 t 90.0";
 				}
 			}
 			break;
@@ -49,7 +52,8 @@ void TwoCubeScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 			} else if (scaleSide == 'R') {
 				printf("Right Scale: ");
 				//autoSequence = "p d 21.25 e 5.2 t -70.0 o"; //tested in competition
-				autoSequence = "p d 21 e 5.4 t -80.0 o e -5.4 w 0 t 150 z 0.0"; //tested on KOP
+				autoSequence = "p d 21.75 e 2.15 p t -50.0 e 5.2 o p p e -0.5 w 0 t -170 d 2.0 z 0.0 p t -5 e 5.2 d 3.0 o p e 0.0 d -2.0"; //tested on KOP
+//				"p d 21.75 e 5.2 t -60.0 o p p e -1.0 w 0 t 150 d 2.0 z 0.0 p t 10 e 5.2 d 3.0 o"; //tested on KOP
 
 			}
 			break;
@@ -68,7 +72,7 @@ void TwoCubeScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 			printf("blank\n");
 			break;
 		default:
-			autoSequence = "";
+			autoSequence = "d 11.0";
 			printf("default\n");
 			break;
 		}

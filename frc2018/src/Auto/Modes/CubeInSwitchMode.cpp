@@ -43,12 +43,12 @@ void CubeInSwitchMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 		printf("Middle Position: ");
 		if (switchSide == 'L') {
 			printf("Left Switch: ");
-			autoSequence = "d 2.0 t -90.0 d 3.6 t 0.0 p p e 2.0 d 5.4 w 0 o";
+			autoSequence = "d 2.0 t -90.0 d 3.6 t 0.0 p p e 2.0 d 5.4 w 0 o p d -3.0 e 0.0";
 					//"d 3.0 t -40.0 t -40.0 p e 1.8 d 8.2 w 0 o";
 					//"d 2.0 t -90.0 t -90.0 d 3.6 t 0.0 t 0.0 p e 1.8 d 6.8 w 0 p d 1.1 o";
 		} else if (switchSide == 'R') {
 			printf("Right Switch: ");
-			autoSequence = "d 2.0 t 90.0 d 3.67 t 0.0 p p e 2.0 d 5.4 w 0 o"; // was d 6.67, 3.67
+			autoSequence = "d 2.0 t 90.0 d 3.67 t 0.0 p p e 2.0 d 5.4 w 0 o p d -3.0 e 0.0"; // was d 6.67, 3.67
 //"d 2.0 t 90.0 t 90.0 d 3.67 t 0.0 t 0.0 p e 1.8 d 6.8 w 0 p d 1.1 o"; // crashed
 		}
 		break;
@@ -88,7 +88,7 @@ void CubeInSwitchMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 		printf("blank\n");
 		break;
 	default:
-		autoSequence = "";
+		autoSequence = "d 11.0";
 		printf("default\n");
 		break;
 	}

@@ -495,28 +495,30 @@ void RobotModel::RefreshIniVals() {
 }
 
 void RobotModel::PrintState() {
-	SmartDashboard::PutNumber("Left Drive Output", leftMaster_->Get());
-	SmartDashboard::PutNumber("Right Drive Output", rightMaster_->Get());
+//	SmartDashboard::PutNumber("Left Drive Output", leftMaster_->Get());
+//	SmartDashboard::PutNumber("Right Drive Output", rightMaster_->Get());
 	SmartDashboard::PutNumber("Left Drive Distance", GetLeftDistance());
 	SmartDashboard::PutNumber("Right Drive Distance", GetRightDistance());
-	SmartDashboard::PutNumber("Elevator Encoder Val", elevatorEncoder_->Get());
+//	SmartDashboard::PutNumber("Elevator Encoder Val", elevatorEncoder_->Get());
 	SmartDashboard::PutNumber("Elevator Height", elevatorEncoder_->GetDistance());
 	SmartDashboard::PutNumber("NavX Yaw", GetNavXYaw());
 	SmartDashboard::PutNumber("NavX Pitch", GetNavXPitch());
 	SmartDashboard::PutNumber("NavX Roll", GetNavXRoll());
-	SmartDashboard::PutNumber("Elevator Current", pdp_->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN));
-	SmartDashboard::PutNumber("Intake Current Left", pdp_->GetCurrent(LEFT_INTAKE_MOTOR_PDP_CHAN));
-	SmartDashboard::PutNumber("Intake Current right", pdp_->GetCurrent(RIGHT_INTAKE_MOTOR_PDP_CHAN));
-	SmartDashboard::PutNumber("Jerk Y", last_world_linear_accel_y_);
-	SmartDashboard::PutNumber("Jerk X", last_world_linear_accel_x_);
-	SmartDashboard::PutNumber("Left Drive A Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_A_PDP_CHAN));
-	SmartDashboard::PutNumber("Left Drive B Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_B_PDP_CHAN));
-	SmartDashboard::PutNumber("Right Drive A Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
-	SmartDashboard::PutNumber("Right Drive B Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
+//	SmartDashboard::PutNumber("Elevator Current", pdp_->GetCurrent(ELEVATOR_MOTOR_PDP_CHAN));
+//	SmartDashboard::PutNumber("Intake Current Left", pdp_->GetCurrent(LEFT_INTAKE_MOTOR_PDP_CHAN));
+//	SmartDashboard::PutNumber("Intake Current right", pdp_->GetCurrent(RIGHT_INTAKE_MOTOR_PDP_CHAN));
+//	SmartDashboard::PutNumber("Jerk Y", last_world_linear_accel_y_);
+//	SmartDashboard::PutNumber("Jerk X", last_world_linear_accel_x_);
+//	SmartDashboard::PutNumber("Left Drive A Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_A_PDP_CHAN));
+//	SmartDashboard::PutNumber("Left Drive B Current", pdp_->GetCurrent(LEFT_DRIVE_MOTOR_B_PDP_CHAN));
+//	SmartDashboard::PutNumber("Right Drive A Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
+//	SmartDashboard::PutNumber("Right Drive B Current", pdp_->GetCurrent(RIGHT_DRIVE_MOTOR_A_PDP_CHAN));
 	SmartDashboard::PutNumber("Pressure", GetPressureSensorVal());
 	SmartDashboard::PutNumber("CubeIntakeSensor", GetCubeInIntake());
-	SmartDashboard::PutNumber("WristCurrent", pdp_->GetCurrent(WRIST_MOTOR_PDP_CHAN));
-	SmartDashboard::PutNumber("Wrist pot val", wristPot_->Get());
+//	SmartDashboard::PutNumber("WristCurrent", pdp_->GetCurrent(WRIST_MOTOR_PDP_CHAN));
+//	SmartDashboard::PutNumber("Wrist pot val", wristPot_->Get());
+	SmartDashboard::PutNumber("Auto Pos", autoPos_);
+	SmartDashboard::PutNumber("Auto Mode", autoMode_);
 }
 
 RobotModel::~RobotModel() {

@@ -46,6 +46,7 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot) {
 	tolerance_ = 1; // TODO CHANGE
 
 	startTime_ = robot_->GetTime();
+	actualMaxOutput_ = robot_->elevatorTallMaxOutput_;
 }
 
 void ElevatorHeightCommand::Init() {
@@ -56,6 +57,14 @@ void ElevatorHeightCommand::Init() {
 	elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
 	elevatorHeightPID_->SetAbsoluteTolerance(tolerance_);
 	elevatorHeightPID_->Enable();
+
+	if (desiredHeight_ <= 1.0) {
+		actualMaxOutput_ = robot_->elevatorMaxOutput_;
+	} else if (elevatorHeightPID_->GetError() > 3.0) {
+		actualMaxOutput_ = robot_->elevatorTallMaxOutput_;
+	} else {
+		actualMaxOutput_ = robot_->elevatorMaxOutput_;
+	}
 
 	isDone_ = false;
 	numTimesOnTarget_ = 0;
@@ -80,28 +89,27 @@ void ElevatorHeightCommand::Reset() {
 
 void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Elevator Height", robot_->GetElevatorEncoder()->GetDistance());
-	SmartDashboard::PutNumber("Elevator Height Error", elevatorHeightPID_->GetError());
-	SmartDashboard::PutNumber("Elevator Current", robot_->GetElevatorCurrent());
+//	SmartDashboard::PutNumber("Elevator Height Error", elevatorHeightPID_->GetError());
+//	SmartDashboard::PutNumber("Elevator Current", robot_->GetElevatorCurrent());
 //	SmartDashboard::PutNumber("Elevator Motor Output", elevatorPIDOutput_->Get());
 	double timeDiff = robot_->GetTime() - startTime_;
-	SmartDashboard::PutNumber("Elevator Time Diff", timeDiff);
+//	SmartDashboard::PutNumber("Elevator Time Diff", timeDiff);
 	bool timeOut = (timeDiff > 5.0);								//test this value
 
-	if (elevatorHeightPID_->GetSetpoint() > 3.0) {
-		if (maxOutput_ < robot_->elevatorTallMaxOutput_) {
-			maxOutput_ *= maxElevatorRate_;
-			if (maxOutput_ > robot_->elevatorTallMaxOutput_) {
-				maxOutput_ = robot_->elevatorTallMaxOutput_;
-			}
-			elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
-		}
-	} else if (maxOutput_ < robot_->elevatorMaxOutput_) {
+	if (maxOutput_ < actualMaxOutput_) {
 		maxOutput_ *= maxElevatorRate_;
-		 if (maxOutput_ > robot_->elevatorMaxOutput_) {
-			maxOutput_ = robot_->elevatorMaxOutput_;
+		if (maxOutput_ > robot_->elevatorTallMaxOutput_) {
+			maxOutput_ = robot_->elevatorTallMaxOutput_;
 		}
 		elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
 	}
+//	} else if (maxOutput_ < robot_->elevatorMaxOutput_) {
+//		maxOutput_ *= maxElevatorRate_;
+//		 if (maxOutput_ > robot_->elevatorMaxOutput_) {
+//			maxOutput_ = robot_->elevatorMaxOutput_;
+//		}
+//		elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
+//	}
 
 	if (elevatorHeightPID_->OnTarget()) {
 		numTimesOnTarget_++;
