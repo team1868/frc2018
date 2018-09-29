@@ -127,6 +127,10 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			if ((robot_->GetElevatorCurrent() > elevatorCurrentLimit_) || elevatorCurrLimitReached_) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
+			} else if(!robot_->GetElevatorLimitSwitch()){
+				//test code: robot_->SetElevatorOutput(robot_->GetElevatorEncoder()->Get());
+				robot_->SetElevatorOutput(0.0);
+				elevatorCurrLimitReached_ = false;
 			} else {
 				if (elevatorDownOutput_ < elevatorMaxOutput_) {
 					elevatorDownOutput_ *= elevatorRamp_;

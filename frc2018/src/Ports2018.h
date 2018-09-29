@@ -44,6 +44,7 @@ static const int RIGHT_DRIVE_ENCODER_RED_PWM_PORT		= 3;
 
 static const int ELEVATOR_ENCODER_YELLOW_PWM_PORT		= 4;
 static const int ELEVATOR_ENCODER_RED_PWM_PORT			= 5;
+static const int ELEVATOR_LIMIT_SWITCH_PORT             = 6;
 
 static const int INTAKE_SENSOR_PWM_PORT					= 6; // TODO CHANGE THIS
 

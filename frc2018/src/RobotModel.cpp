@@ -102,6 +102,8 @@ RobotModel::RobotModel() {
 	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
 
+	elevatorLimitSwitch_ = new DigitalInput(ELEVATOR_LIMIT_SWITCH_PORT);
+
 	wristMotor_ = new Victor(WRIST_MOTOR_PWM_PORT);
 
 	rampLMotor_ = new Victor(RAMP_L_MOTOR_PWM_PORT);
@@ -396,6 +398,11 @@ double RobotModel::GetRIOCurrent() {
 //returns the pressure
 double RobotModel::GetPressureSensorVal() {
 	return 250 * (pressureSensor_->GetAverageVoltage() / 5) - 25;
+}
+
+//returns the elevator limit switch value (open is true)
+bool RobotModel::GetElevatorLimitSwitch() {
+	return elevatorLimitSwitch_->Get();
 }
 
 bool RobotModel::CollisionDetected() {
