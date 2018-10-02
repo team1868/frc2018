@@ -102,7 +102,8 @@ RobotModel::RobotModel() {
 	elevatorEncoder_ = new Encoder(ELEVATOR_ENCODER_YELLOW_PWM_PORT, ELEVATOR_ENCODER_RED_PWM_PORT, false);
 	elevatorEncoder_->SetDistancePerPulse(ELEVATOR_DISTANCE_PER_PULSE);
 
-	elevatorLimitSwitch_ = new DigitalInput(ELEVATOR_LIMIT_SWITCH_PORT);
+	elevatorBottomLimitSwitch_ = new DigitalInput(ELEVATOR_BOTTOM_LIMIT_SWITCH_PORT);
+	elevatorTopLimitSwitch_ = new DigitalInput(ELEVATOR_TOP_LIMIT_SWITCH_PORT);
 
 	wristMotor_ = new Victor(WRIST_MOTOR_PWM_PORT);
 
@@ -401,8 +402,12 @@ double RobotModel::GetPressureSensorVal() {
 }
 
 //returns the elevator limit switch value (open is true)
-bool RobotModel::GetElevatorLimitSwitch() {
-	return elevatorLimitSwitch_->Get();
+bool RobotModel::GetElevatorBottomLimitSwitch() {
+	return elevatorBottomLimitSwitch_->Get();
+}
+
+bool RobotModel::GetElevatorTopLimitSwitch(){
+	return elevatorTopLimitSwitch_->Get();
 }
 
 bool RobotModel::CollisionDetected() {
@@ -504,6 +509,8 @@ void RobotModel::RefreshIniVals() {
 void RobotModel::PrintState() {
 //	SmartDashboard::PutNumber("Left Drive Output", leftMaster_->Get());
 //	SmartDashboard::PutNumber("Right Drive Output", rightMaster_->Get());
+	SmartDashboard::PutNumber("Elevator Top Limit Switch", GetElevatorTopLimitSwitch());
+	SmartDashboard::PutNumber("Elevator Bottom Limit Switch", GetElevatorBottomLimitSwitch());
 	SmartDashboard::PutNumber("Left Drive Distance", GetLeftDistance());
 	SmartDashboard::PutNumber("Right Drive Distance", GetRightDistance());
 //	SmartDashboard::PutNumber("Elevator Encoder Val", elevatorEncoder_->Get());

@@ -24,7 +24,9 @@ void TwoCubeScaleMode::CreateQueue(string gameData, AutoMode::AutoPositions pos)
 			if (scaleSide == 'L') {
 				printf("Left scale: ");
 				//autoSequence = "p d 21.25 e 5.2 t 70.0 o"; //last tested in competition
-				autoSequence = "p d 21.75 e 2.15 p t 50.0 e 5.2 o p p e -0.5 w 0 t 170 z 0.0 p t 5 e 5.2 d 2.0 o p e 0.0 d -2.0";
+				autoSequence = "p d 21.75 e 2.4 p t 60.0 e 5.2 o e -0.5 p w 0 t 152 p i -1.0 d 6.75";// p t 5 i -0.4 p e 5.2 d 2.0 o p e 0.0 d -2.0";
+				//autoSequence = "p d 21.75 e 2.4 p t 50.0 e 5.2 o p p e -0.5 w 0 t 170 z 0.0 p t 5 e 5.2 d 2.0 o p e 0.0 d -2.0";
+						//"p d 21.75 e 2.15 p t 50.0 e 5.2 o p p e -0.5 w 0 t 170 z 0.0 p t 5 e 5.2 d 2.0 o p e 0.0 d -2.0";
 
 						//"p d 21.75 e 5.2 t 60.0 o p p e -1.0 w 0 t 170 z 0.0 p t 10 e 5.2 d 2.0 o";
 						//"p d 21 e 5.4 t 70.0 o e -5.4 w 0 t 180 z 0.0"; //tested on KOP

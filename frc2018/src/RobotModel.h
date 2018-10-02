@@ -184,7 +184,9 @@ public:
 
 	double GetPressureSensorVal(); //returns the pressure
 
-	bool GetElevatorLimitSwitch(); //returns true if open and false if closed
+	bool GetElevatorBottomLimitSwitch(); //returns true if open and false if closed
+
+	bool GetElevatorTopLimitSwitch();
 
 	void RefreshIni();
 
@@ -260,7 +262,8 @@ private:
 	Victor *leftIntakeMotor_, *rightIntakeMotor_, *elevatorMotor_,  *rampLMotor_, *rampRMotor_;
 	Victor *wristMotor_;
 	Encoder *elevatorEncoder_;
-	DigitalInput *elevatorLimitSwitch_;
+	DigitalInput *elevatorBottomLimitSwitch_;
+	DigitalInput *elevatorTopLimitSwitch_;
 	DoubleSolenoid *wristSolenoid_, *rampLegSolenoidL_, *rampLegSolenoidR_, *rampReleaseSolenoidL_, *rampReleaseSolenoidR_;
 	AnalogInput *pressureSensor_; //TODO add
 	DigitalInput *intakeSensor_;

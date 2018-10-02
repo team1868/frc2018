@@ -106,8 +106,8 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		} else if (humanControl_->GetOuttakeFastDesired()) {
 //			printf("outtaking fast\n");
 			robot_->SetIntakeOutput(robot_->outtakeFastMotorOutput_);
-		} else if (humanControl_->GetIntakeHoldDesired()) {
-			robot_->SetIntakeOutput(0.3);
+		//} else if (humanControl_->GetIntakeHoldDesired()) { //get rid of hold
+		//	robot_->SetIntakeOutput(0.3);
 		} else {
 			robot_->SetIntakeOutput(0.0);
 		}
@@ -116,6 +116,9 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			if ((robot_->GetElevatorCurrent() > elevatorCurrentLimit_) || elevatorCurrLimitReached_) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
+			} else if (!robot_->GetElevatorTopLimitSwitch()){
+				robot_->SetElevatorOutput(0.0);
+				elevatorCurrLimitReached_ = false;
 			} else {
 				if (elevatorUpOutput_ < elevatorMaxOutput_) {
 					elevatorUpOutput_ *= elevatorRamp_;
@@ -127,7 +130,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			if ((robot_->GetElevatorCurrent() > elevatorCurrentLimit_) || elevatorCurrLimitReached_) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
-			} else if(!robot_->GetElevatorLimitSwitch()){
+			} else if(!robot_->GetElevatorBottomLimitSwitch()){
 				//test code: robot_->SetElevatorOutput(robot_->GetElevatorEncoder()->Get());
 				robot_->SetElevatorOutput(0.0);
 				elevatorCurrLimitReached_ = false;

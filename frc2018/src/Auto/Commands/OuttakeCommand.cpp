@@ -11,7 +11,7 @@ OuttakeCommand::OuttakeCommand(RobotModel *robot) : AutoCommand() {
 	// TODO Auto-generated constructor stub
 	robot_ = robot;
 	isDone_ = false;
-	outtakeMotorOutput_ = -0.7; //TODO TEST
+	outtakeMotorOutput_ = -0.9; //TODO TEST
 	startTime_ = 0.0;
 	deltaTime_ = 0.5; //TODO TEST
 }

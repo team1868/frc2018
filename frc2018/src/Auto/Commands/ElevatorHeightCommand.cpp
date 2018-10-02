@@ -27,7 +27,7 @@ ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot, double desiredHe
 
 	startTime_ = robot_->GetTime();
 
-	 elevatorCurrentLimit_ = 40.0;
+	elevatorCurrentLimit_ = 40.0;
 }
 
 ElevatorHeightCommand::ElevatorHeightCommand(RobotModel *robot) {
@@ -60,8 +60,9 @@ void ElevatorHeightCommand::Init() {
 
 	if (desiredHeight_ <= 1.0) {
 		actualMaxOutput_ = robot_->elevatorMaxOutput_;
-	} else if (elevatorHeightPID_->GetError() > 3.0) {
+	} else if (fabs(elevatorHeightPID_->GetError()) > 3.0) {
 		actualMaxOutput_ = robot_->elevatorTallMaxOutput_;
+		printf("DOING SLOW STUFF :(");
 	} else {
 		actualMaxOutput_ = robot_->elevatorMaxOutput_;
 	}
@@ -70,13 +71,13 @@ void ElevatorHeightCommand::Init() {
 	numTimesOnTarget_ = 0;
 
 	startTime_ = robot_->GetTime();
-	printf("%f ELEVATOR PID VALUES: P: %f, I: %f, D: %f\n", robot_->GetTime(), pFac_, iFac_, dFac_);
+	printf("%f ELEVATOR PID VALUES: P: %f, I: %f, D: %f, actualMaxOutput: %f, Elevator PID error: %f\n", robot_->GetTime(), pFac_, iFac_, dFac_, actualMaxOutput_, fabs(elevatorHeightPID_->GetError()));
 	robot_->DisengageBrake();
 }
 
 void ElevatorHeightCommand::Reset() {
 	if (elevatorHeightPID_ != NULL) {
-		printf("Elevator error %f\n", elevatorHeightPID_->GetError());
+		printf("Elevator error %f\n", fabs(elevatorHeightPID_->GetError()));
 
 		elevatorHeightPID_->Reset();
 		elevatorHeightPID_->Disable();
@@ -96,12 +97,19 @@ void ElevatorHeightCommand::Update(double currTimeSec, double deltaTimeSec) {
 //	SmartDashboard::PutNumber("Elevator Time Diff", timeDiff);
 	bool timeOut = (timeDiff > 5.0);								//test this value
 
+	//teleop version of ramp up (actually works)
+	//if (elevatorUpOutput_ < elevatorMaxOutput_) {
+	//	elevatorUpOutput_ *= elevatorRamp_;
+	//}
+
+
 	if (maxOutput_ < actualMaxOutput_) {
 		maxOutput_ *= maxElevatorRate_;
-		if (maxOutput_ > robot_->elevatorTallMaxOutput_) {
-			maxOutput_ = robot_->elevatorTallMaxOutput_;
+		if (maxOutput_ > actualMaxOutput_) {
+			maxOutput_ = actualMaxOutput_;
 		}
 		elevatorHeightPID_->SetOutputRange(-maxOutput_, maxOutput_);
+		printf("elevator MAX output: %f\n", maxOutput_);
 	}
 //	} else if (maxOutput_ < robot_->elevatorMaxOutput_) {
 //		maxOutput_ *= maxElevatorRate_;

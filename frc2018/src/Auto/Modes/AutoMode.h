@@ -154,6 +154,7 @@ public:
 			}
 			break;
 		case 'i':
+			printf("Inttake Command\n");
 			double intakeOutput;
 			iss >> intakeOutput;
 			if(IsFailed(command)) {
