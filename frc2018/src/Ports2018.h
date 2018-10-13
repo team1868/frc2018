@@ -84,6 +84,7 @@ static const int OPERATOR_JOY_B_USB_PORT				= 3;
 /* -------------------- BUTTON PORTS -------------------- */
 
 // Drive controller button ports
+static const int DRIVER_OUTTAKE_BUTTON_PORT                    = 2; //left joystick
 static const int DRIVE_DIRECTION_BUTTON_PORT			= 3;
 static const int HIGH_LOW_GEAR_BUTTON_PORT				= 3;
 static const int ARCADE_DRIVE_BUTTON_PORT				= 6;
@@ -91,12 +92,14 @@ static const int QUICK_TURN_BUTTON_PORT					= 1;
 static const int ALIGN_WITH_CUBE_BUTTON_PORT			= 2;
 
 // Superstructure controller button ports
+static const int STOP_TOP_LIMITSWITCH_BUTTON_PORT       = 7;  //WRONG: find a switch dudes
+static const int STOP_BOTTOM_LIMITSWITCH_BUTTON_PORT    = 7;  //WRONG: find a switch dudes
 static const int INTAKE_BUTTON_PORT						= 2;
 static const int OUTTAKE_BUTTON_PORT					= 1;
 static const int OUTTAKE_FAST_BUTTON_PORT				= 3;	// TODO CHECK THIS
-static const int INTAKE_HOLD_SWITCH_PORT				= 7;
+static const int INTAKE_HOLD_SWITCH_PORT				= 7; //unused
 static const int ELEVATOR_UP_BUTTON_PORT				= 8;
-static const int ELEVATOR_DOWN_BUTTON_PORT				= 7;
+static const int ELEVATOR_DOWN_BUTTON_PORT				= 7; //unused
 static const int RAMP_RELEASE_BUTTON_PORT				= 6;
 static const int RAMP_RAISE_L_BUTTON_PORT				= 2;
 static const int RAMP_RAISE_R_BUTTON_PORT				= 8;

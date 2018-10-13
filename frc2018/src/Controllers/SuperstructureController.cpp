@@ -96,7 +96,10 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			}
 		}
 
-		if (humanControl_->GetIntakeDesired()) {
+		if(humanControl_->GetDriverOuttakeDesired()) {
+			printf("DRIVER OVERRIDE OUTTAKE\n");
+			robot_->SetIntakeOutput(robot_->outtakeMotorOutput_);
+		} else if (humanControl_->GetIntakeDesired()) {
 			printf("intaking\n");
 //			robot_->SetIntakeOutput(robot_->intakeMotorOutput_);
 			robot_->SetIntakeOutput((robot_->intakeMotorOutput_), (robot_->intakeMotorOutput_ - robot_->intakeMotorOutputSubtract_));
@@ -113,12 +116,16 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		}
 
 		if (humanControl_->GetElevatorUpDesired()) { //elevator direction fixed
+			//printf("Top Limit Switch on/off %d Bottom Limit Switch on/off %d top final value: %d bottom final value: %d\n",
+			//		!humanControl_->GetTopLimitSwitchOffDesired(), !humanControl_->GetBottomLimitSwitchOffDesired(), (!robot_->GetElevatorTopLimitSwitch())&&(!humanControl_->GetTopLimitSwitchOffDesired()), (!robot_->GetElevatorBottomLimitSwitch())&&(!humanControl_->GetBottomLimitSwitchOffDesired()));
 			if ((robot_->GetElevatorCurrent() > elevatorCurrentLimit_) || elevatorCurrLimitReached_) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
-			} else if (!robot_->GetElevatorTopLimitSwitch()){
+				printf("STOPPED: current limit reached\n");
+			} else if ((!robot_->GetElevatorTopLimitSwitch())&&(humanControl_->GetTopLimitSwitchOffDesired())){
 				robot_->SetElevatorOutput(0.0);
 				elevatorCurrLimitReached_ = false;
+				printf("STOPPED: top limit switch\n");
 			} else {
 				if (elevatorUpOutput_ < elevatorMaxOutput_) {
 					elevatorUpOutput_ *= elevatorRamp_;
@@ -130,10 +137,12 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			if ((robot_->GetElevatorCurrent() > elevatorCurrentLimit_) || elevatorCurrLimitReached_) {
 				elevatorCurrLimitReached_ = true;
 				robot_->SetElevatorOutput(0.0);
-			} else if(!robot_->GetElevatorBottomLimitSwitch()){
+				printf("STOPPED: current limit reached\n");
+			} else if((!robot_->GetElevatorBottomLimitSwitch())&&(humanControl_->GetBottomLimitSwitchOffDesired())){
 				//test code: robot_->SetElevatorOutput(robot_->GetElevatorEncoder()->Get());
 				robot_->SetElevatorOutput(0.0);
 				elevatorCurrLimitReached_ = false;
+				printf("STOPPED: bottom limit switch\n");
 			} else {
 				if (elevatorDownOutput_ < elevatorMaxOutput_) {
 					elevatorDownOutput_ *= elevatorRamp_;

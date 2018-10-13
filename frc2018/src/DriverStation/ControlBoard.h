@@ -30,6 +30,7 @@ public:
 	bool GetArcadeDriveDesired();
 	bool GetQuickTurnDesired();
 	bool GetAlignWithCubeDesired();
+	bool GetDriverOuttakeDesired();
 
 	/**
 	 * Returns desired values for superstructure controls
@@ -42,6 +43,8 @@ public:
 	bool GetHoldCubeDesired();
 	bool GetElevatorUpDesired();
 	bool GetElevatorDownDesired();
+	bool GetTopLimitSwitchOffDesired();
+	bool GetBottomLimitSwitchOffDesired();
 	bool GetRampReleaseDesired();
 	bool GetRampRaiseLDesired();
 	bool GetRampRaiseRDesired();
@@ -61,7 +64,7 @@ private:
 	double leftJoyX_, leftJoyY_, leftJoyZ_, rightJoyX_, rightJoyY_, rightJoyZ_;
 
 	// Drive Modes
-	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_, alignWithCubeDesired_;
+	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_, alignWithCubeDesired_, driverOuttakeDesired_;
 
 	// Joysticks for drive
 	Joystick *leftJoy_, *rightJoy_;
@@ -74,8 +77,8 @@ private:
 
 	// Buttons for superstructure
 	ButtonReader *intakeButton_, *outtakeFastButton_, *outtakeButton_, *intakeHoldSwitch_, *elevatorUpButton_, *elevatorDownButton_,
-				 *rampReleaseButton_, *rampRaiseLButton_, *rampRaiseRButton_, *wristSwitch_, *alignWithCubeButton_, *wristUpButton_,
-				 *wristDownButton_, *wristStallButton_;
+				 *rampReleaseButton_, *rampRaiseLButton_, *rampRaiseRButton_, *wristSwitch_, *alignWithCubeButton_, *driverOuttakeButton_, *wristUpButton_,
+				 *wristDownButton_, *wristStallButton_, *bottomLimitSwitchStopper_, *topLimitSwitchStopper_;
 
 	// Variables for superstructure
 	bool intakeDesired_, outtakeDesired_, outtakeFastDesired_, intakeHoldDesired_, elevatorUpDesired_, elevatorDownDesired_,

@@ -15,6 +15,7 @@ ControlBoard::ControlBoard() {
 	arcadeDriveDesired_ = true;
 	quickTurnDesired_ = true;
 	alignWithCubeDesired_ = false;
+	driverOuttakeDesired_ = false;
 
 	leftJoy_ = new Joystick(LEFT_JOY_USB_PORT);
 	rightJoy_ = new Joystick(RIGHT_JOY_USB_PORT);
@@ -41,6 +42,7 @@ ControlBoard::ControlBoard() {
 	rampRaiseRButton_ = new ButtonReader(operatorJoy_, RAMP_RAISE_R_BUTTON_PORT);
 	wristSwitch_ = new ButtonReader(operatorJoy_, WRIST_BUTTON_PORT);
 	alignWithCubeButton_ = new ButtonReader(rightJoy_, ALIGN_WITH_CUBE_BUTTON_PORT);
+	driverOuttakeButton_ = new ButtonReader(leftJoy_, DRIVER_OUTTAKE_BUTTON_PORT);
 
 	wristUpButton_ = new ButtonReader(operatorJoyB_, WRIST_UP_BUTTON_PORT);
 	wristDownButton_ = new ButtonReader(operatorJoyB_, WRIST_DOWN_BUTTON_PORT);
@@ -59,6 +61,10 @@ ControlBoard::ControlBoard() {
 	leftAutoSwitch_ = new ButtonReader(operatorJoy_,LEFT_AUTO_SWITCH_PORT);
 	rightAutoSwitch_ = new ButtonReader(operatorJoy_, RIGHT_AUTO_SWITCH_PORT);
 	middleAutoSwitch_ = new ButtonReader(operatorJoy_, MIDDLE_AUTO_SWITCH_PORT);
+
+	bottomLimitSwitchStopper_ = new ButtonReader(operatorJoy_, STOP_BOTTOM_LIMITSWITCH_BUTTON_PORT);
+	topLimitSwitchStopper_ = new ButtonReader(operatorJoy_, STOP_TOP_LIMITSWITCH_BUTTON_PORT);
+
 
 	ReadControls();
 }
@@ -79,6 +85,7 @@ void ControlBoard::ReadControls() {
 	arcadeDriveDesired_ = arcadeDriveButton_->IsDown();
 	quickTurnDesired_ = quickTurnButton_->IsDown();
 	alignWithCubeDesired_ = alignWithCubeButton_->WasJustPressed();
+	driverOuttakeDesired_ = driverOuttakeButton_->IsDown(); //uhhh maybe wrong
 
 	intakeDesired_ = intakeButton_->IsDown();
 	outtakeDesired_ = outtakeButton_->IsDown();
@@ -165,6 +172,10 @@ bool ControlBoard::GetAlignWithCubeDesired() {
 	return alignWithCubeDesired_;
 }
 
+bool ControlBoard::GetDriverOuttakeDesired() {
+	return driverOuttakeDesired_;
+}
+
 bool ControlBoard::GetIntakeDesired() {
 	return intakeDesired_;
 }
@@ -192,6 +203,14 @@ bool ControlBoard::GetElevatorUpDesired() {
 
 bool ControlBoard::GetElevatorDownDesired() {
 	return elevatorDownDesired_;
+}
+
+bool ControlBoard::GetTopLimitSwitchOffDesired() {
+	return topLimitSwitchStopper_->IsDown();
+}
+
+bool ControlBoard::GetBottomLimitSwitchOffDesired() {
+	return bottomLimitSwitchStopper_->IsDown();
 }
 
 bool ControlBoard::GetRampReleaseDesired() {
@@ -254,6 +273,7 @@ void ControlBoard::ReadAllButtons() {
 	arcadeDriveButton_->ReadValue();
 	quickTurnButton_->ReadValue();
 	alignWithCubeButton_->ReadValue();
+	driverOuttakeButton_->ReadValue();
 
 	intakeButton_->ReadValue();
 	outtakeButton_->ReadValue();
@@ -271,6 +291,9 @@ void ControlBoard::ReadAllButtons() {
 	rightAutoSwitch_->ReadValue();
 	middleAutoSwitch_->ReadValue();
 	leftAutoSwitch_->ReadValue();
+
+	topLimitSwitchStopper_->ReadValue();
+	bottomLimitSwitchStopper_->ReadValue();
 }
 
 ControlBoard::~ControlBoard() {
